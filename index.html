@@ -326,6 +326,290 @@
             border-left: 4px solid #2196F3;
         }
 
+        .calendar-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header h2 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--primary-dark);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 80px;
+            position: relative;
+            background: white;
+        }
+
+        .calendar-day:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .calendar-day.other-month {
+            background: var(--light);
+            color: var(--text-secondary);
+            cursor: default;
+        }
+
+        .calendar-day.other-month:hover {
+            box-shadow: none;
+            transform: none;
+        }
+
+        .calendar-day.occupied {
+            background: rgba(33, 150, 243, 0.15);
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .calendar-day.available {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--success);
+        }
+
+        .calendar-day.cleaning {
+            background: rgba(255, 152, 0, 0.15);
+            border-color: var(--warning);
+            font-weight: 600;
+        }
+
+        .calendar-day-number {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .calendar-day.other-month .calendar-day-number {
+            color: var(--text-secondary);
+        }
+
+        .calendar-day-status {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .calendar-day.occupied .calendar-day-status {
+            color: var(--primary);
+        }
+
+        .calendar-day.available .calendar-day-status {
+            color: var(--success);
+        }
+
+        .calendar-day.cleaning .calendar-day-status {
+            color: var(--warning);
+        }
+
+        .calendar-day-note {
+            font-size: 9px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--text);
+        }
+
+        .day-status-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-option {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .status-option:hover {
+            border-color: var(--primary);
+        }
+
+        .status-option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .status-option.occupied.selected {
+            background: rgba(33, 150, 243, 0.15);
+            border-color: var(--primary);
+        }
+
+        .status-option.available.selected {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: var(--success);
+        }
+
+        .status-option.cleaning.selected {
+            background: rgba(255, 152, 0, 0.15);
+            border-color: var(--warning);
+        }
+
+        [data-theme="dark"] .modal-content {
+            background: #1e1e1e;
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .calendar-container {
+            background: #1e1e1e;
+        }
+
+        [data-theme="dark"] .calendar-day {
+            background: #2a2a2a;
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .calendar-day.other-month {
+            background: #1e1e1e;
+        }
+
+        [data-theme="dark"] .status-option {
+            background: #2a2a2a;
+            color: var(--text);
+        }
+
         .lang-btn, .theme-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -431,6 +715,7 @@
             <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense"></button>
             <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses"></button>
             <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement"></button>
+            <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar"></button>
             <button class="tab-btn" onclick="switchTab('export')" data-i18n="export"></button>
         </div>
 
@@ -538,6 +823,32 @@
             </div>
         </div>
 
+        <!-- CALENDAR TAB -->
+        <div id="calendar" class="tab-content">
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 data-i18n="calendarTitle"></h2>
+                    <div class="calendar-nav">
+                        <button onclick="previousMonth()" data-i18n="previousMonth"></button>
+                        <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
+                        <button onclick="nextMonth()" data-i18n="nextMonth"></button>
+                    </div>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <div class="weekday">Sun</div>
+                    <div class="weekday">Mon</div>
+                    <div class="weekday">Tue</div>
+                    <div class="weekday">Wed</div>
+                    <div class="weekday">Thu</div>
+                    <div class="weekday">Fri</div>
+                    <div class="weekday">Sat</div>
+                </div>
+
+                <div id="calendarDays" class="calendar-days"></div>
+            </div>
+        </div>
+
         <!-- EXPORT & SUMMARY TAB -->
         <div id="export" class="tab-content">
             <div class="export-section">
@@ -569,6 +880,7 @@
                 addExpense: 'Add Expense',
                 allExpenses: 'All Expenses',
                 settlement: 'Settlement',
+                calendar: 'Calendar',
                 export: 'Export & Summary',
                 addNewExpense: 'Add New Expense',
                 description: 'Description',
@@ -618,12 +930,23 @@
                 expensesDetail: 'Expenses Detail',
                 selectMonth: 'Select Month',
                 paidByLabel: 'Paid by',
-                noExpensesToSettle: 'No expenses to settle yet.'
+                noExpensesToSettle: 'No expenses to settle yet.',
+                calendarTitle: 'Airbnb Calendar',
+                occupied: 'Occupied',
+                available: 'Available',
+                cleaning: 'Cleaning',
+                dayNotes: 'Notes',
+                addNote: 'Add Note',
+                saveNote: 'Save',
+                previousMonth: 'Previous',
+                nextMonth: 'Next',
+                updateStatus: 'Update Status'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
                 allExpenses: 'Tutte le Spese',
                 settlement: 'Regolamento',
+                calendar: 'Calendario',
                 export: 'Esporta e Riepilogo',
                 addNewExpense: 'Aggiungi Nuova Spesa',
                 description: 'Descrizione',
@@ -673,7 +996,17 @@
                 expensesDetail: 'Dettagli Spese',
                 selectMonth: 'Seleziona Mese',
                 paidByLabel: 'Pagato da',
-                noExpensesToSettle: 'Nessuna spesa da regolare.'
+                noExpensesToSettle: 'Nessuna spesa da regolare.',
+                calendarTitle: 'Calendario Airbnb',
+                occupied: 'Occupato',
+                available: 'Disponibile',
+                cleaning: 'Pulizia',
+                dayNotes: 'Note',
+                addNote: 'Aggiungi Nota',
+                saveNote: 'Salva',
+                previousMonth: 'Precedente',
+                nextMonth: 'Successivo',
+                updateStatus: 'Aggiorna Stato'
             }
         };
 
@@ -1016,6 +1349,167 @@
             displaySettlement();
         }
 
+        // ========== CALENDAR MANAGEMENT ==========
+        const CALENDAR_KEY = 'chillinguito_calendar';
+        let currentCalendarDate = new Date();
+
+        function getCalendarData() {
+            const data = localStorage.getItem(CALENDAR_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveCalendarData(data) {
+            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
+            renderCalendar();
+        }
+
+        function getDateKey(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            // Update month display
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+
+            // Get first day and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            const calendarDaysDiv = document.getElementById('calendarDays');
+            calendarDaysDiv.innerHTML = '';
+
+            const calendarData = getCalendarData();
+
+            // Previous month's days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const prevDate = new Date(year, month - 1, day);
+                const dayDiv = createDayElement(prevDate, true, calendarData);
+                calendarDaysDiv.appendChild(dayDiv);
+            }
+
+            // Current month's days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const dayDiv = createDayElement(date, false, calendarData);
+                calendarDaysDiv.appendChild(dayDiv);
+            }
+
+            // Next month's days
+            const totalCells = calendarDaysDiv.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                const dayDiv = createDayElement(nextDate, true, calendarData);
+                calendarDaysDiv.appendChild(dayDiv);
+            }
+        }
+
+        function createDayElement(date, isOtherMonth, calendarData) {
+            const dayDiv = document.createElement('div');
+            const dateKey = getDateKey(date);
+            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
+
+            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
+            dayDiv.innerHTML = `
+                <div class="calendar-day-number">${date.getDate()}</div>
+                ${!isOtherMonth ? `<div class="calendar-day-status" data-status="${dayData.status}">${t(dayData.status)}</div>` : ''}
+                ${dayData.note && !isOtherMonth ? `<div class="calendar-day-note">${dayData.note.substring(0, 12)}...</div>` : ''}
+            `;
+
+            if (!isOtherMonth) {
+                dayDiv.onclick = () => openDayModal(date, dayData);
+            }
+
+            return dayDiv;
+        }
+
+        function openDayModal(date, dayData) {
+            const dateKey = getDateKey(date);
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'dayModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${dateStr}</h3>
+                        <button class="modal-close" onclick="closeDayModal()">×</button>
+                    </div>
+
+                    <div class="day-status-selector">
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this, 'occupied')" data-i18n="occupied"></button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this, 'available')" data-i18n="available"></button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this, 'cleaning')" data-i18n="cleaning"></button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dayNote" data-i18n="dayNotes"></label>
+                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
+                    </div>
+
+                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')" data-i18n="saveNote"></button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+            modal.onclick = (e) => {
+                if (e.target === modal) closeDayModal();
+            };
+
+            // Update text after modal creation
+            modal.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.getAttribute('data-i18n'));
+            });
+        }
+
+        function selectStatus(button, status) {
+            const parent = button.parentElement;
+            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            button.dataset.selectedStatus = status;
+        }
+
+        function saveDayData(dateKey) {
+            const modal = document.getElementById('dayModal');
+            const selectedStatus = modal.querySelector('.status-option.selected');
+            const status = selectedStatus ? selectedStatus.className.split(' ')[1] : 'available';
+            const note = document.getElementById('dayNote').value;
+
+            const calendarData = getCalendarData();
+            calendarData[dateKey] = { status, note };
+            saveCalendarData(calendarData);
+            closeDayModal();
+        }
+
+        function closeDayModal() {
+            const modal = document.getElementById('dayModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.remove();
+            }
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
         // ========== INITIALIZATION ==========
         window.addEventListener('DOMContentLoaded', () => {
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1027,6 +1521,7 @@
             
             setDateToToday();
             setMonthToNow();
+            renderCalendar();
             updateAllDisplays();
             updatePageText();
         });
