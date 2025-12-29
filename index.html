@@ -537,8 +537,8 @@
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            margin-bottom: 6px;
+            gap: 4px;
+            margin-bottom: 4px;
         }
 
         .weekday {
@@ -548,7 +548,7 @@
             padding: 8px 0px;
             font-size: 11px;
             text-transform: uppercase;
-            height: 32px;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -557,29 +557,31 @@
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 4px;
             min-height: 320px;
         }
 
         .calendar-day {
-            aspect-ratio: 1;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            padding: 4px 2px;
+            aspect-ratio: 1.2 / 1;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 13px;
+            font-size: 11px;
             position: relative;
             min-height: 50px;
+            word-wrap: break-word;
+            overflow: hidden;
         }
 
-        .calendar-day:hover:not(.other-month) {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .calendar-day:active:not(.other-month) {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
         .calendar-day.other-month {
@@ -592,17 +594,17 @@
 
         .calendar-day-number {
             font-weight: 700;
-            font-size: 13px;
+            font-size: 11px;
             line-height: 1;
             margin-bottom: 1px;
         }
 
         .calendar-day-status {
-            font-size: 9px;
+            font-size: 8px;
             text-transform: uppercase;
             font-weight: 700;
             line-height: 1;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
 
         .calendar-day.occupied {
@@ -803,85 +805,115 @@
             color: #b0b0b0;
         }
 
+        /* MOBILE OPTIMIZATION - CRITICAL FIX FOR IPHONE */
         @media (max-width: 600px) {
             .calendar-container {
-                padding: 10px;
+                padding: 8px;
             }
 
-            .calendar-day {
-                min-height: 48px;
-                padding: 3px 1px;
-                font-size: 12px;
-            }
-            
-            .calendar-day-number {
-                font-size: 12px;
-            }
-            
-            .calendar-day-status {
-                font-size: 8px;
-            }
-
-            .calendar-nav button {
-                padding: 6px 10px;
-                font-size: 12px;
-                min-height: 36px;
+            .calendar-header {
+                flex-direction: column;
+                gap: 12px;
             }
 
             .calendar-header h2 {
-                font-size: 16px;
+                font-size: 14px;
+                width: 100%;
             }
 
-            .totp-digit {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
+            .calendar-nav {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .calendar-nav button {
+                flex: 1;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-height: 36px;
+            }
+
+            .calendar-weekdays {
+                gap: 2px;
+                margin-bottom: 2px;
+            }
+
+            .weekday {
+                font-size: 9px;
+                padding: 4px 0px;
+                height: auto;
+            }
+
+            .calendar-days {
+                gap: 2px;
+            }
+
+            .calendar-day {
+                aspect-ratio: 1.1 / 1;
+                min-height: 44px;
+                padding: 1px;
+                border-radius: 3px;
+                font-size: 9px;
+            }
+
+            .calendar-day-number {
+                font-size: 10px;
+                margin-bottom: 0px;
+            }
+
+            .calendar-day-status {
+                font-size: 7px;
+                letter-spacing: 0px;
             }
         }
 
         @media (max-width: 400px) {
             .calendar-container {
-                padding: 8px;
+                padding: 6px;
             }
 
-            .calendar-day {
-                min-height: 44px;
-                padding: 2px 1px;
-            }
-            
-            .calendar-day-number {
-                font-size: 11px;
-            }
-
-            .calendar-nav button {
-                padding: 6px 8px;
-                font-size: 11px;
-                min-height: 34px;
+            .calendar-header {
+                flex-direction: column;
+                gap: 10px;
             }
 
             .calendar-header h2 {
-                font-size: 14px;
+                font-size: 12px;
+            }
+
+            .calendar-nav button {
+                padding: 6px 6px;
+                font-size: 10px;
             }
 
             .calendar-weekdays {
-                gap: 4px;
-                margin-bottom: 4px;
-            }
-
-            .calendar-days {
-                gap: 4px;
+                gap: 1px;
             }
 
             .weekday {
-                font-size: 10px;
-                padding: 6px 0px;
-                height: 28px;
+                font-size: 8px;
+                padding: 3px 0px;
             }
 
-            .totp-digit {
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
+            .calendar-days {
+                gap: 1px;
+            }
+
+            .calendar-day {
+                aspect-ratio: 1 / 1;
+                min-height: 40px;
+                padding: 1px;
+                border-radius: 2px;
+                font-size: 8px;
+            }
+
+            .calendar-day-number {
+                font-size: 9px;
+            }
+
+            .calendar-day-status {
+                font-size: 6px;
+                line-height: 1;
             }
         }
     </style>
@@ -1173,8 +1205,7 @@
             } else {
                 document.getElementById('lockScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
-                // CRITICAL FIX: Initialize app even if already unlocked
-                void document.getElementById('mainApp').offsetHeight; // force layout recalculation
+                void document.getElementById('mainApp').offsetHeight;
                 initializeApp();
             }
         }
@@ -1230,7 +1261,7 @@
                     document.getElementById('appBody').classList.remove('locked');
                     document.getElementById('lockScreen').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
-                    void document.getElementById('mainApp').offsetHeight; // force layout
+                    void document.getElementById('mainApp').offsetHeight;
                     initializeApp();
                 }, 500);
             } else {
@@ -1418,7 +1449,6 @@
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
             
-            // Render calendar when calendar tab is activated
             if (tabName === 'calendar') {
                 setTimeout(() => renderCalendar(), 50);
             }
@@ -1788,7 +1818,7 @@
             URL.revokeObjectURL(url);
         }
 
-        // ========== INITIALIZE APP (SINGLE DEFINITION) ==========
+        // ========== INITIALIZE APP ==========
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
             document.getElementById('summaryMonth').valueAsDate = new Date();
@@ -1796,7 +1826,6 @@
             displayExpenses();
             displaySettlement();
             updatePageText();
-            // Render calendar after DOM is ready
             setTimeout(() => renderCalendar(), 150);
         }
 
@@ -1808,7 +1837,7 @@
         });
 
         // ========== VERSION CHECK ==========
-        const APP_VERSION = '2.0.2-initialization-fix';
+        const APP_VERSION = '2.0.3-iphone-calendar-fix';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
