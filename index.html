@@ -729,6 +729,77 @@
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .summary-card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .summary-card p {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .cleaning-item {
+            background: var(--light);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #FFA94D;
+        }
+
+        .cleaning-date {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .cleaning-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .button-group button {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .notification-banner {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
         .lang-btn, .theme-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -762,7 +833,8 @@
         [data-theme="dark"] .calendar-container,
         [data-theme="dark"] .modal-content,
         [data-theme="dark"] .export-section,
-        [data-theme="dark"] .lock-screen {
+        [data-theme="dark"] .lock-screen,
+        [data-theme="dark"] .summary-card {
             background: #1e1e1e;
         }
 
@@ -810,6 +882,15 @@
         [data-theme="dark"] .lock-screen-info {
             background: rgba(100, 181, 246, 0.1);
             color: #b0b0b0;
+        }
+
+        [data-theme="dark"] .cleaning-item {
+            background: #2a2a2a;
+            border-color: #FFA94D;
+        }
+
+        [data-theme="dark"] .summary-card {
+            border-left-color: #64B5F6;
         }
 
         /* MOBILE OPTIMIZATION */
@@ -877,6 +958,14 @@
                 min-height: 44px;
                 font-size: 16px;
                 padding: 10px 8px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
             }
         }
 
@@ -984,6 +1073,8 @@
         </header>
 
         <div class="container">
+            <div id="notificationContainer"></div>
+
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense">Add Expense</button>
                 <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses">All Expenses</button>
@@ -1136,20 +1227,30 @@
                 <div class="export-section">
                     <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
 
-                    <div class="form-group">
-                        <label for="summaryMonth" data-i18n="selectMonth">Select Month</label>
-                        <input type="month" id="summaryMonth">
+                    <!-- EXPENSE SUMMARY -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
+                        <div class="button-group">
+                            <button class="btn-secondary" onclick="generateExpenseSummary(3)" data-i18n="last3Months">Last 3 Months</button>
+                            <button class="btn-secondary" onclick="generateExpenseSummary(6)" data-i18n="last6Months">Last 6 Months</button>
+                            <button class="btn-secondary" onclick="generateExpenseSummary(9)" data-i18n="last9Months">Last 9 Months</button>
+                            <button class="btn-secondary" onclick="generateExpenseSummary(12)" data-i18n="last12Months">Last 12 Months</button>
+                        </div>
                     </div>
 
-                    <button class="btn-primary" onclick="generateMonthlySummary()" style="width: 100%; padding: 12px; margin-bottom: 15px;" data-i18n="generateSummary">Generate Summary</button>
+                    <div id="expenseSummaryResult"></div>
 
-                    <div id="monthlySummaryResult"></div>
+                    <!-- CLEANING SCHEDULE -->
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">🧹 Cleaning Schedule (Next 31 Days)</h3>
+                        <button class="btn-primary" style="width: 100%; margin-bottom: 16px;" onclick="generateCleaningSchedule()" data-i18n="generateSchedule">Generate Schedule</button>
+                        <div id="cleaningScheduleResult"></div>
+                    </div>
 
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-                        <h3 style="margin-bottom: 15px;" data-i18n="exportOptions">Export Options</h3>
-                        <button class="btn-primary" onclick="exportAsJSON()" style="margin-right: 10px;" data-i18n="downloadJson">📥 Download JSON</button>
-                        <button class="btn-primary" onclick="exportAsCSV()" data-i18n="downloadCsv">📥 Download CSV</button>
-                        <button class="btn-secondary" onclick="window.print()" data-i18n="print">🖨️ Print</button>
+                    <!-- SCREENSHOT EXPORT -->
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 12px;" data-i18n="exportSummary">Export Summary</h3>
+                        <button class="btn-primary" style="width: 100%;" onclick="screenshotSummary()" data-i18n="screenshotToGallery">📸 Screenshot to Camera Roll</button>
                     </div>
                 </div>
             </div>
@@ -1158,6 +1259,8 @@
 
     <!-- MODAL CONTAINER -->
     <div id="modalContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
         // ========== 2FA CONFIGURATION ==========
@@ -1363,12 +1466,22 @@
                 weekdayFri: 'Fri',
                 weekdaySat: 'Sat',
                 monthlySummary: 'Monthly Summary & Export',
+                expenseSummary: 'Expense Summary',
+                last3Months: 'Last 3 Months',
+                last6Months: 'Last 6 Months',
+                last9Months: 'Last 9 Months',
+                last12Months: 'Last 12 Months',
+                cleaningSchedule: '🧹 Cleaning Schedule (Next 31 Days)',
+                generateSchedule: 'Generate Schedule',
+                exportSummary: 'Export Summary',
+                screenshotToGallery: '📸 Screenshot to Camera Roll',
+                noCleaning: 'No cleaning scheduled in the next 31 days',
+                cleaningDue: 'Cleaning scheduled:',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
-                exportOptions: 'Export Options',
-                downloadJson: '📥 Download JSON',
-                downloadCsv: '📥 Download CSV',
-                print: '🖨️ Print'
+                updateNotification: 'Updated!',
+                expenseUpdated: 'An expense was updated',
+                calendarUpdated: 'The calendar was updated'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1429,12 +1542,22 @@
                 weekdayFri: 'Ven',
                 weekdaySat: 'Sab',
                 monthlySummary: 'Riepilogo Mensile ed Esportazione',
+                expenseSummary: 'Riepilogo Spese',
+                last3Months: 'Ultimi 3 Mesi',
+                last6Months: 'Ultimi 6 Mesi',
+                last9Months: 'Ultimi 9 Mesi',
+                last12Months: 'Ultimi 12 Mesi',
+                cleaningSchedule: '🧹 Programma Pulizie (Prossimi 31 Giorni)',
+                generateSchedule: 'Genera Programma',
+                exportSummary: 'Esporta Riepilogo',
+                screenshotToGallery: '📸 Screenshot su Rullino Fotografico',
+                noCleaning: 'Nessuna pulizia programmata nei prossimi 31 giorni',
+                cleaningDue: 'Pulizia programmata:',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
-                exportOptions: 'Opzioni di Esportazione',
-                downloadJson: '📥 Scarica JSON',
-                downloadCsv: '📥 Scarica CSV',
-                print: '🖨️ Stampa'
+                updateNotification: 'Aggiornato!',
+                expenseUpdated: 'Una spesa è stata aggiornata',
+                calendarUpdated: 'Il calendario è stato aggiornato'
             }
         };
 
@@ -1484,7 +1607,6 @@
 
         // ========== UPDATE DROPDOWN OPTIONS ==========
         function updateDropdownOptions() {
-            // Category options
             const categoryOptions = document.querySelectorAll('#category option');
             categoryOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
@@ -1493,7 +1615,6 @@
                 }
             });
 
-            // Paid By options
             const paidByOptions = document.querySelectorAll('#paidBy option');
             paidByOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
@@ -1502,7 +1623,6 @@
                 }
             });
 
-            // Split Between options
             const splitOptions = document.querySelectorAll('#splitBetween option');
             splitOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
@@ -1510,6 +1630,19 @@
                     option.textContent = t(i18nKey);
                 }
             });
+        }
+
+        // ========== NOTIFICATIONS ==========
+        function showNotification(message) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification-banner';
+            notification.textContent = message;
+            container.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         // ========== STORAGE ==========
@@ -1525,6 +1658,10 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
             displayExpenses();
             displaySettlement();
+            showNotification(t('updateNotification'));
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Chillinguito', { body: t('expenseUpdated') });
+            }
         }
 
         function getCalendarData() {
@@ -1535,6 +1672,17 @@
         function saveCalendarData(data) {
             localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
             renderCalendar();
+            showNotification(t('updateNotification'));
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Chillinguito', { body: t('calendarUpdated') });
+            }
+        }
+
+        // ========== PUSH NOTIFICATIONS ==========
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
         }
 
         // ========== TAB SWITCHING ==========
@@ -1845,92 +1993,126 @@
             renderCalendar();
         }
 
-        // ========== MONTHLY SUMMARY ==========
-        function generateMonthlySummary() {
-            const monthInput = document.getElementById('summaryMonth').value;
-            if (!monthInput) {
-                alert(currentLanguage === 'en' ? 'Please select a month' : 'Seleziona un mese');
-                return;
-            }
+        // ========== EXPENSE SUMMARY ==========
+        function generateExpenseSummary(months) {
+            const expenses = getExpenses();
+            const now = new Date();
+            const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
 
-            const [year, month] = monthInput.split('-');
-            const expenses = getExpenses().filter(exp => exp.date.startsWith(`${year}-${month}`));
-
-            if (expenses.length === 0) {
-                document.getElementById('monthlySummaryResult').innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
-                return;
-            }
-
-            const balances = { Davide: 0, Mattia: 0 };
-            let monthTotal = 0;
-
-            expenses.forEach(exp => {
-                monthTotal += exp.amount;
-                balances[exp.paidBy] += exp.amount;
-
-                if (exp.splitBetween === 'Both') {
-                    balances['Davide'] -= exp.amount / 2;
-                    balances['Mattia'] -= exp.amount / 2;
-                } else {
-                    balances[exp.splitBetween] -= exp.amount;
-                }
+            const filteredExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate >= startDate && expDate <= now;
             });
 
-            const monthName = new Date(`${year}-${month}-01`).toLocaleString(currentLanguage === 'en' ? 'en-US' : 'it-IT', { month: 'long', year: 'numeric' });
+            if (filteredExpenses.length === 0) {
+                document.getElementById('expenseSummaryResult').innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                return;
+            }
+
+            let total = 0;
+            const byCategory = {};
+
+            filteredExpenses.forEach(exp => {
+                total += exp.amount;
+                if (!byCategory[exp.category]) {
+                    byCategory[exp.category] = 0;
+                }
+                byCategory[exp.category] += exp.amount;
+            });
 
             let html = `
-                <div class="card" style="border-left: 4px solid var(--primary);">
-                    <h3>${monthName}</h3>
-                    <p><strong>Total:</strong> EUR ${monthTotal.toFixed(2)}</p>
-                    <p><strong>Expenses:</strong> ${expenses.length}</p>
-                    ${expenses.map(exp => `
-                        <div style="margin-top: 10px; padding: 10px; background: var(--light); border-radius: 6px;">
-                            <strong>${exp.description}</strong> - EUR ${exp.amount.toFixed(2)}<br>
-                            <small>${exp.date} • ${exp.paidBy}</small>
-                        </div>
-                    `).join('')}
-                </div>
+                <div class="summary-card">
+                    <h3>${t('expenseSummary')} - ${months} ${months === 3 ? 'months' : 'months'}</h3>
+                    <p><strong>Total:</strong> EUR ${total.toFixed(2)}</p>
+                    <p><strong>Period:</strong> ${startDate.toLocaleDateString()} - ${now.toLocaleDateString()}</p>
+                    <p><strong>Expenses:</strong> ${filteredExpenses.length}</p>
+                    <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border);">
+                    <h4 style="margin: 12px 0; color: var(--primary);">By Category:</h4>
             `;
 
-            document.getElementById('monthlySummaryResult').innerHTML = html;
-        }
-
-        // ========== EXPORT ==========
-        function exportAsJSON() {
-            const expenses = getExpenses();
-            const dataStr = JSON.stringify(expenses, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            downloadFile(dataBlob, 'chillinguito_expenses.json');
-        }
-
-        function exportAsCSV() {
-            const expenses = getExpenses();
-            let csv = 'Date,Description,Category,Amount (EUR),Paid By,Split Between,Notes\n';
-
-            expenses.forEach(exp => {
-                const notes = (exp.notes || '').replace(/"/g, '""');
-                csv += `${exp.date},"${exp.description}","${exp.category}",${exp.amount.toFixed(2)},"${exp.paidBy}","${exp.splitBetween}","${notes}"\n`;
+            Object.entries(byCategory).sort((a, b) => b[1] - a[1]).forEach(([category, amount]) => {
+                html += `<p style="margin: 8px 0; display: flex; justify-content: space-between;"><strong>${category}</strong> EUR ${amount.toFixed(2)}</p>`;
             });
 
-            const dataBlob = new Blob([csv], { type: 'text/csv' });
-            downloadFile(dataBlob, 'chillinguito_expenses.csv');
+            html += `</div>`;
+
+            document.getElementById('expenseSummaryResult').innerHTML = html;
         }
 
-        function downloadFile(blob, filename) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+        // ========== CLEANING SCHEDULE ==========
+        function generateCleaningSchedule() {
+            const calendarData = getCalendarData();
+            const cleaningDays = [];
+            const now = new Date();
+
+            for (let i = 0; i < 31; i++) {
+                const date = new Date(now);
+                date.setDate(date.getDate() + i);
+                const dateKey = date.toISOString().split('T')[0];
+                const dayData = calendarData[dateKey];
+
+                if (dayData && dayData.status === 'cleaning') {
+                    cleaningDays.push({
+                        date: date,
+                        dateKey: dateKey,
+                        note: dayData.note
+                    });
+                }
+            }
+
+            const resultDiv = document.getElementById('cleaningScheduleResult');
+
+            if (cleaningDays.length === 0) {
+                resultDiv.innerHTML = `<div class="no-data">${t('noCleaning')}</div>`;
+                return;
+            }
+
+            let html = '';
+            cleaningDays.forEach(day => {
+                const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                html += `
+                    <div class="cleaning-item">
+                        <div class="cleaning-date">📅 ${dateStr}</div>
+                        ${day.note ? `<div class="cleaning-status">📝 ${day.note}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            resultDiv.innerHTML = html;
+        }
+
+        // ========== SCREENSHOT EXPORT ==========
+        async function screenshotSummary() {
+            const summaryDiv = document.getElementById('expenseSummaryResult');
+            
+            if (!summaryDiv.innerHTML.trim()) {
+                alert('Please generate a summary first!');
+                return;
+            }
+
+            try {
+                const canvas = await html2canvas(summaryDiv, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    useCORS: true
+                });
+
+                canvas.toBlob(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `Chillinguito-Summary-${new Date().toISOString().split('T')[0]}.png`;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    alert('Screenshot saved to downloads!');
+                });
+            } catch (error) {
+                alert('Error creating screenshot: ' + error.message);
+            }
         }
 
         // ========== INITIALIZE APP ==========
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('summaryMonth').valueAsDate = new Date();
             setupReceiptUpload();
             displayExpenses();
             displaySettlement();
@@ -1938,6 +2120,7 @@
             updateDropdownOptions();
             updatePlaceholders();
             setTimeout(() => renderCalendar(), 150);
+            requestNotificationPermission();
         }
 
         // ========== PAGE LOAD ==========
@@ -1948,7 +2131,7 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.0.6-all-fixes';
+        const APP_VERSION = '2.1.0-complete';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
