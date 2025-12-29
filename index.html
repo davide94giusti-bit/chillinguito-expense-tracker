@@ -466,69 +466,6 @@
             font-size: 18px;
         }
 
-        .expense-receipt {
-            margin-top: 12px;
-            border-radius: 8px;
-            max-width: 100%;
-            max-height: 150px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .receipt-section {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .receipt-preview {
-            width: 100%;
-            height: 120px;
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            background: var(--light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .receipt-preview:hover {
-            border-color: var(--primary);
-        }
-
-        .receipt-preview.has-image {
-            border-color: var(--success);
-        }
-
-        .receipt-icon {
-            font-size: 48px;
-            color: var(--text-secondary);
-        }
-
-        .receipt-remove {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 0;
-            min-height: 36px;
-        }
-
         .settlement-box {
             padding: 20px;
             border-radius: 8px;
@@ -827,18 +764,6 @@
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .button-group button {
-            flex: 1;
-            min-width: 100px;
         }
 
         .notification-banner {
@@ -1153,7 +1078,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
         // FIREBASE CONFIG
@@ -1170,13 +1094,11 @@
 
         let firebaseApp = null;
         let firebaseDatabase = null;
-        let firebaseAuth = null;
         let firebaseInitialized = false;
 
         try {
             firebaseApp = firebase.initializeApp(firebaseConfig);
             firebaseDatabase = firebase.database();
-            firebaseAuth = firebase.auth();
             firebaseInitialized = true;
             console.log('✅ Firebase initialized');
         } catch (error) {
@@ -1189,7 +1111,6 @@
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentCalendarDate = new Date();
-        let currentReceiptImage = null;
 
         // TOTP FUNCTIONS
         function base32Decode(str) {
@@ -1321,8 +1242,8 @@
             }
         }
 
-        // SYNC FUNCTIONS
-        function updateSyncStatus(status, isError = false) {
+        // SYNC FUNCTIONS - SHARED DATA FOR BOTH USERS
+        function updateSyncStatus(status) {
             const indicator = document.getElementById('syncStatusIndicator');
             const dot = document.getElementById('syncDot');
             const statusText = document.getElementById('syncStatus');
@@ -1345,7 +1266,8 @@
             if (!firebaseInitialized) return;
             try {
                 updateSyncStatus('syncing');
-                const fullPath = `users/${currentUser}/${path}`;
+                // Use SHARED path for calendar, per-user for expenses
+                const fullPath = path.includes('calendar') ? path : `users/${currentUser}/${path}`;
                 await firebaseDatabase.ref(fullPath).set(data);
                 updateSyncStatus('synced');
             } catch (error) {
@@ -1356,7 +1278,18 @@
         function listenToFirebaseChanges() {
             if (!firebaseInitialized) return;
 
-            // Listen to expenses
+            // Listen to shared CALENDAR - BOTH USERS SEE UPDATES
+            firebaseDatabase.ref('shared/calendar').on('value', (snapshot) => {
+                const remoteCalendar = snapshot.val() || {};
+                const localCalendar = getCalendarData();
+                if (JSON.stringify(localCalendar) !== JSON.stringify(remoteCalendar)) {
+                    localStorage.setItem('calendar_shared', JSON.stringify(remoteCalendar));
+                    renderCalendar();
+                    showNotification('📅 Calendar updated by other user');
+                }
+            });
+
+            // Listen to user's OWN expenses
             firebaseDatabase.ref(`users/${currentUser}/expenses`).on('value', (snapshot) => {
                 const remoteExpenses = snapshot.val() || [];
                 const localExpenses = getExpenses();
@@ -1367,30 +1300,16 @@
                     showNotification('📊 Expenses synced');
                 }
             });
-
-            // Listen to calendar
-            firebaseDatabase.ref(`users/${currentUser}/calendar`).on('value', (snapshot) => {
-                const remoteCalendar = snapshot.val() || {};
-                const localCalendar = getCalendarData();
-                if (JSON.stringify(localCalendar) !== JSON.stringify(remoteCalendar)) {
-                    localStorage.setItem('calendar_' + currentUser, JSON.stringify(remoteCalendar));
-                    renderCalendar();
-                    showNotification('📅 Calendar synced');
-                }
-            });
         }
 
         // DATA FUNCTIONS
-        const STORAGE_KEY_EXPENSES = 'expenses_';
-        const STORAGE_KEY_CALENDAR = 'calendar_';
-
         function getExpenses() {
-            const data = localStorage.getItem(STORAGE_KEY_EXPENSES + currentUser);
+            const data = localStorage.getItem('expenses_' + currentUser);
             return data ? JSON.parse(data) : [];
         }
 
         function saveExpenses(expenses) {
-            localStorage.setItem(STORAGE_KEY_EXPENSES + currentUser, JSON.stringify(expenses));
+            localStorage.setItem('expenses_' + currentUser, JSON.stringify(expenses));
             syncToFirebase('expenses', expenses);
             displayExpenses();
             displaySettlement();
@@ -1398,13 +1317,14 @@
         }
 
         function getCalendarData() {
-            const data = localStorage.getItem(STORAGE_KEY_CALENDAR + currentUser);
+            const data = localStorage.getItem('calendar_shared');
             return data ? JSON.parse(data) : {};
         }
 
         function saveCalendarData(data) {
-            localStorage.setItem(STORAGE_KEY_CALENDAR + currentUser, JSON.stringify(data));
-            syncToFirebase('calendar', data);
+            localStorage.setItem('calendar_shared', JSON.stringify(data));
+            // SHARED path - both users sync here
+            syncToFirebase('shared/calendar', data);
             renderCalendar();
             showNotification('✅ Calendar updated');
         }
@@ -1441,23 +1361,6 @@
             localStorage.setItem('theme', currentTheme);
             document.documentElement.setAttribute('data-theme', currentTheme);
             event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        function setupReceiptUpload() {
-            const receiptPreview = document.getElementById('receiptPreview');
-            if (!receiptPreview) return;
-            const receiptInput = document.getElementById('receiptInput');
-            receiptPreview.onclick = () => receiptInput.click();
-            receiptInput.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        currentReceiptImage = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
         }
 
         function addExpense(e) {
@@ -1518,7 +1421,7 @@
 
         function clearAllExpenses() {
             if (confirm('⚠️ Delete ALL expenses?')) {
-                localStorage.removeItem(STORAGE_KEY_EXPENSES + currentUser);
+                localStorage.removeItem('expenses_' + currentUser);
                 syncToFirebase('expenses', []);
                 displayExpenses();
                 displaySettlement();
@@ -1723,7 +1626,6 @@
             document.getElementById('userIcon').textContent = icon;
             document.getElementById('userName').textContent = name;
 
-            setupReceiptUpload();
             displayExpenses();
             displaySettlement();
             renderCalendar();
@@ -1732,7 +1634,7 @@
                 listenToFirebaseChanges();
             }
 
-            // Simulate other user online
+            // Show other user online
             setInterval(() => {
                 const otherUser = currentUser === 'davide' ? 'Mattia' : 'Davide';
                 const isOnline = Math.random() > 0.3;
