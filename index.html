@@ -31,6 +31,106 @@
             min-height: 100vh;
         }
 
+        body.locked {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .lock-screen {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .lock-screen h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .lock-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .lock-screen .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .totp-input {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .totp-digit {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+            input-type: text;
+        }
+
+        .totp-digit:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .unlock-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            min-height: 44px;
+        }
+
+        .unlock-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .unlock-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: var(--danger);
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .lock-screen-info {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -54,6 +154,30 @@
         header p {
             font-size: 13px;
             opacity: 0.9;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .tabs {
@@ -614,7 +738,8 @@
         [data-theme="dark"] .settlement-summary,
         [data-theme="dark"] .calendar-container,
         [data-theme="dark"] .modal-content,
-        [data-theme="dark"] .export-section {
+        [data-theme="dark"] .export-section,
+        [data-theme="dark"] .lock-screen {
             background: #1e1e1e;
         }
 
@@ -635,6 +760,17 @@
             border-color: var(--border);
         }
 
+        [data-theme="dark"] .totp-digit {
+            background: #2a2a2a;
+            color: #64B5F6;
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .lock-screen-info {
+            background: rgba(100, 181, 246, 0.1);
+            color: #b0b0b0;
+        }
+
         @media (max-width: 600px) {
             .calendar-day {
                 min-height: 48px;
@@ -648,6 +784,12 @@
             
             .calendar-day-status {
                 font-size: 8px;
+            }
+
+            .totp-digit {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
 
@@ -665,199 +807,374 @@
                 padding: 8px 12px;
                 font-size: 12px;
             }
+
+            .totp-digit {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
-<body>
-    <header>
+<body id="appBody">
+    <!-- LOCK SCREEN -->
+    <div id="lockScreen" class="lock-screen" style="display: none;">
+        <div class="lock-screen">
+            <div class="icon">🔐</div>
+            <h1>Chillinguito</h1>
+            <p>Enter the 6-digit code from your authenticator app</p>
+            
+            <div class="totp-input">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+            </div>
+
+            <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
+            
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="lock-screen-info">
+                💡 Both Davide & Mattia use the same 6-digit code from Microsoft Authenticator
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp">
+        <header>
+            <div class="container">
+                <div class="header-top">
+                    <div>
+                        <h1>🏠 Chillinguito Lake Como</h1>
+                        <p>Expense Tracker & Settlement Calculator</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
+                        <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+                        <button class="logout-btn" onclick="logout()">🔒 Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
         <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1>🏠 Chillinguito Lake Como</h1>
-                    <p>Expense Tracker & Settlement Calculator</p>
-                </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
-                    <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
-                    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense"></button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses"></button>
+                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement"></button>
+                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar"></button>
+                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export"></button>
+            </div>
+
+            <!-- ADD EXPENSE TAB -->
+            <div id="add-expense" class="tab-content active">
+                <div class="card">
+                    <h2 style="margin-bottom: 20px;" data-i18n="addNewExpense"></h2>
+                    <form onsubmit="addExpense(event)">
+                        <div class="form-group">
+                            <label for="description" data-i18n="description"></label>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="amount" data-i18n="amount"></label>
+                                <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category" data-i18n="category"></label>
+                                <select id="category" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Cleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries">Groceries & Food</option>
+                                    <option value="Repairs">Repairs & Equipment</option>
+                                    <option value="Furnishing">Furnishing & Decoration</option>
+                                    <option value="Marketing">Marketing & Advertising</option>
+                                    <option value="Insurance">Insurance</option>
+                                    <option value="Supplies">Supplies & Materials</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="paidBy" data-i18n="paidBy"></label>
+                                <select id="paidBy" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Davide">Davide</option>
+                                    <option value="Mattia">Mattia</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="splitBetween" data-i18n="splitBetween"></label>
+                                <select id="splitBetween" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Both">Both (50/50)</option>
+                                    <option value="Davide">Davide Only</option>
+                                    <option value="Mattia">Mattia Only</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date" data-i18n="date"></label>
+                            <input type="date" id="date" required>
+                        </div>
+
+                        <!-- RECEIPT UPLOAD -->
+                        <div class="form-group receipt-section">
+                            <label data-i18n="receipt">Receipt Photo (optional)</label>
+                            <div class="receipt-preview" id="receiptPreview">
+                                <span class="receipt-icon">📷</span>
+                            </div>
+                            <input type="file" id="receiptInput" accept="image/*" style="display: none;">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes" data-i18n="notes"></label>
+                            <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn"></button>
+                    </form>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense"></button>
-            <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses"></button>
-            <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement"></button>
-            <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar"></button>
-            <button class="tab-btn" onclick="switchTab('export')" data-i18n="export"></button>
-        </div>
+            <!-- EXPENSES LIST TAB -->
+            <div id="expenses-list" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 data-i18n="allExpenses"></h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll"></button>
+                    </div>
+                    <div id="expensesList"></div>
+                </div>
+            </div>
 
-        <!-- ADD EXPENSE TAB -->
-        <div id="add-expense" class="tab-content active">
-            <div class="card">
-                <h2 style="margin-bottom: 20px;" data-i18n="addNewExpense"></h2>
-                <form onsubmit="addExpense(event)">
+            <!-- SETTLEMENT TAB -->
+            <div id="settlement" class="tab-content">
+                <div class="settlement-summary">
+                    <div class="summary-title" data-i18n="currentSettlement"></div>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-label" data-i18n="totalExpenses"></div>
+                            <div class="stat-value" id="totalExpenses">EUR 0.00</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label" data-i18n="davidePaid"></div>
+                            <div class="stat-value" id="davidePaid">EUR 0.00</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label" data-i18n="mattiaPaid"></div>
+                            <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes"></h3>
+                        <div id="settlementDetails"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CALENDAR TAB -->
+            <div id="calendar" class="tab-content">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h2 data-i18n="calendarTitle"></h2>
+                        <div class="calendar-nav">
+                            <button onclick="previousMonth()" data-i18n="previousMonth"></button>
+                            <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
+                            <button onclick="nextMonth()" data-i18n="nextMonth"></button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <div class="weekday">Sun</div>
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
+                    </div>
+
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+
+            <!-- EXPORT TAB -->
+            <div id="export" class="tab-content">
+                <div class="export-section">
+                    <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary"></h2>
+
                     <div class="form-group">
-                        <label for="description" data-i18n="description"></label>
-                        <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
+                        <label for="summaryMonth" data-i18n="selectMonth"></label>
+                        <input type="month" id="summaryMonth">
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="amount" data-i18n="amount"></label>
-                            <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="category" data-i18n="category"></label>
-                            <select id="category" required>
-                                <option value="">-- Select Category --</option>
-                                <option value="Cleaning">Cleaning & Maintenance</option>
-                                <option value="Utilities">Utilities (Water, Gas, Electric)</option>
-                                <option value="Groceries">Groceries & Food</option>
-                                <option value="Repairs">Repairs & Equipment</option>
-                                <option value="Furnishing">Furnishing & Decoration</option>
-                                <option value="Marketing">Marketing & Advertising</option>
-                                <option value="Insurance">Insurance</option>
-                                <option value="Supplies">Supplies & Materials</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
+                    <button class="btn-primary" onclick="generateMonthlySummary()" style="width: 100%; padding: 12px; margin-bottom: 15px;" data-i18n="generateSummary"></button>
+
+                    <div id="monthlySummaryResult"></div>
+
+                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 15px;" data-i18n="exportOptions"></h3>
+                        <button class="btn-primary" onclick="exportAsJSON()" style="margin-right: 10px;" data-i18n="downloadJson"></button>
+                        <button class="btn-primary" onclick="exportAsCSV()" data-i18n="downloadCsv"></button>
+                        <button class="btn-secondary" onclick="window.print()" data-i18n="print"></button>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="paidBy" data-i18n="paidBy"></label>
-                            <select id="paidBy" required>
-                                <option value="">-- Select --</option>
-                                <option value="Davide">Davide</option>
-                                <option value="Mattia">Mattia</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="splitBetween" data-i18n="splitBetween"></label>
-                            <select id="splitBetween" required>
-                                <option value="">-- Select --</option>
-                                <option value="Both">Both (50/50)</option>
-                                <option value="Davide">Davide Only</option>
-                                <option value="Mattia">Mattia Only</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="date" data-i18n="date"></label>
-                        <input type="date" id="date" required>
-                    </div>
-
-                    <!-- RECEIPT UPLOAD -->
-                    <div class="form-group receipt-section">
-                        <label data-i18n="receipt">Receipt Photo (optional)</label>
-                        <div class="receipt-preview" id="receiptPreview">
-                            <span class="receipt-icon">📷</span>
-                        </div>
-                        <input type="file" id="receiptInput" accept="image/*" style="display: none;">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes" data-i18n="notes"></label>
-                        <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn"></button>
-                </form>
-            </div>
-        </div>
-
-        <!-- EXPENSES LIST TAB -->
-        <div id="expenses-list" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <h2 data-i18n="allExpenses"></h2>
-                    <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll"></button>
-                </div>
-                <div id="expensesList"></div>
-            </div>
-        </div>
-
-        <!-- SETTLEMENT TAB -->
-        <div id="settlement" class="tab-content">
-            <div class="settlement-summary">
-                <div class="summary-title" data-i18n="currentSettlement"></div>
-                <div class="stats">
-                    <div class="stat-box">
-                        <div class="stat-label" data-i18n="totalExpenses"></div>
-                        <div class="stat-value" id="totalExpenses">EUR 0.00</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label" data-i18n="davidePaid"></div>
-                        <div class="stat-value" id="davidePaid">EUR 0.00</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label" data-i18n="mattiaPaid"></div>
-                        <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes"></h3>
-                    <div id="settlementDetails"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CALENDAR TAB -->
-        <div id="calendar" class="tab-content">
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <h2 data-i18n="calendarTitle"></h2>
-                    <div class="calendar-nav">
-                        <button onclick="previousMonth()" data-i18n="previousMonth"></button>
-                        <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
-                        <button onclick="nextMonth()" data-i18n="nextMonth"></button>
-                    </div>
-                </div>
-
-                <div class="calendar-weekdays">
-                    <div class="weekday">Sun</div>
-                    <div class="weekday">Mon</div>
-                    <div class="weekday">Tue</div>
-                    <div class="weekday">Wed</div>
-                    <div class="weekday">Thu</div>
-                    <div class="weekday">Fri</div>
-                    <div class="weekday">Sat</div>
-                </div>
-
-                <div id="calendarDays" class="calendar-days"></div>
-            </div>
-        </div>
-
-        <!-- EXPORT TAB -->
-        <div id="export" class="tab-content">
-            <div class="export-section">
-                <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary"></h2>
-
-                <div class="form-group">
-                    <label for="summaryMonth" data-i18n="selectMonth"></label>
-                    <input type="month" id="summaryMonth">
-                </div>
-
-                <button class="btn-primary" onclick="generateMonthlySummary()" style="width: 100%; padding: 12px; margin-bottom: 15px;" data-i18n="generateSummary"></button>
-
-                <div id="monthlySummaryResult"></div>
-
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-                    <h3 style="margin-bottom: 15px;" data-i18n="exportOptions"></h3>
-                    <button class="btn-primary" onclick="exportAsJSON()" style="margin-right: 10px;" data-i18n="downloadJson"></button>
-                    <button class="btn-primary" onclick="exportAsCSV()" data-i18n="downloadCsv"></button>
-                    <button class="btn-secondary" onclick="window.print()" data-i18n="print"></button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // ========== 2FA CONFIGURATION ==========
+        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP'; // Shared secret for both users
+        const UNLOCK_KEY = 'chillinguito_unlocked';
+
+        // ========== TOTP IMPLEMENTATION ==========
+        function base32Decode(str) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            const bits = [];
+            
+            for (let i = 0; i < str.length; i++) {
+                const val = alphabet.indexOf(str[i]);
+                if (val === -1) throw new Error('Invalid base32 character');
+                bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
+            }
+            
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                bytes.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+            }
+            return new Uint8Array(bytes);
+        }
+
+        async function generateTOTPCode(secret, timeWindow = 0) {
+            try {
+                const decoded = base32Decode(secret);
+                const epoch = Math.floor(Date.now() / 30000) + timeWindow;
+                const msg = new ArrayBuffer(8);
+                const view = new DataView(msg);
+                view.setBigInt64(0, BigInt(epoch), false);
+                
+                const key = await crypto.subtle.importKey('raw', decoded, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+                const signature = await crypto.subtle.sign('HMAC', key, msg);
+                const sig = new Uint8Array(signature);
+                
+                const offset = sig[sig.length - 1] & 0x0f;
+                const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
+                const code = String(p % 1000000).padStart(6, '0');
+                
+                return code;
+            } catch (error) {
+                console.error('TOTP generation error:', error);
+                return null;
+            }
+        }
+
+        async function validateTOTPCode(inputCode) {
+            for (let timeWindow of [-1, 0, 1]) {
+                const code = await generateTOTPCode(TOTP_SECRET, timeWindow);
+                if (code === inputCode) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ========== LOCK SCREEN SETUP ==========
+        function setupLockScreen() {
+            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
+            
+            if (!isUnlocked) {
+                document.getElementById('appBody').classList.add('locked');
+                document.getElementById('lockScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                setupTOTPInput();
+            } else {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+            }
+        }
+
+        function setupTOTPInput() {
+            const inputs = document.querySelectorAll('.totp-digit');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', (e) => {
+                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                        e.preventDefault();
+                    }
+                    
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+                
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        } else {
+                            validateTOTP();
+                        }
+                    }
+                });
+            });
+
+            inputs[0].focus();
+        }
+
+        async function validateTOTP() {
+            const inputs = document.querySelectorAll('.totp-digit');
+            const code = Array.from(inputs).map(input => input.value).join('');
+            const errorDiv = document.getElementById('errorMessage');
+
+            if (code.length !== 6) {
+                errorDiv.textContent = '❌ Please enter all 6 digits';
+                return;
+            }
+
+            const unlockBtn = document.querySelector('.unlock-btn');
+            unlockBtn.disabled = true;
+            unlockBtn.textContent = '⏳ Verifying...';
+
+            const isValid = await validateTOTPCode(code);
+
+            if (isValid) {
+                localStorage.setItem(UNLOCK_KEY, 'true');
+                errorDiv.textContent = '✅ Welcome!';
+                setTimeout(() => {
+                    document.getElementById('appBody').classList.remove('locked');
+                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    initializeApp();
+                }, 500);
+            } else {
+                errorDiv.textContent = '❌ Invalid code. Try again.';
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+                unlockBtn.disabled = false;
+                unlockBtn.textContent = 'Unlock';
+            }
+        }
+
+        function logout() {
+            if (confirm('🔒 Lock the app? You will need to enter your 2FA code again.')) {
+                localStorage.removeItem(UNLOCK_KEY);
+                location.reload();
+            }
+        }
+
         // ========== TRANSLATIONS ==========
         const translations = {
             en: {
@@ -1015,7 +1332,7 @@
         }
 
         // ========== RECEIPT UPLOAD ==========
-        document.addEventListener('DOMContentLoaded', () => {
+        function setupReceiptUpload() {
             const receiptPreview = document.getElementById('receiptPreview');
             const receiptInput = document.getElementById('receiptInput');
 
@@ -1034,13 +1351,7 @@
                     reader.readAsDataURL(file);
                 }
             };
-
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('summaryMonth').valueAsDate = new Date();
-            renderCalendar();
-            displayExpenses();
-            displaySettlement();
-        });
+        }
 
         function removeReceipt(e) {
             if (e) e.stopPropagation();
@@ -1383,11 +1694,22 @@
             URL.revokeObjectURL(url);
         }
 
-        // ========== INITIALIZE ==========
+        // ========== INITIALIZE APP ==========
+        function initializeApp() {
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('summaryMonth').valueAsDate = new Date();
+            setupReceiptUpload();
+            renderCalendar();
+            displayExpenses();
+            displaySettlement();
+            updatePageText();
+        }
+
+        // ========== PAGE LOAD ==========
         window.addEventListener('load', () => {
             document.documentElement.setAttribute('data-theme', currentTheme);
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-            updatePageText();
+            setupLockScreen();
         });
     </script>
 </body>
