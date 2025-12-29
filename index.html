@@ -163,6 +163,35 @@
             gap: 12px;
         }
 
+        .online-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: blink 2s infinite;
+        }
+
+        .online-dot.offline {
+            background: #999;
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.3; }
+        }
+
         .logout-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -300,6 +329,17 @@
 
         .btn-danger:hover {
             background: #d32f2f;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .btn-success:hover {
+            background: #388e3c;
         }
 
         .card {
@@ -748,25 +788,6 @@
             font-size: 14px;
         }
 
-        .cleaning-item {
-            background: var(--light);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 3px solid #FFA94D;
-        }
-
-        .cleaning-date {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .cleaning-status {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
         .button-group {
             display: flex;
             gap: 10px;
@@ -820,6 +841,65 @@
             min-height: 40px;
         }
 
+        /* SETTLEMENT PAYMENT TRACKING */
+        .settlement-payment {
+            background: var(--light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #FFA94D;
+        }
+
+        .settlement-payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .settlement-payment-amount {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .settlement-payment-from {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .payment-progress {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .payment-bar {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+
+        .payment-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .partial-payment-form {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 3px solid var(--primary);
+        }
+
         /* EXPORT REPORT STYLES */
         #exportReport {
             display: none;
@@ -834,7 +914,6 @@
             margin: 0 auto;
         }
 
-        /* Light Mode Report */
         #exportReport.light-mode {
             background: white;
             color: #333;
@@ -875,7 +954,6 @@
             color: #c62828;
         }
 
-        /* Dark Mode Report */
         #exportReport.dark-mode {
             background: #1e1e1e;
             color: #e0e0e0;
@@ -983,7 +1061,8 @@
         [data-theme="dark"] .modal-content,
         [data-theme="dark"] .export-section,
         [data-theme="dark"] .lock-screen,
-        [data-theme="dark"] .summary-card {
+        [data-theme="dark"] .summary-card,
+        [data-theme="dark"] .partial-payment-form {
             background: #1e1e1e;
         }
 
@@ -1027,145 +1106,26 @@
             color: #b0b0b0;
         }
 
-        [data-theme="dark"] .cleaning-item {
+        [data-theme="dark"] .settlement-payment {
             background: #2a2a2a;
-            border-color: #FFA94D;
         }
 
         [data-theme="dark"] .summary-card {
             border-left-color: #64B5F6;
         }
 
-        /* MOBILE OPTIMIZATION */
-        @media (max-width: 600px) {
-            .calendar-container {
-                padding: 8px;
-            }
-
-            .calendar-header {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .calendar-header h2 {
-                font-size: 14px;
-                width: 100%;
-            }
-
-            .calendar-nav {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .calendar-nav button {
-                flex: 1;
-                padding: 6px 8px;
-                font-size: 11px;
-                min-height: 36px;
-            }
-
-            .calendar-weekdays {
-                gap: 2px;
-                margin-bottom: 2px;
-            }
-
-            .weekday {
-                font-size: 9px;
-                padding: 4px 0px;
-                height: auto;
-            }
-
-            .calendar-days {
-                gap: 2px;
-            }
-
-            .calendar-day {
-                aspect-ratio: 1.1 / 1;
-                min-height: 44px;
-                padding: 1px;
-                border-radius: 3px;
-                font-size: 9px;
-            }
-
-            .calendar-day-number {
-                font-size: 10px;
-                margin-bottom: 0px;
-            }
-
-            .calendar-day-status {
-                font-size: 7px;
-                letter-spacing: 0px;
-            }
-
-            input[type="date"], input[type="month"] {
-                min-height: 44px;
-                font-size: 16px;
-                padding: 10px 8px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .button-group button {
-                width: 100%;
-            }
+        [data-theme="dark"] .expense-item {
+            background: #2a2a2a;
         }
 
-        @media (max-width: 400px) {
-            .calendar-container {
-                padding: 6px;
-            }
-
-            .calendar-header {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .calendar-header h2 {
-                font-size: 12px;
-            }
-
-            .calendar-nav button {
-                padding: 6px 6px;
-                font-size: 10px;
-            }
-
-            .calendar-weekdays {
-                gap: 1px;
-            }
-
-            .weekday {
-                font-size: 8px;
-                padding: 3px 0px;
-            }
-
-            .calendar-days {
-                gap: 1px;
-            }
-
-            .calendar-day {
-                aspect-ratio: 1 / 1;
-                min-height: 40px;
-                padding: 1px;
-                border-radius: 2px;
-                font-size: 8px;
-            }
-
-            .calendar-day-number {
-                font-size: 9px;
-            }
-
-            .calendar-day-status {
-                font-size: 6px;
-                line-height: 1;
-            }
-
-            input[type="date"], input[type="month"] {
-                min-height: 40px;
-                font-size: 14px;
-                padding: 8px 6px;
-            }
+        @media (max-width: 600px) {
+            .calendar-container { padding: 8px; }
+            .calendar-header { flex-direction: column; gap: 12px; }
+            .calendar-header h2 { font-size: 14px; width: 100%; }
+            .calendar-nav { width: 100%; justify-content: space-between; }
+            .calendar-nav button { flex: 1; padding: 6px 8px; font-size: 11px; min-height: 36px; }
+            .button-group { flex-direction: column; }
+            .button-group button { width: 100%; }
         }
     </style>
 </head>
@@ -1205,9 +1165,13 @@
                         <h1>🏠 Chillinguito Lake Como</h1>
                         <p>Expense Tracker & Settlement Calculator</p>
                     </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
-                        <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div class="online-indicator">
+                            <div class="online-dot" id="otherUserOnline"></div>
+                            <span id="otherUserStatus">Mattia is online</span>
+                        </div>
+                        <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 EN</button>
+                        <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 IT</button>
                         <button class="theme-btn" onclick="toggleTheme()">🌙</button>
                         <button class="logout-btn" onclick="logout()">🔒 Logout</button>
                     </div>
@@ -1283,7 +1247,6 @@
                             <input type="date" id="date" required>
                         </div>
 
-                        <!-- RECEIPT UPLOAD -->
                         <div class="form-group receipt-section">
                             <label data-i18n="receipt">Receipt Photo (optional)</label>
                             <div class="receipt-preview" id="receiptPreview">
@@ -1336,7 +1299,15 @@
                         <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes">💸 Who Owes Whom</h3>
                         <div id="settlementDetails"></div>
                     </div>
+
+                    <!-- MARK MONTH AS SETTLED BUTTON -->
+                    <button class="btn-primary" style="width:100%;margin-top:20px;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
+                        ✅ Mark this month as settled
+                    </button>
                 </div>
+
+                <!-- PARTIAL PAYMENT TRACKING -->
+                <div id="partialPaymentsSection"></div>
             </div>
 
             <!-- CALENDAR TAB -->
@@ -1370,7 +1341,6 @@
                 <div class="export-section">
                     <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
 
-                    <!-- EXPENSE SUMMARY OPTIONS -->
                     <div style="margin-bottom: 20px;">
                         <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
                         <div class="button-group" id="expensePeriodButtons">
@@ -1380,14 +1350,8 @@
                             <button class="btn-secondary" onclick="selectExpensePeriod(event,9)" data-i18n="last9Months">Last 9 Months</button>
                             <button class="btn-secondary" onclick="selectExpensePeriod(event,12)" data-i18n="last12Months">Last 12 Months</button>
                         </div>
-
-                        <!-- NEW: MARK MONTH SETTLED -->
-                        <button class="btn-primary" style="width:100%;margin-top:10px;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
-                            ✅ Mark this month as settled
-                        </button>
                     </div>
 
-                    <!-- CLEANING SUMMARY OPTIONS -->
                     <div style="margin-bottom: 20px;">
                         <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">Cleaning Schedule</h3>
                         <div class="button-group" id="cleaningPeriodButtons">
@@ -1399,7 +1363,6 @@
                         </div>
                     </div>
 
-                    <!-- EXPORT BUTTON -->
                     <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()" data-i18n="downloadReport">📊 Download Complete Report</button>
                 </div>
             </div>
@@ -1458,14 +1421,11 @@
         async function validateTOTPCode(inputCode) {
             for (let timeWindow of [-1, 0, 1]) {
                 const code = await generateTOTPCode(TOTP_SECRET, timeWindow);
-                if (code === inputCode) {
-                    return true;
-                }
+                if (code === inputCode) return true;
             }
             return false;
         }
 
-        // ========== LOCK SCREEN SETUP ==========
         function setupLockScreen() {
             const isUnlocked = localStorage.getItem(UNLOCK_KEY);
             if (!isUnlocked) {
@@ -1476,7 +1436,6 @@
             } else {
                 document.getElementById('lockScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
-                void document.getElementById('mainApp').offsetHeight;
                 initializeApp();
             }
         }
@@ -1524,7 +1483,6 @@
                     document.getElementById('appBody').classList.remove('locked');
                     document.getElementById('lockScreen').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
-                    void document.getElementById('mainApp').offsetHeight;
                     initializeApp();
                 }, 500);
             } else {
@@ -1617,7 +1575,6 @@
                 downloadReport: '📊 Download Complete Report',
                 cleaningSchedule: '🧹 Cleaning Schedule',
                 noCleaning: 'No cleaning scheduled',
-                cleaningDue: 'Cleaning scheduled:',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
                 updateNotification: 'Updated!',
@@ -1628,7 +1585,14 @@
                 cleaningTodayReminder: '🧹 Cleaning is TODAY!',
                 markSettled: '✅ Mark this month as settled',
                 settlementMarked: '✅ This month is marked as settled.',
-                pendingSettlement: '💸 Last month’s balance is still pending.'
+                pendingSettlement: '💸 Last month's balance is still pending.',
+                recordPayment: '💳 Record a Payment',
+                paymentAmount: 'Payment Amount (EUR)',
+                recordPaymentBtn: 'Record Payment',
+                paymentRecorded: '✅ Payment recorded!',
+                paymentProgress: 'Paid',
+                paymentRemaining: 'Remaining',
+                partialPayments: '📊 Payment History'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1702,7 +1666,6 @@
                 downloadReport: '📊 Scarica Rapporto Completo',
                 cleaningSchedule: '🧹 Programma Pulizie',
                 noCleaning: 'Nessuna pulizia programmata',
-                cleaningDue: 'Pulizia programmata:',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
                 updateNotification: 'Aggiornato!',
@@ -1713,7 +1676,14 @@
                 cleaningTodayReminder: '🧹 La pulizia è OGGI!',
                 markSettled: '✅ Segna questo mese come saldato',
                 settlementMarked: '✅ Questo mese è stato segnato come saldato.',
-                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.'
+                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.',
+                recordPayment: '💳 Registra un Pagamento',
+                paymentAmount: 'Importo Pagamento (EUR)',
+                recordPaymentBtn: 'Registra Pagamento',
+                paymentRecorded: '✅ Pagamento registrato!',
+                paymentProgress: 'Pagato',
+                paymentRemaining: 'Rimanente',
+                partialPayments: '📊 Storico Pagamenti'
             }
         };
 
@@ -1725,9 +1695,38 @@
         let selectedCleaningPeriod = 'current';
         let cleaningNotificationShown = false;
         let settlementNotificationShown = false;
+        let currentUser = 'Davide'; // Who is using this instance
+        let otherUser = 'Mattia';
+        let userOnlineStatus = { 'Davide': false, 'Mattia': false };
 
         function t(key) {
             return translations[currentLanguage][key] || key;
+        }
+
+        // ========== ONLINE STATUS SIMULATION ==========
+        function initializeOnlineStatus() {
+            // Simulate online status - in real implementation, use WebSocket/Firebase
+            userOnlineStatus[otherUser] = true;
+            updateOnlineIndicator();
+            
+            // Simulate occasional online/offline changes
+            setInterval(() => {
+                userOnlineStatus[otherUser] = Math.random() > 0.3;
+                updateOnlineIndicator();
+            }, 8000);
+        }
+
+        function updateOnlineIndicator() {
+            const dot = document.getElementById('otherUserOnline');
+            const status = document.getElementById('otherUserStatus');
+            
+            if (userOnlineStatus[otherUser]) {
+                dot.classList.remove('offline');
+                status.textContent = `${otherUser} is online`;
+            } else {
+                dot.classList.add('offline');
+                status.textContent = `${otherUser} is offline`;
+            }
         }
 
         // ========== LANGUAGE & THEME ==========
@@ -1759,24 +1758,12 @@
 
         function updatePlaceholders() {
             const notesTextarea = document.getElementById('notes');
-            if (notesTextarea) {
-                notesTextarea.placeholder = t('notesPlaceholder');
-            }
+            if (notesTextarea) notesTextarea.placeholder = t('notesPlaceholder');
         }
 
         function updateDropdownOptions() {
             const categoryOptions = document.querySelectorAll('#category option');
             categoryOptions.forEach(option => {
-                const i18nKey = option.getAttribute('data-i18n');
-                if (i18nKey) option.textContent = t(i18nKey);
-            });
-            const paidByOptions = document.querySelectorAll('#paidBy option');
-            paidByOptions.forEach(option => {
-                const i18nKey = option.getAttribute('data-i18n');
-                if (i18nKey) option.textContent = t(i18nKey);
-            });
-            const splitOptions = document.querySelectorAll('#splitBetween option');
-            splitOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
                 if (i18nKey) option.textContent = t(i18nKey);
             });
@@ -1809,6 +1796,7 @@
 
         // ========== SETTLEMENT REMINDER ==========
         const SETTLEMENT_KEY = 'chillinguito_settlements';
+        const PAYMENTS_KEY = 'chillinguito_payments';
 
         function getSettlementData() {
             const data = localStorage.getItem(SETTLEMENT_KEY);
@@ -1817,6 +1805,15 @@
 
         function saveSettlementData(data) {
             localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
+        }
+
+        function getPaymentsData() {
+            const data = localStorage.getItem(PAYMENTS_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function savePaymentsData(data) {
+            localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
         }
 
         function getMonthKey(date) {
@@ -1857,6 +1854,7 @@
             data[key] = { settled: true, timestamp: new Date().toISOString() };
             saveSettlementData(data);
             showNotification(t('settlementMarked'), 'alert');
+            displaySettlement();
         }
 
         function checkPendingSettlementReminder() {
@@ -1868,7 +1866,6 @@
             if (settlementData[key] && settlementData[key].settled) return;
             const { balances, hasExpenses } = computeMonthBalance(prev);
             if (!hasExpenses) return;
-            const diff = Math.abs(balances.Davide - (-balances.Mattia));
             const outstanding = Math.max(Math.abs(balances.Davide), Math.abs(balances.Mattia));
             if (outstanding < 0.01) return;
             showNotification(t('pendingSettlement'), 'warning');
@@ -1899,9 +1896,6 @@
             displayExpenses();
             displaySettlement();
             showNotification(t('updateNotification'));
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Chillinguito', { body: t('expenseUpdated') });
-            }
         }
 
         function getCalendarData() {
@@ -1913,9 +1907,6 @@
             localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
             renderCalendar();
             showNotification(t('updateNotification'));
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Chillinguito', { body: t('calendarUpdated') });
-            }
         }
 
         function requestNotificationPermission() {
@@ -2067,17 +2058,112 @@
             const detailsDiv = document.getElementById('settlementDetails');
             if (total === 0) {
                 detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                displayPartialPayments(null);
                 return;
             }
             let html = '';
+            let owedByUser = null;
+            let owedAmount = 0;
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
                 html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
                 html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                owedByUser = 'Mattia';
+                owedAmount = balances.Davide;
             } else if (balances.Mattia > 0.01) {
                 html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                owedByUser = 'Davide';
+                owedAmount = Math.abs(balances.Mattia);
             }
             detailsDiv.innerHTML = html;
+            displayPartialPayments(owedByUser, owedAmount);
+        }
+
+        function displayPartialPayments(owedByUser, totalOwed) {
+            const section = document.getElementById('partialPaymentsSection');
+            const payments = getPaymentsData();
+            
+            if (!owedByUser) {
+                section.innerHTML = '';
+                return;
+            }
+
+            let totalPaid = 0;
+            const relevantPayments = payments.filter(p => p.from === owedByUser);
+            relevantPayments.forEach(p => totalPaid += p.amount);
+            
+            const remaining = Math.max(0, totalOwed - totalPaid);
+            const percentage = totalOwed > 0 ? (totalPaid / totalOwed) * 100 : 0;
+
+            let html = `
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; color: var(--primary);" data-i18n="partialPayments">${t('partialPayments')}</h3>
+                    <div class="settlement-payment">
+                        <div class="settlement-payment-header">
+                            <span>${owedByUser} → Davide</span>
+                            <span class="settlement-payment-amount">EUR ${totalPaid.toFixed(2)} / ${totalOwed.toFixed(2)}</span>
+                        </div>
+                        <div class="settlement-payment-from">
+                            <span data-i18n="paymentProgress">${t('paymentProgress')}</span>: EUR ${totalPaid.toFixed(2)} | 
+                            <span data-i18n="paymentRemaining">${t('paymentRemaining')}</span>: EUR ${remaining.toFixed(2)}
+                        </div>
+                        <div class="payment-progress">
+                            <div class="payment-bar" style="width: ${percentage}%;"></div>
+                        </div>
+            `;
+
+            relevantPayments.forEach(payment => {
+                html += `
+                    <div class="payment-text" style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                        <span>✓ EUR ${payment.amount.toFixed(2)} on ${payment.date}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Add partial payment form
+            html += `
+                <div class="partial-payment-form">
+                    <h4 style="margin-bottom: 12px; color: var(--primary);" data-i18n="recordPayment">${t('recordPayment')}</h4>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="partialPaymentAmount" placeholder="${t('paymentAmount')}" step="0.01" min="0" max="${remaining}" style="flex: 1;">
+                        <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})" data-i18n="recordPaymentBtn">${t('recordPaymentBtn')}</button>
+                    </div>
+                </div>
+            `;
+
+            section.innerHTML = html;
+        }
+
+        function recordPartialPayment(from, totalOwed) {
+            const amountInput = document.getElementById('partialPaymentAmount');
+            const amount = parseFloat(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            const payments = getPaymentsData();
+            let totalPaid = 0;
+            payments.filter(p => p.from === from).forEach(p => totalPaid += p.amount);
+
+            if (totalPaid + amount > totalOwed + 0.01) {
+                alert(`Cannot exceed total owed of EUR ${totalOwed.toFixed(2)}`);
+                return;
+            }
+
+            payments.push({
+                from: from,
+                amount: amount,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            savePaymentsData(payments);
+            amountInput.value = '';
+            displaySettlement();
+            showNotification(t('paymentRecorded'), 'alert');
         }
 
         // ========== CALENDAR ==========
@@ -2259,6 +2345,7 @@
         async function generateAndDownloadReport() {
             const expenses = getExpensesForPeriod(selectedExpensePeriod);
             const cleaningDays = getCleaningForPeriod(selectedCleaningPeriod);
+            const payments = getPaymentsData();
             const now = new Date();
             const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
@@ -2272,19 +2359,20 @@
                     balances[exp.splitBetween] -= exp.amount;
                 }
             });
+
             let html = `
                 <div class="report-header">
                     <h1>Chillinguito Lake Como</h1>
-                    <p>Financial Report - ${now.toLocaleDateString()}</p>
+                    <p>${t('monthlySummary')} - ${now.toLocaleDateString()}</p>
                 </div>
                 <div class="report-section">
-                    <h2>📊 Expense Summary</h2>
+                    <h2>📊 ${t('expenseSummary')}</h2>
                     <div class="report-item">
-                        <strong>Total Expenses:</strong>
+                        <strong>${t('totalExpenses')}:</strong>
                         <strong>EUR ${total.toFixed(2)}</strong>
                     </div>
                     <div class="report-item">
-                        <strong>Number of Expenses:</strong>
+                        <strong>${t('noExpenses')}:</strong>
                         <strong>${expenses.length}</strong>
                     </div>
             `;
@@ -2293,11 +2381,11 @@
                 if (!byCategory[exp.category]) byCategory[exp.category] = 0;
                 byCategory[exp.category] += exp.amount;
             });
-            html += '<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">Breakdown by Category:</h3>';
             Object.entries(byCategory).sort((a,b) => b[1]-a[1]).forEach(([category, amount]) => {
                 html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
             });
             html += `</div>`;
+
             let davideSettlement = 0, mattiaSettlement = 0;
             expenses.forEach(exp => {
                 if (exp.paidBy === 'Davide') davideSettlement += exp.amount;
@@ -2305,25 +2393,35 @@
             });
             html += `
                 <div class="report-section">
-                    <h2>💳 Settlement Information</h2>
+                    <h2>💳 ${t('settlement')}</h2>
                     <div class="report-item">
-                        <strong>Davide Paid:</strong>
+                        <strong>${t('davidePaid')}:</strong>
                         <strong>EUR ${davideSettlement.toFixed(2)}</strong>
                     </div>
                     <div class="report-item">
-                        <strong>Mattia Paid:</strong>
+                        <strong>${t('mattiaPaid')}:</strong>
                         <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
                     </div>
             `;
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html += `<div class="report-settlement" style="margin-top: 16px;">✅ All Settled - No payments needed</div>`;
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Mattia owes Davide: EUR ${balances.Davide.toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('mattiaOwes')} EUR ${balances.Davide.toFixed(2)}</div>`;
             } else if (balances.Mattia > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Davide owes Mattia: EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('davideOwes')} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
             }
             html += `</div>`;
-            html += `<div class="report-section"><h2>🧹 Cleaning Schedule</h2>`;
+
+            // Add payment history
+            if (payments.length > 0) {
+                html += `<div class="report-section"><h2>📊 ${t('partialPayments')}</h2>`;
+                payments.forEach(p => {
+                    html += `<div class="report-item"><strong>${p.from} → Davide</strong> EUR ${p.amount.toFixed(2)} (${p.date})</div>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `<div class="report-section"><h2>🧹 ${t('cleaningSchedule')}</h2>`;
             if (cleaningDays.length === 0) {
                 html += `<div class="report-item"><em>${t('noCleaning')}</em></div>`;
             } else {
@@ -2333,6 +2431,7 @@
                 });
             }
             html += `</div>`;
+
             const reportDiv = document.getElementById('exportReport');
             reportDiv.innerHTML = html;
             reportDiv.classList.remove('light-mode', 'dark-mode');
@@ -2372,6 +2471,7 @@
             updatePlaceholders();
             setTimeout(() => renderCalendar(), 150);
             requestNotificationPermission();
+            initializeOnlineStatus();
             setTimeout(() => {
                 checkCleaningReminder();
                 checkPendingSettlementReminder();
@@ -2385,7 +2485,7 @@
             setupLockScreen();
         });
 
-        const APP_VERSION = '2.5.0-settlement-reminders';
+        const APP_VERSION = '2.6.0-full-features';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
