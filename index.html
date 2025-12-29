@@ -62,34 +62,14 @@
         }
 
         .lock-screen .icon {
-            font-size: 60px;
+            font-size: 80px;
             margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
-        .totp-input {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .totp-digit {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-            input-type: text;
-        }
-
-        .totp-digit:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .unlock-btn {
@@ -120,6 +100,12 @@
             margin-top: 10px;
             font-size: 14px;
             min-height: 20px;
+        }
+
+        .success-message {
+            color: var(--success);
+            margin-top: 10px;
+            font-size: 14px;
         }
 
         .lock-screen-info {
@@ -873,12 +859,6 @@
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .totp-digit {
-            background: #2a2a2a;
-            color: #64B5F6;
-            border-color: var(--border);
-        }
-
         [data-theme="dark"] .lock-screen-info {
             background: rgba(100, 181, 246, 0.1);
             color: #b0b0b0;
@@ -1030,25 +1010,17 @@
     <!-- LOCK SCREEN -->
     <div id="lockScreen" class="lock-screen" style="display: none;">
         <div class="lock-screen">
-            <div class="icon">🔐</div>
+            <div class="icon" id="lockIcon">👤</div>
             <h1>Chillinguito</h1>
-            <p>Enter the 6-digit code from your authenticator app</p>
+            <p id="lockMessage">Tap to unlock with Face ID or fingerprint</p>
             
-            <div class="totp-input">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            </div>
-
-            <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
+            <button class="unlock-btn" onclick="authenticateWithBiometric()" id="biometricBtn" data-i18n="unlockBiometric">🔓 Unlock</button>
             
             <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
 
             <div class="lock-screen-info">
-                💡 Both Davide & Mattia use the same 6-digit code from Microsoft Authenticator
+                💡 Use Face ID or Fingerprint to unlock (requires HTTPS on desktop, native on mobile)
             </div>
         </div>
     </div>
@@ -1263,143 +1235,68 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // ========== 2FA CONFIGURATION ==========
-        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
+        // ========== BIOMETRIC AUTHENTICATION ==========
         const UNLOCK_KEY = 'chillinguito_unlocked';
+        const BIOMETRIC_SUPPORTED = window.PublicKeyCredential !== undefined;
 
-        // ========== TOTP IMPLEMENTATION ==========
-        function base32Decode(str) {
-            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-            const bits = [];
-            
-            for (let i = 0; i < str.length; i++) {
-                const val = alphabet.indexOf(str[i]);
-                if (val === -1) throw new Error('Invalid base32 character');
-                bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
-            }
-            
-            const bytes = [];
-            for (let i = 0; i + 8 <= bits.length; i += 8) {
-                bytes.push(parseInt(bits.slice(i, i + 8).join(''), 2));
-            }
-            return new Uint8Array(bytes);
-        }
-
-        async function generateTOTPCode(secret, timeWindow = 0) {
-            try {
-                const decoded = base32Decode(secret);
-                const epoch = Math.floor(Date.now() / 30000) + timeWindow;
-                const msg = new ArrayBuffer(8);
-                const view = new DataView(msg);
-                view.setBigInt64(0, BigInt(epoch), false);
-                
-                const key = await crypto.subtle.importKey('raw', decoded, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-                const signature = await crypto.subtle.sign('HMAC', key, msg);
-                const sig = new Uint8Array(signature);
-                
-                const offset = sig[sig.length - 1] & 0x0f;
-                const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
-                const code = String(p % 1000000).padStart(6, '0');
-                
-                return code;
-            } catch (error) {
-                console.error('TOTP generation error:', error);
-                return null;
-            }
-        }
-
-        async function validateTOTPCode(inputCode) {
-            for (let timeWindow of [-1, 0, 1]) {
-                const code = await generateTOTPCode(TOTP_SECRET, timeWindow);
-                if (code === inputCode) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // ========== LOCK SCREEN SETUP ==========
-        function setupLockScreen() {
-            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
-            
-            if (!isUnlocked) {
-                document.getElementById('appBody').classList.add('locked');
-                document.getElementById('lockScreen').style.display = 'flex';
-                document.getElementById('mainApp').style.display = 'none';
-                setupTOTPInput();
-            } else {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                void document.getElementById('mainApp').offsetHeight;
-                initializeApp();
-            }
-        }
-
-        function setupTOTPInput() {
-            const inputs = document.querySelectorAll('.totp-digit');
-            
-            inputs.forEach((input, index) => {
-                input.addEventListener('keydown', (e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-                        e.preventDefault();
-                    }
-                    
-                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
-                        inputs[index - 1].focus();
-                    }
-                });
-                
-                input.addEventListener('input', (e) => {
-                    if (e.target.value.length === 1) {
-                        if (index < inputs.length - 1) {
-                            inputs[index + 1].focus();
-                        } else {
-                            validateTOTP();
-                        }
-                    }
-                });
-            });
-
-            inputs[0].focus();
-        }
-
-        async function validateTOTP() {
-            const inputs = document.querySelectorAll('.totp-digit');
-            const code = Array.from(inputs).map(input => input.value).join('');
+        async function authenticateWithBiometric() {
+            const btn = document.getElementById('biometricBtn');
             const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Authenticating...';
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
 
-            if (code.length !== 6) {
-                errorDiv.textContent = '❌ Please enter all 6 digits';
-                return;
-            }
+            try {
+                // Check if WebAuthn is supported
+                if (!BIOMETRIC_SUPPORTED) {
+                    throw new Error('Face ID/Fingerprint not supported on this device');
+                }
 
-            const unlockBtn = document.querySelector('.unlock-btn');
-            unlockBtn.disabled = true;
-            unlockBtn.textContent = '⏳ Verifying...';
+                // Get available authenticators
+                const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+                
+                if (!available) {
+                    throw new Error('No biometric authenticator found. Please check Face ID/Fingerprint settings.');
+                }
 
-            const isValid = await validateTOTPCode(code);
+                // Get credential (will prompt Face ID or fingerprint)
+                const credential = await navigator.credentials.get({
+                    publicKey: {
+                        challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
+                        timeout: 60000,
+                        userVerification: 'preferred',
+                        rpId: window.location.hostname,
+                        allowCredentials: []
+                    }
+                });
 
-            if (isValid) {
-                localStorage.setItem(UNLOCK_KEY, 'true');
-                errorDiv.textContent = '✅ Welcome!';
-                setTimeout(() => {
-                    document.getElementById('appBody').classList.remove('locked');
-                    document.getElementById('lockScreen').style.display = 'none';
-                    document.getElementById('mainApp').style.display = 'block';
-                    void document.getElementById('mainApp').offsetHeight;
-                    initializeApp();
-                }, 500);
-            } else {
-                errorDiv.textContent = '❌ Invalid code. Try again.';
-                inputs.forEach(input => input.value = '');
-                inputs[0].focus();
-                unlockBtn.disabled = false;
-                unlockBtn.textContent = 'Unlock';
+                if (credential) {
+                    // Successfully authenticated
+                    localStorage.setItem(UNLOCK_KEY, 'true');
+                    successDiv.textContent = '✅ Authenticated! Welcome back.';
+                    
+                    setTimeout(() => {
+                        document.getElementById('appBody').classList.remove('locked');
+                        document.getElementById('lockScreen').style.display = 'none';
+                        document.getElementById('mainApp').style.display = 'block';
+                        void document.getElementById('mainApp').offsetHeight;
+                        initializeApp();
+                    }, 500);
+                } else {
+                    throw new Error('Authentication cancelled');
+                }
+            } catch (error) {
+                errorDiv.textContent = '❌ ' + error.message;
+                btn.disabled = false;
+                btn.textContent = '🔓 Try Again';
             }
         }
 
         function logout() {
-            if (confirm('🔒 Lock the app? You will need to enter your 2FA code again.')) {
+            if (confirm('🔒 Lock the app? You will need to authenticate again.')) {
                 localStorage.removeItem(UNLOCK_KEY);
                 location.reload();
             }
@@ -1481,7 +1378,8 @@
                 generateSummary: 'Generate Summary',
                 updateNotification: 'Updated!',
                 expenseUpdated: 'An expense was updated',
-                calendarUpdated: 'The calendar was updated'
+                calendarUpdated: 'The calendar was updated',
+                unlockBiometric: '🔓 Unlock'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1557,7 +1455,8 @@
                 generateSummary: 'Genera Riepilogo',
                 updateNotification: 'Aggiornato!',
                 expenseUpdated: 'Una spesa è stata aggiornata',
-                calendarUpdated: 'Il calendario è stato aggiornato'
+                calendarUpdated: 'Il calendario è stato aggiornato',
+                unlockBiometric: '🔓 Sblocca'
             }
         };
 
@@ -2123,6 +2022,22 @@
             requestNotificationPermission();
         }
 
+        // ========== LOCK SCREEN SETUP ==========
+        function setupLockScreen() {
+            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
+            
+            if (!isUnlocked) {
+                document.getElementById('appBody').classList.add('locked');
+                document.getElementById('lockScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            } else {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                void document.getElementById('mainApp').offsetHeight;
+                initializeApp();
+            }
+        }
+
         // ========== PAGE LOAD ==========
         window.addEventListener('load', () => {
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -2131,7 +2046,7 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.1.0-complete';
+        const APP_VERSION = '2.2.0-biometric';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
