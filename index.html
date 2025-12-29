@@ -1128,6 +1128,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
+        // ========== STORAGE KEYS - DECLARE FIRST ==========
+        const STORAGE_KEY = 'chillinguito_expenses';
+        const CALENDAR_KEY = 'chillinguito_calendar';
+        const PAYMENTS_KEY = 'chillinguito_payments';
+        const REMINDERS_KEY = 'chillinguito_reminders_shown';
+        const UNLOCK_KEY = 'chillinguito_unlocked';
+        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
+
         // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
             apiKey: "AIzaSyCwF7bvS12h3AM14gmAEKV16BjH4Bq6TWU",
@@ -1147,9 +1155,78 @@
         let firebaseConnected = false;
         let currentCategoryFilter = 'All';
 
-        // ========== TOTP CONFIGURATION ==========
-        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
-        const UNLOCK_KEY = 'chillinguito_unlocked';
+        // ========== TRANSLATIONS ==========
+        const translations = {
+            en: {
+                addExpense: 'Add Expense',
+                allExpenses: 'All Expenses',
+                settlement: 'Settlement',
+                calendar: 'Calendar',
+                export: 'Export & Summary',
+                addNewExpense: 'Add New Expense',
+                description: 'Description',
+                amount: 'Amount (EUR)',
+                category: 'Category',
+                paidBy: 'Paid By',
+                splitBetween: 'Split Between',
+                date: 'Date',
+                notes: 'Notes (optional)',
+                receipt: 'Receipt Photo (optional)',
+                addExpenseBtn: 'Add Expense',
+                clearAll: 'Clear All',
+                currentSettlement: 'Current Settlement Status',
+                totalExpenses: 'Total Expenses',
+                davidePaid: 'Davide Paid',
+                mattiaPaid: 'Mattia Paid',
+                settlement: 'Settlement',
+                calendarTitle: 'Airbnb Calendar',
+                previousMonth: 'Previous',
+                nextMonth: 'Next',
+                cleaningReminder: '🧹 Cleaning scheduled for today!',
+                tomorrowCleaning: '🧹 Cleaning scheduled for tomorrow!',
+                pendingPayment: '💳 You have pending payment',
+                settledMessage: '✅ Nobody owes money today! Everything is settled.'
+            },
+            it: {
+                addExpense: 'Aggiungi Spesa',
+                allExpenses: 'Tutte le Spese',
+                settlement: 'Regolamento',
+                calendar: 'Calendario',
+                export: 'Esporta e Riepilogo',
+                addNewExpense: 'Aggiungi Nuova Spesa',
+                description: 'Descrizione',
+                amount: 'Importo (EUR)',
+                category: 'Categoria',
+                paidBy: 'Pagato da',
+                splitBetween: 'Dividi tra',
+                date: 'Data',
+                notes: 'Note (facoltativo)',
+                receipt: 'Foto ricevuta (facoltativo)',
+                addExpenseBtn: 'Aggiungi Spesa',
+                clearAll: 'Cancella Tutto',
+                currentSettlement: 'Stato Regolamento Attuale',
+                totalExpenses: 'Spese Totali',
+                davidePaid: 'Davide Ha Pagato',
+                mattiaPaid: 'Mattia Ha Pagato',
+                settlement: 'Regolamento',
+                calendarTitle: 'Calendario Airbnb',
+                previousMonth: 'Precedente',
+                nextMonth: 'Successivo',
+                cleaningReminder: '🧹 Pulizie programmate per oggi!',
+                tomorrowCleaning: '🧹 Pulizie programmate per domani!',
+                pendingPayment: '💳 Hai un pagamento in sospeso',
+                settledMessage: '✅ Nessuno deve soldi oggi! Tutto è saldato.'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentReceiptImage = null;
+        let currentCalendarDate = new Date();
+
+        function t(key) {
+            return translations[currentLanguage][key] || key;
+        }
 
         // ========== TOTP IMPLEMENTATION ==========
         function base32Decode(str) {
@@ -1273,79 +1350,6 @@
             }
         }
 
-        // ========== TRANSLATIONS ==========
-        const translations = {
-            en: {
-                addExpense: 'Add Expense',
-                allExpenses: 'All Expenses',
-                settlement: 'Settlement',
-                calendar: 'Calendar',
-                export: 'Export & Summary',
-                addNewExpense: 'Add New Expense',
-                description: 'Description',
-                amount: 'Amount (EUR)',
-                category: 'Category',
-                paidBy: 'Paid By',
-                splitBetween: 'Split Between',
-                date: 'Date',
-                notes: 'Notes (optional)',
-                receipt: 'Receipt Photo (optional)',
-                addExpenseBtn: 'Add Expense',
-                clearAll: 'Clear All',
-                currentSettlement: 'Current Settlement Status',
-                totalExpenses: 'Total Expenses',
-                davidePaid: 'Davide Paid',
-                mattiaPaid: 'Mattia Paid',
-                settlement: 'Settlement',
-                calendarTitle: 'Airbnb Calendar',
-                previousMonth: 'Previous',
-                nextMonth: 'Next',
-                cleaningReminder: '🧹 Cleaning scheduled for today!',
-                tomorrowCleaning: '🧹 Cleaning scheduled for tomorrow!',
-                pendingPayment: '💳 You have pending payment',
-                settledMessage: '✅ Nobody owes money today! Everything is settled.'
-            },
-            it: {
-                addExpense: 'Aggiungi Spesa',
-                allExpenses: 'Tutte le Spese',
-                settlement: 'Regolamento',
-                calendar: 'Calendario',
-                export: 'Esporta e Riepilogo',
-                addNewExpense: 'Aggiungi Nuova Spesa',
-                description: 'Descrizione',
-                amount: 'Importo (EUR)',
-                category: 'Categoria',
-                paidBy: 'Pagato da',
-                splitBetween: 'Dividi tra',
-                date: 'Data',
-                notes: 'Note (facoltativo)',
-                receipt: 'Foto ricevuta (facoltativo)',
-                addExpenseBtn: 'Aggiungi Spesa',
-                clearAll: 'Cancella Tutto',
-                currentSettlement: 'Stato Regolamento Attuale',
-                totalExpenses: 'Spese Totali',
-                davidePaid: 'Davide Ha Pagato',
-                mattiaPaid: 'Mattia Ha Pagato',
-                settlement: 'Regolamento',
-                calendarTitle: 'Calendario Airbnb',
-                previousMonth: 'Precedente',
-                nextMonth: 'Successivo',
-                cleaningReminder: '🧹 Pulizie programmate per oggi!',
-                tomorrowCleaning: '🧹 Pulizie programmate per domani!',
-                pendingPayment: '💳 Hai un pagamento in sospeso',
-                settledMessage: '✅ Nessuno deve soldi oggi! Tutto è saldato.'
-            }
-        };
-
-        let currentLanguage = localStorage.getItem('language') || 'en';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let currentReceiptImage = null;
-        let currentCalendarDate = new Date();
-
-        function t(key) {
-            return translations[currentLanguage][key] || key;
-        }
-
         // ========== LANGUAGE & THEME ==========
         function setLanguage(lang) {
             currentLanguage = lang;
@@ -1432,11 +1436,6 @@
         }
 
         // ========== STORAGE & SYNC ==========
-        const STORAGE_KEY = 'chillinguito_expenses';
-        const CALENDAR_KEY = 'chillinguito_calendar';
-        const PAYMENTS_KEY = 'chillinguito_payments';
-        const REMINDERS_KEY = 'chillinguito_reminders_shown';
-
         function getExpenses() {
             const data = localStorage.getItem(STORAGE_KEY);
             return data ? JSON.parse(data) : [];
@@ -2045,7 +2044,7 @@
             setupLockScreen();
         });
 
-        console.log('🚀 Chillinguito v8 - Category Filters & Real-time Settlement Updates - User: Davide');
+        console.log('🚀 Chillinguito v9 - FIXED! All constants declared first!');
     </script>
 </body>
 </html>
