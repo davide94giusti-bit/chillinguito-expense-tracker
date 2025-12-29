@@ -1647,8 +1647,8 @@
                 mattiaPaid: 'Mattia Paid',
                 whoOwes: '💸 Who Owes Whom',
                 allSettled: '✅ All settled! No payments needed.',
-                mattiaOwes: 'Mattia owes Davide:',
-                davideOwes: 'Davide owes Mattia:',
+                mattiaOwes: 'Mattia still owes Davide:',
+                davideOwes: 'Davide still owes Mattia:',
                 calendarTitle: 'Airbnb Calendar',
                 previousMonth: 'Previous',
                 nextMonth: 'Next',
@@ -1734,8 +1734,8 @@
                 mattiaPaid: 'Mattia Ha Pagato',
                 whoOwes: '💸 Chi Deve a Chi',
                 allSettled: '✅ Tutto regolato! Nessun pagamento necessario.',
-                mattiaOwes: 'Mattia deve a Davide:',
-                davideOwes: 'Davide deve a Mattia:',
+                mattiaOwes: 'Mattia deve ancora a Davide:',
+                davideOwes: 'Davide deve ancora a Mattia:',
                 calendarTitle: 'Calendario Airbnb',
                 previousMonth: 'Precedente',
                 nextMonth: 'Successivo',
@@ -2467,10 +2467,6 @@
             const reportTitle = currentLanguage === 'en' ? 'Financial Report' : 'Rapporto Finanziario';
             const expenseSummaryTitle = currentLanguage === 'en' ? 'Expense Summary' : 'Riepilogo Spese';
             const settlementTitle = currentLanguage === 'en' ? 'Settlement Information' : 'Informazioni di Regolamento';
-            const mattiaOwesLabel = currentLanguage === 'en' ? 'Mattia owes Davide:' : 'Mattia deve a Davide:';
-            const davideOwesLabel = currentLanguage === 'en' ? 'Davide owes Mattia:' : 'Davide deve a Mattia:';
-            const allSettledLabel = currentLanguage === 'en' ? 'All Settled - No payments needed' : 'Tutto Regolato - Nessun pagamento necessario';
-            const paymentHistoryLabel = currentLanguage === 'en' ? 'Payment History' : 'Storico Pagamenti';
 
             let html = `
                 <div class="report-header">
@@ -2515,19 +2511,21 @@
                         <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
                     </div>
             `;
+            
+            // Settlement status with payments included
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${allSettledLabel}</div>`;
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${currentLanguage === 'en' ? 'All Settled - No payments needed' : 'Tutto Regolato - Nessun pagamento necessario'}</div>`;
             } else if (balances.Davide > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${mattiaOwesLabel} EUR ${balances.Davide.toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('mattiaOwes')} EUR ${balances.Davide.toFixed(2)}</div>`;
             } else if (balances.Mattia > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${davideOwesLabel} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('davideOwes')} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
             }
             html += `</div>`;
 
             // Payment History
             const payments = getPaymentsData();
             if (payments.length > 0) {
-                html += `<div class="report-section"><h2>${paymentHistoryLabel}</h2>`;
+                html += `<div class="report-section"><h2>${currentLanguage === 'en' ? 'Payment History' : 'Storico Pagamenti'}</h2>`;
                 payments.forEach(p => {
                     html += `<div class="report-item"><strong>${p.from} → Davide</strong> EUR ${p.amount.toFixed(2)} (${p.date})</div>`;
                 });
@@ -2597,7 +2595,7 @@
             setupLockScreen();
         });
 
-        const APP_VERSION = '3.0.0-full-features';
+        const APP_VERSION = '4.0.0-with-partial-payments';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
