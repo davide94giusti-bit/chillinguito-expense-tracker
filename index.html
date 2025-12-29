@@ -28,51 +28,59 @@
             background: var(--light);
             color: var(--text);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 12px;
         }
 
         header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 20px 0;
-            margin-bottom: 20px;
+            padding: 16px 0;
+            margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         header h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         header p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
         }
 
         .tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
             border-bottom: 2px solid var(--border);
             flex-wrap: wrap;
+            overflow-x: auto;
+            padding-bottom: 8px;
         }
 
         .tab-btn {
-            padding: 12px 20px;
+            padding: 10px 16px;
             border: none;
             background: none;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             color: var(--text-secondary);
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
         .tab-btn.active {
@@ -101,10 +109,10 @@
 
         input, select, textarea {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             font-family: inherit;
         }
 
@@ -116,24 +124,25 @@
 
         .form-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
 
-        @media (max-width: 600px) {
+        @media (min-width: 600px) {
             .form-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             transition: all 0.3s;
+            min-height: 44px;
         }
 
         .btn-primary {
@@ -158,8 +167,8 @@
         .btn-danger {
             background: var(--danger);
             color: white;
-            padding: 6px 12px;
-            font-size: 12px;
+            padding: 8px 14px;
+            font-size: 14px;
         }
 
         .btn-danger:hover {
@@ -168,29 +177,31 @@
 
         .card {
             background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .expense-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
             background: var(--light);
-            border-radius: 6px;
-            margin-bottom: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
         }
 
         .expense-info {
@@ -200,28 +211,90 @@
         .expense-description {
             font-weight: 500;
             font-size: 15px;
+            margin-bottom: 4px;
         }
 
         .expense-details {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
-            margin-top: 4px;
         }
 
         .expense-amount {
             font-weight: 600;
             color: var(--primary);
-            font-size: 16px;
-            margin: 0 15px;
-            min-width: 80px;
-            text-align: right;
+            font-size: 18px;
+        }
+
+        .expense-receipt {
+            margin-top: 12px;
+            border-radius: 8px;
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .receipt-section {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .receipt-preview {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .receipt-preview:hover {
+            border-color: var(--primary);
+        }
+
+        .receipt-preview.has-image {
+            border-color: var(--success);
+            background-size: cover;
+        }
+
+        .receipt-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+        }
+
+        .receipt-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 0;
+            min-height: 36px;
         }
 
         .settlement-box {
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
             font-weight: 500;
+            text-align: center;
         }
 
         .settlement-box.owed {
@@ -230,37 +303,33 @@
             border-left: 4px solid #f44336;
         }
 
-        .settlement-box.receives {
-            background: rgba(76, 175, 80, 0.1);
-            color: #2e7d32;
-            border-left: 4px solid #4CAF50;
-        }
-
         .settlement-summary {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
 
         .summary-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             color: var(--primary);
+            text-align: center;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .stat-box {
             background: var(--light);
-            padding: 15px;
-            border-radius: 6px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
         }
 
@@ -268,18 +337,18 @@
             font-size: 12px;
             color: var(--text-secondary);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
         .stat-value {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 28px;
+            font-weight: 700;
             color: var(--primary);
         }
 
         .no-data {
             text-align: center;
-            padding: 30px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
 
@@ -291,92 +360,64 @@
             border-radius: 4px;
             font-size: 11px;
             font-weight: 600;
-            margin-right: 5px;
+            margin-right: 8px;
         }
 
-        .export-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .month-summary {
-            background: white;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .month-summary h3 {
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
-
-        .alert-info {
-            background: rgba(33, 150, 243, 0.1);
-            color: #1565c0;
-            border-left: 4px solid #2196F3;
-        }
-
+        /* CALENDAR STYLES */
         .calendar-container {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
         .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .calendar-header h2 {
             color: var(--primary);
+            font-size: 20px;
             margin: 0;
+            flex: 1;
+            text-align: center;
         }
 
         .calendar-nav {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .calendar-nav button {
-            padding: 8px 16px;
+            padding: 10px 16px;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .calendar-nav button:hover {
-            background: var(--primary-dark);
+            font-weight: 600;
+            font-size: 14px;
+            min-height: 44px;
+            flex-shrink: 0;
         }
 
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 10px;
+            gap: 4px;
+            margin-bottom: 12px;
         }
 
         .weekday {
             text-align: center;
             font-weight: 600;
             color: var(--text-secondary);
-            padding: 10px;
+            padding: 8px 4px;
             font-size: 12px;
             text-transform: uppercase;
         }
@@ -384,94 +425,64 @@
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 4px;
         }
 
         .calendar-day {
             aspect-ratio: 1;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 8px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 4px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 80px;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 56px;
+            font-size: 14px;
             position: relative;
-            background: white;
         }
 
         .calendar-day:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .calendar-day.other-month {
             background: var(--light);
             color: var(--text-secondary);
+            opacity: 0.5;
             cursor: default;
         }
 
-        .calendar-day.other-month:hover {
-            box-shadow: none;
-            transform: none;
-        }
-
-        .calendar-day.occupied {
-            background: rgba(33, 150, 243, 0.15);
-            border-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .calendar-day.available {
-            background: rgba(76, 175, 80, 0.1);
-            border-color: var(--success);
-        }
-
-        .calendar-day.cleaning {
-            background: rgba(255, 152, 0, 0.15);
-            border-color: var(--warning);
-            font-weight: 600;
-        }
-
         .calendar-day-number {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 14px;
-            color: var(--text);
-        }
-
-        .calendar-day.other-month .calendar-day-number {
-            color: var(--text-secondary);
+            line-height: 1;
+            margin-bottom: 2px;
         }
 
         .calendar-day-status {
             font-size: 10px;
             text-transform: uppercase;
             font-weight: 600;
-            margin-top: 4px;
+            line-height: 1.2;
         }
 
-        .calendar-day.occupied .calendar-day-status {
-            color: var(--primary);
+        .calendar-day.occupied {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: var(--primary);
         }
 
-        .calendar-day.available .calendar-day-status {
-            color: var(--success);
+        .calendar-day.available {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: var(--success);
         }
 
-        .calendar-day.cleaning .calendar-day-status {
-            color: var(--warning);
-        }
-
-        .calendar-day-note {
-            font-size: 9px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            max-width: 100%;
+        .calendar-day.cleaning {
+            background: rgba(255, 152, 0, 0.2);
+            border-color: var(--warning);
         }
 
         .modal {
@@ -483,88 +494,65 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .modal-content {
             background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 8px;
+            margin: 20% auto;
+            padding: 24px;
+            border-radius: 16px;
             width: 90%;
             max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
         }
 
         .modal-header h3 {
             margin: 0;
             color: var(--primary);
+            font-size: 18px;
         }
 
         .modal-close {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: var(--text-secondary);
-            padding: 0;
-            width: 30px;
-            height: 30px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .modal-close:hover {
-            color: var(--text);
+            padding: 0;
         }
 
         .day-status-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .status-option {
-            flex: 1;
-            padding: 10px;
+            padding: 16px 12px;
             border: 2px solid var(--border);
-            border-radius: 6px;
+            border-radius: 12px;
             background: white;
             cursor: pointer;
             text-align: center;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
+            min-height: 60px;
             transition: all 0.2s;
-        }
-
-        .status-option:hover {
-            border-color: var(--primary);
         }
 
         .status-option.selected {
@@ -573,27 +561,67 @@
         }
 
         .status-option.occupied.selected {
-            background: rgba(33, 150, 243, 0.15);
+            background: rgba(33, 150, 243, 0.2);
             border-color: var(--primary);
         }
 
         .status-option.available.selected {
-            background: rgba(76, 175, 80, 0.1);
+            background: rgba(76, 175, 80, 0.15);
             border-color: var(--success);
         }
 
         .status-option.cleaning.selected {
-            background: rgba(255, 152, 0, 0.15);
+            background: rgba(255, 152, 0, 0.2);
             border-color: var(--warning);
         }
 
-        [data-theme="dark"] .modal-content {
-            background: #1e1e1e;
-            color: var(--text);
+        .export-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
 
-        [data-theme="dark"] .calendar-container {
+        .lang-btn, .theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-height: 40px;
+        }
+
+        /* DARK MODE */
+        [data-theme="dark"] {
+            --primary: #64B5F6;
+            --primary-dark: #42A5F5;
+            --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --light: #2a2a2a;
+            --border: #404040;
+            --background: #121212;
+        }
+
+        [data-theme="dark"] body {
+            background: var(--background);
+        }
+
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .settlement-summary,
+        [data-theme="dark"] .calendar-container,
+        [data-theme="dark"] .modal-content,
+        [data-theme="dark"] .export-section {
             background: #1e1e1e;
+        }
+
+        [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
+            background: #2a2a2a;
+            color: var(--text);
+            border-color: var(--border);
         }
 
         [data-theme="dark"] .calendar-day {
@@ -601,94 +629,41 @@
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .calendar-day.other-month {
-            background: #1e1e1e;
-        }
-
         [data-theme="dark"] .status-option {
             background: #2a2a2a;
             color: var(--text);
-        }
-
-        .lang-btn, .theme-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .lang-btn:hover, .theme-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .lang-btn.active {
-            background: white;
-            color: var(--primary);
-        }
-
-        [data-theme="dark"] {
-            --primary: #64B5F6;
-            --primary-dark: #42A5F5;
-            --text: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --light: #1e1e1e;
-            --border: #333;
-            --background: #121212;
-        }
-
-        [data-theme="dark"] body {
-            background: var(--background);
-            color: var(--text);
-        }
-
-        [data-theme="dark"] .card,
-        [data-theme="dark"] .settlement-summary,
-        [data-theme="dark"] .export-section {
-            background: #1e1e1e;
-        }
-
-        [data-theme="dark"] input,
-        [data-theme="dark"] select,
-        [data-theme="dark"] textarea {
-            background: #2a2a2a;
-            color: var(--text);
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .expense-item {
-            background: #2a2a2a;
+        @media (max-width: 600px) {
+            .calendar-day {
+                min-height: 48px;
+                padding: 4px 2px;
+                font-size: 12px;
+            }
+            
+            .calendar-day-number {
+                font-size: 12px;
+            }
+            
+            .calendar-day-status {
+                font-size: 8px;
+            }
         }
 
-        [data-theme="dark"] .stat-box {
-            background: #2a2a2a;
-        }
-
-        [data-theme="dark"] .btn-secondary {
-            background: #2a2a2a;
-            border-color: var(--border);
-        }
-
-        [data-theme="dark"] .btn-secondary:hover {
-            background: #333;
-        }
-
-        @media print {
-            body {
-                background: white;
+        @media (max-width: 400px) {
+            .calendar-day {
+                min-height: 40px;
+                padding: 3px 1px;
+            }
+            
+            .calendar-day-number {
+                font-size: 11px;
             }
 
-            .tabs, .btn-secondary, .btn-danger, .lang-btn, .theme-btn {
-                display: none;
-            }
-
-            .card {
-                box-shadow: none;
-                border: 1px solid var(--border);
-                page-break-inside: avoid;
+            .calendar-nav button {
+                padding: 8px 12px;
+                font-size: 12px;
             }
         }
     </style>
@@ -696,15 +671,15 @@
 <body>
     <header>
         <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h1>🏠 Chillinguito Lake Como</h1>
                     <p>Expense Tracker & Settlement Calculator</p>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <button class="lang-btn active" onclick="setLanguage('en')" style="padding: 8px 14px; font-size: 12px;">🇬🇧 English</button>
-                    <button class="lang-btn" onclick="setLanguage('it')" style="padding: 8px 14px; font-size: 12px;">🇮🇹 Italiano</button>
-                    <button class="theme-btn" onclick="toggleTheme()" style="padding: 8px 14px; font-size: 16px;">🌙</button>
+                    <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
+                    <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                    <button class="theme-btn" onclick="toggleTheme()">🌙</button>
                 </div>
             </div>
         </div>
@@ -726,7 +701,7 @@
                 <form onsubmit="addExpense(event)">
                     <div class="form-group">
                         <label for="description" data-i18n="description"></label>
-                        <input type="text" id="description" data-i18n-placeholder="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
+                        <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
                     </div>
 
                     <div class="form-row">
@@ -737,16 +712,16 @@
                         <div class="form-group">
                             <label for="category" data-i18n="category"></label>
                             <select id="category" required>
-                                <option value="" data-i18n="selectCategory"></option>
-                                <option value="Cleaning" data-i18n="cleaning"></option>
-                                <option value="Utilities" data-i18n="utilities"></option>
-                                <option value="Groceries" data-i18n="groceries"></option>
-                                <option value="Repairs" data-i18n="repairs"></option>
-                                <option value="Furnishing" data-i18n="furnishing"></option>
-                                <option value="Marketing" data-i18n="marketing"></option>
-                                <option value="Insurance" data-i18n="insurance"></option>
-                                <option value="Supplies" data-i18n="supplies"></option>
-                                <option value="Other" data-i18n="other"></option>
+                                <option value="">-- Select Category --</option>
+                                <option value="Cleaning">Cleaning & Maintenance</option>
+                                <option value="Utilities">Utilities (Water, Gas, Electric)</option>
+                                <option value="Groceries">Groceries & Food</option>
+                                <option value="Repairs">Repairs & Equipment</option>
+                                <option value="Furnishing">Furnishing & Decoration</option>
+                                <option value="Marketing">Marketing & Advertising</option>
+                                <option value="Insurance">Insurance</option>
+                                <option value="Supplies">Supplies & Materials</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
                     </div>
@@ -755,7 +730,7 @@
                         <div class="form-group">
                             <label for="paidBy" data-i18n="paidBy"></label>
                             <select id="paidBy" required>
-                                <option value="" data-i18n="selectOption"></option>
+                                <option value="">-- Select --</option>
                                 <option value="Davide">Davide</option>
                                 <option value="Mattia">Mattia</option>
                             </select>
@@ -763,8 +738,8 @@
                         <div class="form-group">
                             <label for="splitBetween" data-i18n="splitBetween"></label>
                             <select id="splitBetween" required>
-                                <option value="" data-i18n="selectOption"></option>
-                                <option value="Both" data-i18n="both"></option>
+                                <option value="">-- Select --</option>
+                                <option value="Both">Both (50/50)</option>
                                 <option value="Davide">Davide Only</option>
                                 <option value="Mattia">Mattia Only</option>
                             </select>
@@ -776,9 +751,18 @@
                         <input type="date" id="date" required>
                     </div>
 
+                    <!-- RECEIPT UPLOAD -->
+                    <div class="form-group receipt-section">
+                        <label data-i18n="receipt">Receipt Photo (optional)</label>
+                        <div class="receipt-preview" id="receiptPreview">
+                            <span class="receipt-icon">📷</span>
+                        </div>
+                        <input type="file" id="receiptInput" accept="image/*" style="display: none;">
+                    </div>
+
                     <div class="form-group">
                         <label for="notes" data-i18n="notes"></label>
-                        <textarea id="notes" data-i18n-placeholder="notes" placeholder="Add any additional notes..." rows="3"></textarea>
+                        <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
                     </div>
 
                     <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn"></button>
@@ -808,11 +792,11 @@
                     </div>
                     <div class="stat-box">
                         <div class="stat-label" data-i18n="davidePaid"></div>
-                        <div class="stat-value" id="davidePaid" style="color: var(--primary);">EUR 0.00</div>
+                        <div class="stat-value" id="davidePaid">EUR 0.00</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label" data-i18n="mattiaPaid"></div>
-                        <div class="stat-value" id="mattiaPaid" style="color: var(--primary);">EUR 0.00</div>
+                        <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                     </div>
                 </div>
 
@@ -849,7 +833,7 @@
             </div>
         </div>
 
-        <!-- EXPORT & SUMMARY TAB -->
+        <!-- EXPORT TAB -->
         <div id="export" class="tab-content">
             <div class="export-section">
                 <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary"></h2>
@@ -890,18 +874,7 @@
                 splitBetween: 'Split Between',
                 date: 'Date',
                 notes: 'Notes (optional)',
-                selectCategory: '-- Select Category --',
-                selectOption: '-- Select --',
-                cleaning: 'Cleaning & Maintenance',
-                utilities: 'Utilities (Water, Gas, Electric)',
-                groceries: 'Groceries & Food',
-                repairs: 'Repairs & Equipment',
-                furnishing: 'Furnishing & Decoration',
-                marketing: 'Marketing & Advertising',
-                insurance: 'Insurance',
-                supplies: 'Supplies & Materials',
-                other: 'Other',
-                both: 'Both (50/50)',
+                receipt: 'Receipt Photo (optional)',
                 addExpenseBtn: 'Add Expense',
                 clearAll: 'Clear All',
                 expenseAdded: '✅ Expense added successfully!',
@@ -916,31 +889,19 @@
                 allSettled: '✅ All settled! No payments needed.',
                 mattiaOwes: 'Mattia owes Davide:',
                 davideOwes: 'Davide owes Mattia:',
+                calendarTitle: 'Airbnb Calendar',
+                previousMonth: 'Previous',
+                nextMonth: 'Next',
+                occupied: 'Occupied',
+                available: 'Available',
+                cleaning: 'Cleaning',
                 monthlySummary: 'Monthly Summary & Export',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
                 exportOptions: 'Export Options',
                 downloadJson: '📥 Download JSON',
                 downloadCsv: '📥 Download CSV',
-                print: '🖨️ Print',
-                noExpensesMonth: 'No expenses for this month.',
-                summary: 'Summary',
-                totalExpensesMonth: 'Total Expenses:',
-                numberExpenses: 'Number of Expenses:',
-                expensesDetail: 'Expenses Detail',
-                selectMonth: 'Select Month',
-                paidByLabel: 'Paid by',
-                noExpensesToSettle: 'No expenses to settle yet.',
-                calendarTitle: 'Airbnb Calendar',
-                occupied: 'Occupied',
-                available: 'Available',
-                cleaning: 'Cleaning',
-                dayNotes: 'Notes',
-                addNote: 'Add Note',
-                saveNote: 'Save',
-                previousMonth: 'Previous',
-                nextMonth: 'Next',
-                updateStatus: 'Update Status'
+                print: '🖨️ Print'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -956,18 +917,7 @@
                 splitBetween: 'Dividi tra',
                 date: 'Data',
                 notes: 'Note (facoltativo)',
-                selectCategory: '-- Seleziona Categoria --',
-                selectOption: '-- Seleziona --',
-                cleaning: 'Pulizia e Manutenzione',
-                utilities: 'Utenze (Acqua, Gas, Elettricità)',
-                groceries: 'Alimentari e Cibo',
-                repairs: 'Riparazioni e Attrezzature',
-                furnishing: 'Arredamento e Decorazione',
-                marketing: 'Marketing e Pubblicità',
-                insurance: 'Assicurazione',
-                supplies: 'Forniture e Materiali',
-                other: 'Altro',
-                both: 'Entrambi (50/50)',
+                receipt: 'Foto Ricevuta (facoltativo)',
                 addExpenseBtn: 'Aggiungi Spesa',
                 clearAll: 'Cancella Tutto',
                 expenseAdded: '✅ Spesa aggiunta con successo!',
@@ -982,47 +932,37 @@
                 allSettled: '✅ Tutto regolato! Nessun pagamento necessario.',
                 mattiaOwes: 'Mattia deve a Davide:',
                 davideOwes: 'Davide deve a Mattia:',
+                calendarTitle: 'Calendario Airbnb',
+                previousMonth: 'Precedente',
+                nextMonth: 'Successivo',
+                occupied: 'Occupato',
+                available: 'Disponibile',
+                cleaning: 'Pulizia',
                 monthlySummary: 'Riepilogo Mensile ed Esportazione',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
                 exportOptions: 'Opzioni di Esportazione',
                 downloadJson: '📥 Scarica JSON',
                 downloadCsv: '📥 Scarica CSV',
-                print: '🖨️ Stampa',
-                noExpensesMonth: 'Nessuna spesa per questo mese.',
-                summary: 'Riepilogo',
-                totalExpensesMonth: 'Spese Totali:',
-                numberExpenses: 'Numero di Spese:',
-                expensesDetail: 'Dettagli Spese',
-                selectMonth: 'Seleziona Mese',
-                paidByLabel: 'Pagato da',
-                noExpensesToSettle: 'Nessuna spesa da regolare.',
-                calendarTitle: 'Calendario Airbnb',
-                occupied: 'Occupato',
-                available: 'Disponibile',
-                cleaning: 'Pulizia',
-                dayNotes: 'Note',
-                addNote: 'Aggiungi Nota',
-                saveNote: 'Salva',
-                previousMonth: 'Precedente',
-                nextMonth: 'Successivo',
-                updateStatus: 'Aggiorna Stato'
+                print: '🖨️ Stampa'
             }
         };
 
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentReceiptImage = null;
+        let currentCalendarDate = new Date();
 
         function t(key) {
             return translations[currentLanguage][key] || key;
         }
 
+        // ========== LANGUAGE & THEME ==========
         function setLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            updateAllDisplays();
             updatePageText();
         }
 
@@ -1030,38 +970,20 @@
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             localStorage.setItem('theme', currentTheme);
             document.documentElement.setAttribute('data-theme', currentTheme);
-            const btn = document.querySelector('.theme-btn');
-            btn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
         }
 
         function updatePageText() {
-            // Update all dynamic text elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 el.textContent = t(el.getAttribute('data-i18n'));
             });
-            
-            // Update form labels
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (key) el.textContent = t(key);
-            });
-            
-            // Update placeholders
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if (key === 'description') {
-                    el.placeholder = currentLanguage === 'en' ? 'e.g., Cleaning supplies, Groceries, Maintenance' : 'es. Detergenti, Alimentari, Manutenzione';
-                } else if (key === 'notes') {
-                    el.placeholder = currentLanguage === 'en' ? 'Add any additional notes...' : 'Aggiungi note aggiuntive...';
-                }
-            });
-            
             displayExpenses();
             displaySettlement();
         }
 
-        // ========== DATA MANAGEMENT ==========
+        // ========== STORAGE ==========
         const STORAGE_KEY = 'chillinguito_expenses';
+        const CALENDAR_KEY = 'chillinguito_calendar';
 
         function getExpenses() {
             const data = localStorage.getItem(STORAGE_KEY);
@@ -1070,26 +992,64 @@
 
         function saveExpenses(expenses) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-            updateAllDisplays();
+            displayExpenses();
+            displaySettlement();
         }
 
-        function setDateToToday() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('date').value = today;
+        function getCalendarData() {
+            const data = localStorage.getItem(CALENDAR_KEY);
+            return data ? JSON.parse(data) : {};
         }
 
-        function setMonthToNow() {
-            const today = new Date().toISOString().substring(0, 7);
-            document.getElementById('summaryMonth').value = today;
+        function saveCalendarData(data) {
+            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
+            renderCalendar();
         }
 
         // ========== TAB SWITCHING ==========
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+        }
+
+        // ========== RECEIPT UPLOAD ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            const receiptPreview = document.getElementById('receiptPreview');
+            const receiptInput = document.getElementById('receiptInput');
+
+            receiptPreview.onclick = () => receiptInput.click();
+
+            receiptInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        currentReceiptImage = ev.target.result;
+                        receiptPreview.style.backgroundImage = `url(${ev.target.result})`;
+                        receiptPreview.classList.add('has-image');
+                        receiptPreview.innerHTML = '<button class="receipt-remove" onclick="removeReceipt(event)" type="button">✕</button>';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('summaryMonth').valueAsDate = new Date();
+            renderCalendar();
+            displayExpenses();
+            displaySettlement();
+        });
+
+        function removeReceipt(e) {
+            if (e) e.stopPropagation();
+            currentReceiptImage = null;
+            const receiptPreview = document.getElementById('receiptPreview');
+            receiptPreview.style.backgroundImage = '';
+            receiptPreview.classList.remove('has-image');
+            receiptPreview.innerHTML = '<span class="receipt-icon">📷</span>';
+            document.getElementById('receiptInput').value = '';
         }
 
         // ========== ADD EXPENSE ==========
@@ -1104,16 +1064,17 @@
                 paidBy: document.getElementById('paidBy').value,
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
-                notes: document.getElementById('notes').value
+                notes: document.getElementById('notes').value,
+                receipt: currentReceiptImage
             };
 
             const expenses = getExpenses();
             expenses.push(expense);
             saveExpenses(expenses);
 
-            // Reset form
             document.querySelector('form').reset();
-            setDateToToday();
+            removeReceipt();
+            document.getElementById('date').valueAsDate = new Date();
 
             alert(t('expenseAdded'));
         }
@@ -1128,12 +1089,7 @@
                 return;
             }
 
-            // Sort by date descending
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const paidByText = currentLanguage === 'en' ? 'Paid by' : 'Pagato da';
-            const splitText = currentLanguage === 'en' ? 'Split' : 'Diviso';
-            const deleteText = currentLanguage === 'en' ? 'Delete' : 'Elimina';
 
             listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
@@ -1143,14 +1099,24 @@
                             ${exp.description}
                         </div>
                         <div class="expense-details">
-                            ${exp.date} • ${paidByText} <strong>${exp.paidBy}</strong> • ${splitText}: ${exp.splitBetween}
+                            ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
                             ${exp.notes ? '<br><em>' + exp.notes + '</em>' : ''}
                         </div>
+                        ${exp.receipt ? `<img src="${exp.receipt}" class="expense-receipt" alt="Receipt" onclick="viewReceipt('${exp.receipt}')">` : ''}
                     </div>
-                    <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
-                    <button class="btn-danger" onclick="deleteExpense(${exp.id})">${deleteText}</button>
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                        <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
+                        <button class="btn-danger" onclick="deleteExpense(${exp.id})">Delete</button>
+                    </div>
                 </div>
             `).join('');
+        }
+
+        function viewReceipt(src) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:2000;';
+            modal.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:8px;" onclick="this.parentElement.remove()">`;
+            document.body.appendChild(modal);
         }
 
         function deleteExpense(id) {
@@ -1164,23 +1130,21 @@
         function clearAllExpenses() {
             if (confirm(t('clearAllConfirm'))) {
                 localStorage.removeItem(STORAGE_KEY);
-                updateAllDisplays();
-                alert(t('noExpenses'));
+                displayExpenses();
+                displaySettlement();
             }
         }
 
-        // ========== SETTLEMENT CALCULATION ==========
-        function calculateSettlement() {
+        // ========== SETTLEMENT ==========
+        function displaySettlement() {
             const expenses = getExpenses();
             const balances = { Davide: 0, Mattia: 0 };
-            const totalExpense = { value: 0 };
+            let total = 0;
 
-            // Calculate who paid what and who should pay what
             expenses.forEach(exp => {
-                totalExpense.value += exp.amount;
-                balances[exp.paidBy] += exp.amount; // Add to what they paid
+                total += exp.amount;
+                balances[exp.paidBy] += exp.amount;
 
-                // Subtract what they should pay
                 if (exp.splitBetween === 'Both') {
                     balances['Davide'] -= exp.amount / 2;
                     balances['Mattia'] -= exp.amount / 2;
@@ -1189,15 +1153,7 @@
                 }
             });
 
-            return { balances, totalExpense: totalExpense.value };
-        }
-
-        function displaySettlement() {
-            const { balances, totalExpense } = calculateSettlement();
-            const expenses = getExpenses();
-
-            // Display stats
-            document.getElementById('totalExpenses').textContent = `EUR ${totalExpense.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = `EUR ${total.toFixed(2)}`;
 
             let davidePaid = 0, mattiaPaid = 0;
             expenses.forEach(exp => {
@@ -1208,29 +1164,141 @@
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
 
-            // Display settlements
             const detailsDiv = document.getElementById('settlementDetails');
 
-            if (totalExpense === 0) {
-                detailsDiv.innerHTML = `<div class="no-data">${t('noExpensesToSettle')}</div>`;
+            if (total === 0) {
+                detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
                 return;
             }
 
             let html = '';
 
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html = `<div class="alert alert-info">${t('allSettled')}</div>`;
+                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
-                html = `<div class="settlement-box owed">
-                    💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong>
-                </div>`;
+                html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
             } else if (balances.Mattia > 0.01) {
-                html = `<div class="settlement-box owed">
-                    💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong>
-                </div>`;
+                html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
             }
 
             detailsDiv.innerHTML = html;
+        }
+
+        // ========== CALENDAR ==========
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            const calendarDaysDiv = document.getElementById('calendarDays');
+            calendarDaysDiv.innerHTML = '';
+
+            const calendarData = getCalendarData();
+
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const prevDate = new Date(year, month - 1, day);
+                calendarDaysDiv.appendChild(createDayElement(prevDate, true, calendarData));
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                calendarDaysDiv.appendChild(createDayElement(date, false, calendarData));
+            }
+
+            const totalCells = calendarDaysDiv.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                calendarDaysDiv.appendChild(createDayElement(nextDate, true, calendarData));
+            }
+        }
+
+        function createDayElement(date, isOtherMonth, calendarData) {
+            const dayDiv = document.createElement('div');
+            const dateKey = date.toISOString().split('T')[0];
+            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
+
+            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
+            dayDiv.innerHTML = `
+                <div class="calendar-day-number">${date.getDate()}</div>
+                ${!isOtherMonth ? `<div class="calendar-day-status">${t(dayData.status)}</div>` : ''}
+            `;
+
+            if (!isOtherMonth) {
+                dayDiv.onclick = () => openDayModal(date, dayData);
+            }
+
+            return dayDiv;
+        }
+
+        function openDayModal(date, dayData) {
+            const dateKey = date.toISOString().split('T')[0];
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${dateStr}</h3>
+                        <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+
+                    <div class="day-status-selector">
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this, 'occupied')">${t('occupied')}</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this, 'available')">${t('available')}</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this, 'cleaning')">${t('cleaning')}</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>${t('notes')}</label>
+                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
+                    </div>
+
+                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}', this.parentElement.parentElement)">Save</button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.remove();
+            };
+        }
+
+        function selectStatus(button, status) {
+            const parent = button.parentElement;
+            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            button.dataset.selectedStatus = status;
+        }
+
+        function saveDayData(dateKey, modalContent) {
+            const selectedStatus = modalContent.querySelector('.status-option.selected');
+            const status = selectedStatus ? selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1] : 'available';
+            const note = modalContent.querySelector('#dayNote').value;
+
+            const calendarData = getCalendarData();
+            calendarData[dateKey] = { status, note };
+            saveCalendarData(calendarData);
+            modalContent.parentElement.remove();
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
         }
 
         // ========== MONTHLY SUMMARY ==========
@@ -1245,12 +1313,10 @@
             const expenses = getExpenses().filter(exp => exp.date.startsWith(`${year}-${month}`));
 
             if (expenses.length === 0) {
-                document.getElementById('monthlySummaryResult').innerHTML =
-                    `<div class="no-data">${t('noExpensesMonth')}</div>`;
+                document.getElementById('monthlySummaryResult').innerHTML = `<div class="no-data">${t('noExpensesMonth') || 'No expenses for this month'}</div>`;
                 return;
             }
 
-            // Calculate balances for this month
             const balances = { Davide: 0, Mattia: 0 };
             let monthTotal = 0;
 
@@ -1266,42 +1332,17 @@
                 }
             });
 
-            let settlementText = '';
-            if (Math.abs(balances.Davide) < 0.01) {
-                settlementText = '✅ ' + (currentLanguage === 'en' ? 'All settled!' : 'Tutto regolato!');
-            } else if (balances.Davide > 0) {
-                const pays = currentLanguage === 'en' ? 'Mattia pays Davide' : 'Mattia paga Davide';
-                settlementText = `💳 ${pays} EUR ${balances.Davide.toFixed(2)}`;
-            } else {
-                const pays = currentLanguage === 'en' ? 'Davide pays Mattia' : 'Davide paga Mattia';
-                settlementText = `💳 ${pays} EUR ${Math.abs(balances.Davide).toFixed(2)}`;
-            }
-
             const monthName = new Date(`${year}-${month}-01`).toLocaleString(currentLanguage === 'en' ? 'en-US' : 'it-IT', { month: 'long', year: 'numeric' });
-            const paidByText = currentLanguage === 'en' ? 'Paid by' : 'Pagato da';
-            const detailText = currentLanguage === 'en' ? 'Expenses Detail' : 'Dettagli Spese';
 
             let html = `
-                <div class="month-summary">
-                    <h3>${monthName} ${t('summary')}</h3>
-                    <p><strong>${t('totalExpensesMonth')}</strong> EUR ${monthTotal.toFixed(2)}</p>
-                    <p><strong>${t('numberExpenses')}</strong> ${expenses.length}</p>
-                    <hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">
-                    <p style="color: var(--primary); font-weight: 600; font-size: 16px;">${settlementText}</p>
-                </div>
-
-                <div class="card">
-                    <h4 style="margin-bottom: 15px;">${detailText}</h4>
+                <div class="card" style="border-left: 4px solid var(--primary);">
+                    <h3>${monthName}</h3>
+                    <p><strong>Total:</strong> EUR ${monthTotal.toFixed(2)}</p>
+                    <p><strong>Expenses:</strong> ${expenses.length}</p>
                     ${expenses.map(exp => `
-                        <div class="expense-item">
-                            <div class="expense-info">
-                                <div class="expense-description">
-                                    <span class="category-badge">${exp.category}</span>
-                                    ${exp.description}
-                                </div>
-                                <div class="expense-details">${exp.date} • ${paidByText} ${exp.paidBy}</div>
-                            </div>
-                            <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
+                        <div style="margin-top: 10px; padding: 10px; background: var(--light); border-radius: 6px;">
+                            <strong>${exp.description}</strong> - EUR ${exp.amount.toFixed(2)}<br>
+                            <small>${exp.date} • ${exp.paidBy}</small>
                         </div>
                     `).join('')}
                 </div>
@@ -1310,7 +1351,7 @@
             document.getElementById('monthlySummaryResult').innerHTML = html;
         }
 
-        // ========== EXPORT FUNCTIONS ==========
+        // ========== EXPORT ==========
         function exportAsJSON() {
             const expenses = getExpenses();
             const dataStr = JSON.stringify(expenses, null, 2);
@@ -1320,8 +1361,7 @@
 
         function exportAsCSV() {
             const expenses = getExpenses();
-
-            let csv = 'Date,Description,Category,Amount (CHF),Paid By,Split Between,Notes\n';
+            let csv = 'Date,Description,Category,Amount (EUR),Paid By,Split Between,Notes\n';
 
             expenses.forEach(exp => {
                 const notes = (exp.notes || '').replace(/"/g, '""');
@@ -1343,186 +1383,10 @@
             URL.revokeObjectURL(url);
         }
 
-        // ========== UPDATE ALL DISPLAYS ==========
-        function updateAllDisplays() {
-            displayExpenses();
-            displaySettlement();
-        }
-
-        // ========== CALENDAR MANAGEMENT ==========
-        const CALENDAR_KEY = 'chillinguito_calendar';
-        let currentCalendarDate = new Date();
-
-        function getCalendarData() {
-            const data = localStorage.getItem(CALENDAR_KEY);
-            return data ? JSON.parse(data) : {};
-        }
-
-        function saveCalendarData(data) {
-            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
-            renderCalendar();
-        }
-
-        function getDateKey(date) {
-            return date.toISOString().split('T')[0];
-        }
-
-        function renderCalendar() {
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
-
-            // Update month display
-            const monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
-
-            // Get first day and number of days
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-            const calendarDaysDiv = document.getElementById('calendarDays');
-            calendarDaysDiv.innerHTML = '';
-
-            const calendarData = getCalendarData();
-
-            // Previous month's days
-            for (let i = firstDay - 1; i >= 0; i--) {
-                const day = daysInPrevMonth - i;
-                const prevDate = new Date(year, month - 1, day);
-                const dayDiv = createDayElement(prevDate, true, calendarData);
-                calendarDaysDiv.appendChild(dayDiv);
-            }
-
-            // Current month's days
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month, day);
-                const dayDiv = createDayElement(date, false, calendarData);
-                calendarDaysDiv.appendChild(dayDiv);
-            }
-
-            // Next month's days
-            const totalCells = calendarDaysDiv.children.length;
-            const remainingCells = 42 - totalCells;
-            for (let day = 1; day <= remainingCells; day++) {
-                const nextDate = new Date(year, month + 1, day);
-                const dayDiv = createDayElement(nextDate, true, calendarData);
-                calendarDaysDiv.appendChild(dayDiv);
-            }
-        }
-
-        function createDayElement(date, isOtherMonth, calendarData) {
-            const dayDiv = document.createElement('div');
-            const dateKey = getDateKey(date);
-            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
-
-            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
-            dayDiv.innerHTML = `
-                <div class="calendar-day-number">${date.getDate()}</div>
-                ${!isOtherMonth ? `<div class="calendar-day-status" data-status="${dayData.status}">${t(dayData.status)}</div>` : ''}
-                ${dayData.note && !isOtherMonth ? `<div class="calendar-day-note">${dayData.note.substring(0, 12)}...</div>` : ''}
-            `;
-
-            if (!isOtherMonth) {
-                dayDiv.onclick = () => openDayModal(date, dayData);
-            }
-
-            return dayDiv;
-        }
-
-        function openDayModal(date, dayData) {
-            const dateKey = getDateKey(date);
-            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.id = 'dayModal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>${dateStr}</h3>
-                        <button class="modal-close" onclick="closeDayModal()">×</button>
-                    </div>
-
-                    <div class="day-status-selector">
-                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this, 'occupied')" data-i18n="occupied"></button>
-                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this, 'available')" data-i18n="available"></button>
-                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this, 'cleaning')" data-i18n="cleaning"></button>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dayNote" data-i18n="dayNotes"></label>
-                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
-                    </div>
-
-                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')" data-i18n="saveNote"></button>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            modal.style.display = 'block';
-            modal.onclick = (e) => {
-                if (e.target === modal) closeDayModal();
-            };
-
-            // Update text after modal creation
-            modal.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.getAttribute('data-i18n'));
-            });
-        }
-
-        function selectStatus(button, status) {
-            const parent = button.parentElement;
-            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
-            button.classList.add('selected');
-            button.dataset.selectedStatus = status;
-        }
-
-        function saveDayData(dateKey) {
-            const modal = document.getElementById('dayModal');
-            const selectedStatus = modal.querySelector('.status-option.selected');
-            const status = selectedStatus ? selectedStatus.className.split(' ')[1] : 'available';
-            const note = document.getElementById('dayNote').value;
-
-            const calendarData = getCalendarData();
-            calendarData[dateKey] = { status, note };
-            saveCalendarData(calendarData);
-            closeDayModal();
-        }
-
-        function closeDayModal() {
-            const modal = document.getElementById('dayModal');
-            if (modal) {
-                modal.style.display = 'none';
-                modal.remove();
-            }
-        }
-
-        function previousMonth() {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-            renderCalendar();
-        }
-
-        function nextMonth() {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-            renderCalendar();
-        }
-
-        // ========== INITIALIZATION ==========
-        window.addEventListener('DOMContentLoaded', () => {
+        // ========== INITIALIZE ==========
+        window.addEventListener('load', () => {
             document.documentElement.setAttribute('data-theme', currentTheme);
-            const themeBtn = document.querySelector('.theme-btn');
-            themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-            
-            const langBtn = document.querySelector(`button[onclick="setLanguage('${currentLanguage}')"]`);
-            if (langBtn) langBtn.classList.add('active');
-            
-            setDateToToday();
-            setMonthToNow();
-            renderCalendar();
-            updateAllDisplays();
+            document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
             updatePageText();
         });
     </script>
