@@ -788,6 +788,14 @@
             animation: slideIn 0.3s ease-out;
         }
 
+        .notification-banner.warning {
+            background: #FF9800;
+        }
+
+        .notification-banner.alert {
+            background: var(--primary);
+        }
+
         @keyframes slideIn {
             from {
                 transform: translateY(-20px);
@@ -1549,7 +1557,9 @@
                 updateNotification: 'Updated!',
                 expenseUpdated: 'An expense was updated',
                 calendarUpdated: 'The calendar was updated',
-                reportGenerated: '✅ Report downloaded successfully!'
+                reportGenerated: '✅ Report downloaded successfully!',
+                cleaningTomorrow: '🧹 Cleaning scheduled tomorrow!',
+                cleaningTodayReminder: '🧹 Cleaning is TODAY!'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1624,7 +1634,9 @@
                 updateNotification: 'Aggiornato!',
                 expenseUpdated: 'Una spesa è stata aggiornata',
                 calendarUpdated: 'Il calendario è stato aggiornato',
-                reportGenerated: '✅ Rapporto scaricato con successo!'
+                reportGenerated: '✅ Rapporto scaricato con successo!',
+                cleaningTomorrow: '🧹 Pulizia programmata domani!',
+                cleaningTodayReminder: '🧹 La pulizia è OGGI!'
             }
         };
 
@@ -1633,6 +1645,7 @@
         let currentReceiptImage = null;
         let currentCalendarDate = new Date();
         let selectedPeriod = 'current';
+        let cleaningNotificationShown = false;
 
         function t(key) {
             return translations[currentLanguage][key] || key;
@@ -1700,17 +1713,51 @@
             });
         }
 
+        // ========== CLEANING REMINDER ==========
+        function checkCleaningReminder() {
+            const calendarData = getCalendarData();
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const today = now.toISOString().split('T')[0];
+            const tomorrowKey = tomorrow.toISOString().split('T')[0];
+
+            let hasTodayCleaning = false;
+            let hasTomorrowCleaning = false;
+
+            const todayData = calendarData[today];
+            if (todayData && todayData.status === 'cleaning') {
+                hasTodayCleaning = true;
+            }
+
+            const tomorrowData = calendarData[tomorrowKey];
+            if (tomorrowData && tomorrowData.status === 'cleaning') {
+                hasTomorrowCleaning = true;
+            }
+
+            // Only show once per session
+            if (!cleaningNotificationShown) {
+                if (hasTodayCleaning) {
+                    showNotification(t('cleaningTodayReminder'), 'alert');
+                    cleaningNotificationShown = true;
+                } else if (hasTomorrowCleaning) {
+                    showNotification(t('cleaningTomorrow'), 'warning');
+                    cleaningNotificationShown = true;
+                }
+            }
+        }
+
         // ========== NOTIFICATIONS ==========
-        function showNotification(message) {
+        function showNotification(message, type = 'success') {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
-            notification.className = 'notification-banner';
+            notification.className = `notification-banner ${type}`;
             notification.textContent = message;
             container.appendChild(notification);
 
             setTimeout(() => {
                 notification.remove();
-            }, 3000);
+            }, 4000);
         }
 
         // ========== STORAGE ==========
@@ -2259,6 +2306,8 @@
             updatePlaceholders();
             setTimeout(() => renderCalendar(), 150);
             requestNotificationPermission();
+            // Check for cleaning reminder
+            setTimeout(() => checkCleaningReminder(), 500);
         }
 
         // ========== PAGE LOAD ==========
@@ -2269,7 +2318,7 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.2.0-complete-export';
+        const APP_VERSION = '2.3.0-cleaning-reminder';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
