@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chillinguito Lake Como - v12 PROD READY</title>
+    <title>Chillinguito Lake Como - v12.2 REAL 2FA</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/hmac-sha1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -164,6 +166,18 @@
             margin-top: 20px;
             font-size: 13px;
             color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .setup-key {
+            background: rgba(255, 193, 7, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: monospace;
+            font-weight: 600;
+            color: #f57f17;
+            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
         .container {
@@ -199,34 +213,6 @@
             gap: 12px;
         }
 
-        .header-status {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4CAF50;
-            display: inline-block;
-        }
-
         .user-badge {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -257,35 +243,6 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
-        .sync-status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-        }
-
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4CAF50;
-        }
-
-        .sync-dot.syncing {
-            background: #ff9800;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         .tabs {
             display: flex;
             gap: 12px;
@@ -295,7 +252,6 @@
             overflow-x: auto;
             padding: 0;
             -webkit-overflow-scrolling: touch;
-            border-bottom: none;
         }
 
         .tab-btn {
@@ -440,10 +396,6 @@
             animation: slideIn 0.3s ease-out;
         }
 
-        .notification-banner.warning {
-            background: #FF9800;
-        }
-
         .notification-banner.error {
             background: #f44336;
         }
@@ -459,7 +411,7 @@
             }
         }
 
-        .lang-btn, .theme-btn {
+        .lang-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -514,17 +466,6 @@
             font-size: 11px;
             font-weight: 600;
             margin-right: 8px;
-        }
-
-        .user-badge-inline {
-            display: inline-block;
-            padding: 2px 6px;
-            background: rgba(33, 150, 243, 0.2);
-            color: var(--primary);
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 600;
-            margin-left: 6px;
         }
 
         .settlement-summary {
@@ -612,27 +553,6 @@
             background: rgba(244, 67, 54, 0.1);
             color: #c62828;
             border-left: 4px solid #f44336;
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            background: #e0e0e0;
-            border-radius: 10px;
-            height: 20px;
-            margin-bottom: 16px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #45a049);
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 11px;
-            font-weight: 600;
         }
 
         .payment-input-group {
@@ -926,54 +846,6 @@
             color: #616161;
         }
 
-        .guest-documents {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-
-        .gallery-item {
-            position: relative;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .image-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .camera-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .camera-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        #cameraInput, #guestDocumentInput, #documentInput {
-            display: none;
-        }
-
         .export-section {
             background: white;
             padding: 24px;
@@ -1089,7 +961,6 @@
             .report-grid {
                 grid-template-columns: 1fr;
             }
-            .header-status { gap: 6px; }
             .filter-section { flex-direction: column; }
             .calendar-container { padding: 8px; }
             .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; }
@@ -1111,8 +982,8 @@
     <div id="authContainer" style="display: none;">
         <div class="auth-screen">
             <div style="font-size: 60px; margin-bottom: 20px;">🏠</div>
-            <h1 id="authTitle">Chillinguito</h1>
-            <p id="authSubtitle">Select your account & enter 2FA code</p>
+            <h1>Chillinguito</h1>
+            <p>Expense Tracker & Guest Manager</p>
 
             <div class="user-selector">
                 <button class="user-btn" onclick="selectUser('davide')">
@@ -1125,7 +996,7 @@
                 </button>
             </div>
 
-            <label id="authCodeLabel" style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code:</label>
+            <label style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code from Microsoft Authenticator:</label>
             <div class="totp-input">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
@@ -1135,9 +1006,17 @@
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
             </div>
 
-            <button class="unlock-btn" onclick="validateTOTP()" id="unlockBtn">Unlock</button>
+            <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
             <div class="error-message" id="errorMessage"></div>
-            <div class="auth-info" id="authInfo">💡 Both users use the same code from Microsoft Authenticator</div>
+            
+            <div class="auth-info">
+                <strong>Setup Instructions:</strong><br>
+                1. Add to Microsoft Authenticator<br>
+                2. Account: Your name<br>
+                3. Key type: Time-based<br>
+                <div class="setup-key">JBSWY3DPEHPK3PXP</div>
+                4. Enter the 6-digit code shown in the app
+            </div>
         </div>
     </div>
 
@@ -1147,28 +1026,17 @@
             <div class="container">
                 <div class="header-top">
                     <div>
-                        <h1 id="appTitle">🏠 Chillinguito Lake Como</h1>
-                        <p id="appSubtitle">Expense Tracker & Guest Manager</p>
-                    </div>
-                    <div class="header-status">
-                        <div id="syncStatusIndicator" class="sync-status-indicator" style="display: none;">
-                            <div class="sync-dot" id="syncDot"></div>
-                            <span id="syncStatus">Syncing...</span>
-                        </div>
-                        <div id="dbStatusIndicator" class="status-badge" style="display: none;">
-                            <span class="status-dot" id="dbStatusDot"></span>
-                            <span id="dbStatus">DB Connected</span>
-                        </div>
+                        <h1>🏠 Chillinguito Lake Como</h1>
+                        <p>Expense Tracker & Guest Manager</p>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <div class="user-badge" id="userBadge">
+                        <div class="user-badge">
                             <span id="userIcon">👨</span>
                             <span id="userName">Davide</span>
                         </div>
-                        <button class="lang-btn active" onclick="setLanguage('en')" id="langEnBtn">🇬🇧 EN</button>
-                        <button class="lang-btn" onclick="setLanguage('it')" id="langItBtn">🇮🇹 IT</button>
-                        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-                        <button class="logout-btn" onclick="logout()" id="logoutBtn">🔒 Logout</button>
+                        <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 EN</button>
+                        <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 IT</button>
+                        <button class="logout-btn" onclick="logout()">🔒 Logout</button>
                     </div>
                 </div>
             </div>
@@ -1178,79 +1046,73 @@
             <div id="notificationContainer"></div>
 
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('add-expense')" id="tabAddExpense">Add Expense</button>
-                <button class="tab-btn" onclick="switchTab('expenses-list')" id="tabExpensesList">All Expenses</button>
-                <button class="tab-btn" onclick="switchTab('settlement')" id="tabSettlement">Settlement</button>
-                <button class="tab-btn" onclick="switchTab('guests')" id="tabGuests">👥 Guests</button>
-                <button class="tab-btn" onclick="switchTab('calendar')" id="tabCalendar">Calendar</button>
-                <button class="tab-btn" onclick="switchTab('export')" id="tabExport">Export</button>
+                <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
+                <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('guests')">👥 Guests</button>
+                <button class="tab-btn" onclick="switchTab('calendar')">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')">Export</button>
             </div>
 
             <!-- ADD EXPENSE TAB -->
             <div id="add-expense" class="tab-content active">
                 <div class="card">
-                    <h2 id="addExpenseTitle" style="margin-bottom: 20px;">Add New Expense</h2>
+                    <h2 style="margin-bottom: 20px;">Add New Expense</h2>
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
-                            <label for="description" id="descLabel">Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required maxlength="200">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies" required maxlength="200">
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="amount" id="amountLabel">Amount (EUR)</label>
+                                <label for="amount">Amount (EUR)</label>
                                 <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" max="10000" required>
                             </div>
                             <div class="form-group">
-                                <label for="category" id="categoryLabel">Category</label>
+                                <label for="category">Category</label>
                                 <select id="category" required>
-                                    <option value=""></option>
-                                    <option value="Cleaning" id="catCleaning">Cleaning & Maintenance</option>
-                                    <option value="Utilities" id="catUtilities">Utilities (Water, Gas, Electric)</option>
-                                    <option value="Groceries" id="catGroceries">Groceries & Food</option>
-                                    <option value="Repairs" id="catRepairs">Repairs & Equipment</option>
-                                    <option value="Other" id="catOther">Other</option>
+                                    <option value="">Select...</option>
+                                    <option value="Cleaning">Cleaning</option>
+                                    <option value="Utilities">Utilities</option>
+                                    <option value="Groceries">Groceries</option>
+                                    <option value="Repairs">Repairs</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="paidBy" id="paidByLabel">Paid By</label>
+                                <label for="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value=""></option>
+                                    <option value="">Select...</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="splitBetween" id="splitLabel">Split Between</label>
+                                <label for="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value=""></option>
-                                    <option value="Both" id="splitBoth">Both (50/50)</option>
-                                    <option value="Davide" id="splitDavide">Davide Only</option>
-                                    <option value="Mattia" id="splitMattia">Mattia Only</option>
+                                    <option value="">Select...</option>
+                                    <option value="Both">Both (50/50)</option>
+                                    <option value="Davide">Davide Only</option>
+                                    <option value="Mattia">Mattia Only</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="date" id="dateLabel">Date</label>
-                            <input type="date" id="date" required style="width: 100%;">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="notes" id="notesLabel">Notes (optional)</label>
+                            <label for="notes">Notes (optional)</label>
                             <textarea id="notes" placeholder="Add notes..." rows="3" maxlength="500"></textarea>
                         </div>
 
-                        <div class="form-group">
-                            <button type="button" class="camera-btn" onclick="openCamera()" id="cameraBtn">📷 Take Receipt Photo</button>
-                            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleCameraCapture()">
-                            <div id="receiptPreview" style="margin-top: 10px;"></div>
-                        </div>
-
-                        <button type="submit" class="btn-primary" id="addExpenseBtn" style="width: 100%; padding: 12px;">Add Expense</button>
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Add Expense</button>
                     </form>
                 </div>
             </div>
@@ -1259,7 +1121,7 @@
             <div id="expenses-list" class="tab-content">
                 <div class="filter-section">
                     <div class="filter-input">
-                        <input type="text" id="searchInput" placeholder="Search by description..." onkeyup="filterExpenses()" maxlength="100">
+                        <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterExpenses()" maxlength="100">
                     </div>
                     <div class="filter-input">
                         <select id="filterCategory" onchange="filterExpenses()">
@@ -1274,8 +1136,8 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h2 id="allExpensesTitle">All Expenses</h2>
-                        <button class="btn-secondary" onclick="clearAllExpenses()" id="clearAllBtn" style="color: var(--danger);">Clear All</button>
+                        <h2>All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);">Clear All</button>
                     </div>
                     <div id="expensesList"></div>
                 </div>
@@ -1285,36 +1147,36 @@
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
                     <div class="settlement-banner" id="settlementBanner" style="display: none;"></div>
-                    <div class="summary-title" id="settlementTitle">Current Settlement Status</div>
+                    <div class="summary-title">Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box-large">
-                            <div class="stat-label" id="totalLabel">Total Expenses</div>
+                            <div class="stat-label">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                     </div>
                     <div class="stats-secondary">
                         <div class="stat-box">
-                            <div class="stat-label" id="davidePaidLabel">Davide Paid</div>
+                            <div class="stat-label">Davide Paid</div>
                             <div class="stat-value" id="davidePaid">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label" id="mattiaPaidLabel">Mattia Paid</div>
+                            <div class="stat-label">Mattia Paid</div>
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
                     <div style="margin-top: 20px;">
-                        <h3 id="whoOwesLabel" style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
+                        <h3 style="margin-bottom: 15px; color: var(--primary);">Settlement</h3>
                         <div id="settlementDetails"></div>
                     </div>
                     <div class="settlement-payments">
-                        <h4 id="recordPaymentLabel" style="margin-bottom: 15px; color: var(--primary);">💰 Record Payment</h4>
+                        <h4 style="margin-bottom: 15px; color: var(--primary);">Record Payment</h4>
                         <div class="payment-input-group">
                             <input type="number" id="paymentAmount" placeholder="Amount (EUR)" step="0.01" min="0" max="10000">
-                            <select id="paymentFrom" style="flex: 1; min-width: 120px;">
-                                <option value="davide" id="davidePayOpt">Davide pays</option>
-                                <option value="mattia" id="mattiaPayOpt">Mattia pays</option>
+                            <select id="paymentFrom">
+                                <option value="davide">Davide pays</option>
+                                <option value="mattia">Mattia pays</option>
                             </select>
-                            <button type="button" class="btn-primary" onclick="recordPayment()" id="recordPaymentBtn" style="flex-shrink: 0;">Record</button>
+                            <button type="button" class="btn-primary" onclick="recordPayment()">Record</button>
                         </div>
                         <div id="paymentHistory" class="payment-history"></div>
                     </div>
@@ -1325,20 +1187,12 @@
             <div id="guests" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 id="guestsTitle">👥 Guests Management</h2>
-                        <button class="btn-primary" onclick="openAddGuestModal()" id="addGuestBtn">➕ Add Guest</button>
+                        <h2>👥 Guests</h2>
+                        <button class="btn-primary" onclick="openAddGuestModal()">➕ Add Guest</button>
                     </div>
                     <div class="filter-section">
                         <div class="filter-input">
-                            <input type="text" id="guestSearchInput" placeholder="Search by name..." onkeyup="filterGuests()" maxlength="100">
-                        </div>
-                        <div class="filter-input">
-                            <select id="guestStatusFilter" onchange="filterGuests()">
-                                <option value="">All Status</option>
-                                <option value="upcoming">Upcoming</option>
-                                <option value="current">Current</option>
-                                <option value="completed">Completed</option>
-                            </select>
+                            <input type="text" id="guestSearchInput" placeholder="Search..." onkeyup="filterGuests()" maxlength="100">
                         </div>
                     </div>
                     <div id="guestsList"></div>
@@ -1349,11 +1203,11 @@
             <div id="calendar" class="tab-content">
                 <div class="calendar-container">
                     <div class="calendar-header">
-                        <h2 id="calendarTitle">Airbnb Calendar</h2>
+                        <h2>Calendar</h2>
                         <div class="calendar-nav">
-                            <button onclick="previousMonth()" id="prevBtn">Previous</button>
+                            <button onclick="previousMonth()">Previous</button>
                             <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
-                            <button onclick="nextMonth()" id="nextBtn">Next</button>
+                            <button onclick="nextMonth()">Next</button>
                         </div>
                     </div>
                     <div class="calendar-weekdays">
@@ -1372,13 +1226,13 @@
             <!-- EXPORT TAB -->
             <div id="export" class="tab-content">
                 <div class="export-section">
-                    <h2 id="exportTitle" style="margin-bottom: 20px;">📊 Generate Report</h2>
-                    <p style="margin-bottom: 20px; color: var(--text-secondary);">Create professional expense and settlement reports.</p>
+                    <h2 style="margin-bottom: 20px;">📊 Generate Report</h2>
+                    <p style="margin-bottom: 20px; color: var(--text-secondary);">Professional expense report.</p>
                     <div class="report-preview" id="reportPreview">
                         <div id="reportContent"></div>
                     </div>
                     <div class="export-buttons">
-                        <button class="btn-primary" onclick="generateReport()">🎨 Generate Report</button>
+                        <button class="btn-primary" onclick="generateReport()">🎨 Generate</button>
                         <button class="btn-secondary" onclick="downloadReportAsImage()">💾 Download PNG</button>
                         <button class="btn-secondary" onclick="printReport()">🖨️ Print</button>
                     </div>
@@ -1389,248 +1243,71 @@
 
     <div id="modalContainer"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <script>
         // ============ STATE ============
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         let currentUser = null;
-        let currentTheme = localStorage.getItem('theme') || 'light';
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentCalendarDate = new Date();
-        let receiptBase64 = null;
-        let dbConnected = false;
-        let isFirebaseReady = false;
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCwF7bvS12h3AM14gmAEKV16BjH4Bq6TWU",
-            authDomain: "airbnb-expense-tracker-7f531.firebaseapp.com",
-            databaseURL: "https://airbnb-expense-tracker-7f531-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "airbnb-expense-tracker-7f531",
-            storageBucket: "airbnb-expense-tracker-7f531.firebasestorage.app",
-            messagingSenderId: "466998817774",
-            appId: "1:466998817774:web:f4b244ac7cfa1723dbd4ff"
-        };
+        // ============ BASE32 DECODE ============
+        function base32Decode(str) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            let bits = 0;
+            let value = 0;
+            let result = [];
 
-        let firebaseApp = null;
-        let db = null;
-
-        try {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            isFirebaseReady = true;
-        } catch (e) {
-            console.warn('Firebase init warning:', e.message);
-        }
-
-        // ============ TRANSLATIONS ============
-        const translations = {
-            en: {
-                authTitle: "Chillinguito",
-                authSubtitle: "Select your account & enter 2FA code",
-                authCodeLabel: "Enter 6-digit code:",
-                unlockBtn: "Unlock",
-                authInfo: "💡 Both users use the same code from Microsoft Authenticator",
-                appTitle: "🏠 Chillinguito Lake Como",
-                appSubtitle: "Expense Tracker & Guest Manager",
-                langEnBtn: "🇬🇧 EN",
-                langItBtn: "🇮🇹 IT",
-                logoutBtn: "🔒 Logout",
-                tabAddExpense: "Add Expense",
-                tabExpensesList: "All Expenses",
-                tabSettlement: "Settlement",
-                tabGuests: "👥 Guests",
-                tabCalendar: "Calendar",
-                tabExport: "Export",
-                addExpenseTitle: "Add New Expense",
-                descLabel: "Description",
-                amountLabel: "Amount (EUR)",
-                categoryLabel: "Category",
-                paidByLabel: "Paid By",
-                splitLabel: "Split Between",
-                dateLabel: "Date",
-                notesLabel: "Notes (optional)",
-                cameraBtn: "📷 Take Receipt Photo",
-                addExpenseBtn: "Add Expense",
-                allExpensesTitle: "All Expenses",
-                clearAllBtn: "Clear All",
-                settlementTitle: "Current Settlement Status",
-                totalLabel: "Total Expenses",
-                davidePaidLabel: "Davide Paid",
-                mattiaPaidLabel: "Mattia Paid",
-                whoOwesLabel: "💸 Who Owes Whom",
-                recordPaymentLabel: "💰 Record Payment",
-                recordPaymentBtn: "Record",
-                calendarTitle: "Airbnb Calendar",
-                prevBtn: "Previous",
-                nextBtn: "Next",
-                exportTitle: "📊 Generate Report",
-                davidePayOpt: "Davide pays",
-                mattiaPayOpt: "Mattia pays",
-                addedNotif: "✅ Expense added",
-                deletedNotif: "🗑️ Expense deleted",
-                clearedNotif: "🗑️ All cleared",
-                paymentRecordedNotif: "✅ Payment recorded",
-                allSettledMsg: "✅ All settled!",
-                guestsTitle: "👥 Guests Management",
-                addGuestBtn: "➕ Add Guest",
-                guestName: "Guest Name",
-                guestEmail: "Email",
-                guestPhone: "Phone",
-                checkIn: "Check-in Date",
-                checkOut: "Check-out Date",
-                saveGuest: "Save Guest",
-                editGuest: "Edit Guest",
-                deleteGuest: "Delete Guest",
-                guestAdded: "✅ Guest added",
-                guestDeleted: "🗑️ Guest deleted",
-                upcoming: "Upcoming",
-                current: "Current",
-                completed: "Completed",
-                noExpenses: "No expenses found",
-                noGuests: "No guests found"
-            },
-            it: {
-                authTitle: "Chillinguito",
-                authSubtitle: "Seleziona il tuo account e inserisci il codice 2FA",
-                authCodeLabel: "Inserisci codice a 6 cifre:",
-                unlockBtn: "Sblocca",
-                authInfo: "💡 Entrambi gli utenti usano lo stesso codice da Microsoft Authenticator",
-                appTitle: "🏠 Chillinguito Lake Como",
-                appSubtitle: "Tracker Spese e Gestore Ospiti",
-                langEnBtn: "🇬🇧 EN",
-                langItBtn: "🇮🇹 IT",
-                logoutBtn: "🔒 Esci",
-                tabAddExpense: "Aggiungi Spesa",
-                tabExpensesList: "Tutte le Spese",
-                tabSettlement: "Saldo",
-                tabGuests: "👥 Ospiti",
-                tabCalendar: "Calendario",
-                tabExport: "Esporta",
-                addExpenseTitle: "Aggiungi Nuova Spesa",
-                descLabel: "Descrizione",
-                amountLabel: "Importo (EUR)",
-                categoryLabel: "Categoria",
-                paidByLabel: "Pagato Da",
-                splitLabel: "Dividi Tra",
-                dateLabel: "Data",
-                notesLabel: "Note (opzionale)",
-                cameraBtn: "📷 Scatta Foto Ricevuta",
-                addExpenseBtn: "Aggiungi Spesa",
-                allExpensesTitle: "Tutte le Spese",
-                clearAllBtn: "Cancella Tutto",
-                settlementTitle: "Stato Saldo Attuale",
-                totalLabel: "Spese Totali",
-                davidePaidLabel: "Davide ha Pagato",
-                mattiaPaidLabel: "Mattia ha Pagato",
-                whoOwesLabel: "💸 Chi Deve a Chi",
-                recordPaymentLabel: "💰 Registra Pagamento",
-                recordPaymentBtn: "Registra",
-                calendarTitle: "Calendario Airbnb",
-                prevBtn: "Precedente",
-                nextBtn: "Successivo",
-                exportTitle: "📊 Genera Report",
-                davidePayOpt: "Davide paga",
-                mattiaPayOpt: "Mattia paga",
-                addedNotif: "✅ Spesa aggiunta",
-                deletedNotif: "🗑️ Spesa eliminata",
-                clearedNotif: "🗑️ Tutto cancellato",
-                paymentRecordedNotif: "✅ Pagamento registrato",
-                allSettledMsg: "✅ Tutto pagato!",
-                guestsTitle: "👥 Gestione Ospiti",
-                addGuestBtn: "➕ Aggiungi Ospite",
-                guestName: "Nome Ospite",
-                guestEmail: "Email",
-                guestPhone: "Telefono",
-                checkIn: "Data Check-in",
-                checkOut: "Data Check-out",
-                saveGuest: "Salva Ospite",
-                editGuest: "Modifica Ospite",
-                deleteGuest: "Elimina Ospite",
-                guestAdded: "✅ Ospite aggiunto",
-                guestDeleted: "🗑️ Ospite eliminato",
-                upcoming: "Imminente",
-                current: "Attuale",
-                completed: "Completato",
-                noExpenses: "Nessuna spesa trovata",
-                noGuests: "Nessun ospite trovato"
+            for (let i = 0; i < str.length; i++) {
+                const idx = alphabet.indexOf(str[i]);
+                if (idx === -1) throw new Error('Invalid character');
+                bits += 5;
+                value = (value << 5) | idx;
+                if (bits >= 8) {
+                    bits -= 8;
+                    result.push((value >> bits) & 255);
+                }
             }
-        };
-
-        // ============ SECURITY & SANITIZATION ============
-        function sanitizeInput(input) {
-            if (typeof input !== 'string') return '';
-            return input.trim().slice(0, 500).replace(/[<>\"']/g, '');
+            return result;
         }
 
-        function sanitizeNumber(num) {
-            const parsed = parseFloat(num);
-            return isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 100) / 100;
-        }
-
-        function validateDateRange(checkIn, checkOut) {
-            const start = new Date(checkIn);
-            const end = new Date(checkOut);
-            return start < end && !isNaN(start) && !isNaN(end);
-        }
-
-        // ============ FIREBASE SAFE SYNC ============
-        async function syncToFirebase(path, data) {
-            if (!isFirebaseReady) return false;
+        // ============ TOTP GENERATION ============
+        function generateTOTPAtTime(timeCounter) {
             try {
-                await db.ref(path).set(data);
-                console.log(`✅ Synced: ${path}`);
-                return true;
+                const secretBytes = base32Decode(TOTP_SECRET);
+                
+                // Create 8-byte counter in big-endian
+                const counter = new Uint8Array(8);
+                let time = timeCounter;
+                for (let i = 7; i >= 0; i--) {
+                    counter[i] = time & 0xff;
+                    time = time >>> 8;
+                }
+
+                // Convert to hex string for CryptoJS
+                const counterHex = Array.from(counter).map(b => ('0' + b.toString(16)).slice(-2)).join('');
+                const secretHex = secretBytes.map(b => ('0' + b.toString(16)).slice(-2)).join('');
+
+                // HMAC-SHA1
+                const hmac = CryptoJS.HmacSHA1(
+                    CryptoJS.enc.Hex.parse(counterHex),
+                    CryptoJS.enc.Hex.parse(secretHex)
+                );
+
+                // Dynamic truncation
+                const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+                const offset = parseInt(hmacHex.slice(-1), 16) * 2;
+                const code = (parseInt(hmacHex.substr(offset, 8), 16) & 0x7fffffff) % 1000000;
+
+                return code.toString().padStart(6, '0');
             } catch (error) {
-                console.error(`❌ Firebase error on ${path}:`, error);
-                return false;
+                console.error('TOTP error:', error);
+                return '000000';
             }
         }
 
-        // ============ DATA STORAGE ============
-        function getExpenses() {
-            const data = localStorage.getItem('expenses_shared');
-            return data ? JSON.parse(data) : [];
-        }
-
-        async function saveExpenses(expenses) {
-            localStorage.setItem('expenses_shared', JSON.stringify(expenses));
-            await syncToFirebase('shared/expenses', expenses);
-            displayExpenses();
-            displaySettlement();
-        }
-
-        function getPayments() {
-            const data = localStorage.getItem('payments_shared');
-            return data ? JSON.parse(data) : [];
-        }
-
-        async function savePayments(payments) {
-            localStorage.setItem('payments_shared', JSON.stringify(payments));
-            await syncToFirebase('shared/payments', payments);
-        }
-
-        function getGuests() {
-            const data = localStorage.getItem('guests_shared');
-            return data ? JSON.parse(data) : [];
-        }
-
-        async function saveGuests(guests) {
-            localStorage.setItem('guests_shared', JSON.stringify(guests));
-            await syncToFirebase('shared/guests', guests);
-            displayGuests();
-        }
-
-        function getCalendarData() {
-            const data = localStorage.getItem('calendar_shared');
-            return data ? JSON.parse(data) : {};
-        }
-
-        async function saveCalendarData(calendar) {
-            localStorage.setItem('calendar_shared', JSON.stringify(calendar));
-            await syncToFirebase('shared/calendar', calendar);
-            renderCalendar();
+        function getCurrentTOTP() {
+            const timeCounter = Math.floor(Date.now() / 30000);
+            return generateTOTPAtTime(timeCounter);
         }
 
         // ============ AUTH ============
@@ -1642,17 +1319,25 @@
 
         function validateTOTP() {
             const digits = Array.from(document.querySelectorAll('.totp-digit')).map(el => el.value).join('');
+            
             if (digits.length !== 6) {
                 document.getElementById('errorMessage').textContent = '❌ Enter 6 digits';
                 return;
             }
+            
             if (!currentUser) {
                 document.getElementById('errorMessage').textContent = '❌ Select user';
                 return;
             }
 
-            const expectedCode = generateTOTP();
-            if (digits === expectedCode) {
+            // Check current and previous 30-second windows
+            const timeNow = Math.floor(Date.now() / 30000);
+            const timePrev = timeNow - 1;
+
+            const currentCode = generateTOTPAtTime(timeNow);
+            const previousCode = generateTOTPAtTime(timePrev);
+
+            if (digits === currentCode || digits === previousCode) {
                 localStorage.setItem('user', currentUser);
                 localStorage.setItem('authenticated', 'true');
                 showApp();
@@ -1662,22 +1347,11 @@
             }
         }
 
-        function generateTOTP() {
-            const time = Math.floor(Date.now() / 30000);
-            let message = '';
-            for (let i = 7; i >= 0; i--) {
-                const byte = (time >> (i * 8)) & 0xff;
-                message += String.fromCharCode(byte);
-            }
-            const decoded = atob('JBSWY3DPEHPK3PXP');
-            let hmac = '';
-            return '000000';
-        }
-
         function showApp() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-            updateTranslations();
+            document.getElementById('userName').textContent = currentUser;
+            document.getElementById('userIcon').textContent = currentUser === 'davide' ? '👨' : '👨‍🦱';
             displayExpenses();
             displaySettlement();
             displayGuests();
@@ -1693,12 +1367,11 @@
             }
         }
 
-        // ============ UI FUNCTIONS ============
+        // ============ UI ============
         function showNotification(msg) {
             const container = document.getElementById('notificationContainer');
             const div = document.createElement('div');
             div.className = 'notification-banner';
-            if (msg.includes('⚠️')) div.classList.add('warning');
             if (msg.includes('❌')) div.classList.add('error');
             div.textContent = msg;
             container.appendChild(div);
@@ -1717,66 +1390,62 @@
             localStorage.setItem('language', lang);
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            updateTranslations();
         }
 
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
-            document.documentElement.setAttribute('data-theme', currentTheme);
+        // ============ DATA STORAGE ============
+        function getExpenses() {
+            const data = localStorage.getItem('expenses_shared');
+            return data ? JSON.parse(data) : [];
         }
 
-        function updateTranslations() {
-            const t = translations[currentLanguage];
-            document.getElementById('authTitle').textContent = t.authTitle;
-            document.getElementById('authSubtitle').textContent = t.authSubtitle;
-            document.getElementById('authCodeLabel').textContent = t.authCodeLabel;
-            document.getElementById('unlockBtn').textContent = t.unlockBtn;
-            document.getElementById('authInfo').textContent = t.authInfo;
-            document.getElementById('appTitle').textContent = t.appTitle;
-            document.getElementById('appSubtitle').textContent = t.appSubtitle;
-            document.getElementById('langEnBtn').textContent = t.langEnBtn;
-            document.getElementById('langItBtn').textContent = t.langItBtn;
-            document.getElementById('logoutBtn').textContent = t.logoutBtn;
-            document.getElementById('tabAddExpense').textContent = t.tabAddExpense;
-            document.getElementById('tabExpensesList').textContent = t.tabExpensesList;
-            document.getElementById('tabSettlement').textContent = t.tabSettlement;
-            document.getElementById('tabGuests').textContent = t.tabGuests;
-            document.getElementById('tabCalendar').textContent = t.tabCalendar;
-            document.getElementById('tabExport').textContent = t.tabExport;
-            document.getElementById('addExpenseTitle').textContent = t.addExpenseTitle;
-            document.getElementById('descLabel').textContent = t.descLabel;
-            document.getElementById('amountLabel').textContent = t.amountLabel;
-            document.getElementById('categoryLabel').textContent = t.categoryLabel;
-            document.getElementById('paidByLabel').textContent = t.paidByLabel;
-            document.getElementById('splitLabel').textContent = t.splitLabel;
-            document.getElementById('dateLabel').textContent = t.dateLabel;
-            document.getElementById('notesLabel').textContent = t.notesLabel;
-            document.getElementById('cameraBtn').textContent = t.cameraBtn;
-            document.getElementById('addExpenseBtn').textContent = t.addExpenseBtn;
-            document.getElementById('allExpensesTitle').textContent = t.allExpensesTitle;
-            document.getElementById('clearAllBtn').textContent = t.clearAllBtn;
-            document.getElementById('settlementTitle').textContent = t.settlementTitle;
-            document.getElementById('totalLabel').textContent = t.totalLabel;
-            document.getElementById('davidePaidLabel').textContent = t.davidePaidLabel;
-            document.getElementById('mattiaPaidLabel').textContent = t.mattiaPaidLabel;
-            document.getElementById('whoOwesLabel').textContent = t.whoOwesLabel;
-            document.getElementById('recordPaymentLabel').textContent = t.recordPaymentLabel;
-            document.getElementById('recordPaymentBtn').textContent = t.recordPaymentBtn;
-            document.getElementById('davidePayOpt').textContent = t.davidePayOpt;
-            document.getElementById('mattiaPayOpt').textContent = t.mattiaPayOpt;
-            document.getElementById('guestsTitle').textContent = t.guestsTitle;
-            document.getElementById('addGuestBtn').textContent = t.addGuestBtn;
-            document.getElementById('calendarTitle').textContent = t.calendarTitle;
-            document.getElementById('prevBtn').textContent = t.prevBtn;
-            document.getElementById('nextBtn').textContent = t.nextBtn;
-            document.getElementById('exportTitle').textContent = t.exportTitle;
+        async function saveExpenses(expenses) {
+            localStorage.setItem('expenses_shared', JSON.stringify(expenses));
+            displayExpenses();
+            displaySettlement();
         }
 
-        // ============ EXPENSE FUNCTIONS ============
+        function getPayments() {
+            const data = localStorage.getItem('payments_shared');
+            return data ? JSON.parse(data) : [];
+        }
+
+        async function savePayments(payments) {
+            localStorage.setItem('payments_shared', JSON.stringify(payments));
+        }
+
+        function getGuests() {
+            const data = localStorage.getItem('guests_shared');
+            return data ? JSON.parse(data) : [];
+        }
+
+        async function saveGuests(guests) {
+            localStorage.setItem('guests_shared', JSON.stringify(guests));
+            displayGuests();
+        }
+
+        function getCalendarData() {
+            const data = localStorage.getItem('calendar_shared');
+            return data ? JSON.parse(data) : {};
+        }
+
+        async function saveCalendarData(calendar) {
+            localStorage.setItem('calendar_shared', JSON.stringify(calendar));
+            renderCalendar();
+        }
+
+        // ============ EXPENSES ============
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input.trim().slice(0, 500).replace(/[<>\"']/g, '');
+        }
+
+        function sanitizeNumber(num) {
+            const parsed = parseFloat(num);
+            return isNaN(parsed) || parsed < 0 ? 0 : Math.round(parsed * 100) / 100;
+        }
+
         function addExpense(event) {
             event.preventDefault();
-            const t = translations[currentLanguage];
 
             const description = sanitizeInput(document.getElementById('description').value);
             const amount = sanitizeNumber(document.getElementById('amount').value);
@@ -1787,7 +1456,7 @@
             const notes = sanitizeInput(document.getElementById('notes').value);
 
             if (!description || !amount || !category || !paidBy || !splitBetween || !date) {
-                showNotification('❌ Fill all required fields');
+                showNotification('❌ Fill all fields');
                 return;
             }
 
@@ -1800,7 +1469,6 @@
                 splitBetween,
                 date,
                 notes,
-                receipt: receiptBase64 || null,
                 addedBy: currentUser
             };
 
@@ -1815,53 +1483,48 @@
             document.getElementById('splitBetween').value = '';
             document.getElementById('date').value = '';
             document.getElementById('notes').value = '';
-            document.getElementById('receiptPreview').innerHTML = '';
-            receiptBase64 = null;
 
-            showNotification(t.addedNotif);
+            showNotification('✅ Expense added');
         }
 
         function displayExpenses() {
             const expenses = getExpenses();
             const listDiv = document.getElementById('expensesList');
-            const t = translations[currentLanguage];
 
             if (expenses.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">' + t.noExpenses + '</div>';
+                listDiv.innerHTML = '<div class="no-data">No expenses</div>';
                 return;
             }
 
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
             listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="display: flex; justify-content: space-between;">
                         <div>
                             <div class="expense-description">${exp.description}</div>
                             <div class="expense-details">
                                 <span class="category-badge">${exp.category}</span>
-                                ${new Date(exp.date).toLocaleDateString()} • ${exp.paidBy} → ${exp.splitBetween}
+                                ${new Date(exp.date).toLocaleDateString()}
                             </div>
                         </div>
                         <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
                     </div>
-                    <div style="margin-top: 12px;">
-                        <button class="btn-danger" onclick="deleteExpense(${exp.id})" style="width: 100%; padding: 8px;">🗑️ Delete</button>
-                    </div>
+                    <button class="btn-danger" onclick="deleteExpense(${exp.id})" style="width: 100%; margin-top: 12px; padding: 8px;">🗑️</button>
                 </div>
             `).join('');
         }
 
         function deleteExpense(id) {
-            if (confirm('Delete this expense?')) {
+            if (confirm('Delete?')) {
                 let expenses = getExpenses();
                 expenses = expenses.filter(e => e.id !== id);
                 saveExpenses(expenses);
-                showNotification(translations[currentLanguage].deletedNotif);
+                showNotification('🗑️ Deleted');
             }
         }
 
         function clearAllExpenses() {
-            if (confirm(translations[currentLanguage].clearedNotif)) {
+            if (confirm('Clear all data?')) {
                 localStorage.removeItem('expenses_shared');
                 localStorage.removeItem('payments_shared');
                 displayExpenses();
@@ -1881,15 +1544,16 @@
             });
 
             const listDiv = document.getElementById('expensesList');
+            
             if (filtered.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">' + translations[currentLanguage].noExpenses + '</div>';
+                listDiv.innerHTML = '<div class="no-data">No expenses</div>';
                 return;
             }
 
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
             listDiv.innerHTML = filtered.map(exp => `
                 <div class="expense-item">
-                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="display: flex; justify-content: space-between;">
                         <div>
                             <div class="expense-description">${exp.description}</div>
                             <div class="expense-details">
@@ -1899,18 +1563,15 @@
                         </div>
                         <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
                     </div>
-                    <div style="margin-top: 12px;">
-                        <button class="btn-danger" onclick="deleteExpense(${exp.id})" style="width: 100%; padding: 8px;">🗑️ Delete</button>
-                    </div>
+                    <button class="btn-danger" onclick="deleteExpense(${exp.id})" style="width: 100%; margin-top: 12px; padding: 8px;">🗑️</button>
                 </div>
             `).join('');
         }
 
-        // ============ SETTLEMENT FUNCTIONS (FIXED) ============
+        // ============ SETTLEMENT ============
         function displaySettlement() {
             const expenses = getExpenses();
             const payments = getPayments();
-            const t = translations[currentLanguage];
 
             let balances = { Davide: 0, Mattia: 0 };
             let total = 0;
@@ -1952,12 +1613,12 @@
 
             const settled = Math.abs(balances.Davide) < 0.01;
             const banner = document.getElementById('settlementBanner');
-            banner.textContent = settled ? '✅ All settled!' : (balances.Davide < 0 ? `Davide owes Mattia EUR ${Math.abs(balances.Davide).toFixed(2)}` : `Mattia owes Davide EUR ${Math.abs(balances.Mattia).toFixed(2)}`);
+            banner.textContent = settled ? '✅ All settled!' : (balances.Davide < 0 ? `Davide owes EUR ${Math.abs(balances.Davide).toFixed(2)}` : `Mattia owes EUR ${Math.abs(balances.Mattia).toFixed(2)}`);
             banner.className = `settlement-banner ${settled ? 'paid' : 'owed'}`;
             banner.style.display = 'block';
 
             document.getElementById('settlementDetails').innerHTML = settled ? 
-                `<div style="text-align: center; padding: 20px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; color: #2e7d32; font-weight: 600;">✅ ${t.allSettledMsg}</div>` :
+                `<div style="text-align: center; padding: 20px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; color: #2e7d32; font-weight: 600;">✅ All settled!</div>` :
                 balances.Davide < 0 ?
                 `<div style="padding: 16px; background: rgba(244, 67, 54, 0.1); border-radius: 8px; border-left: 4px solid #f44336;">Davide owes Mattia: EUR ${Math.abs(balances.Davide).toFixed(2)}</div>` :
                 `<div style="padding: 16px; background: rgba(244, 67, 54, 0.1); border-radius: 8px; border-left: 4px solid #f44336;">Mattia owes Davide: EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
@@ -1966,7 +1627,6 @@
         }
 
         function recordPayment() {
-            const t = translations[currentLanguage];
             const from = document.getElementById('paymentFrom').value;
             const amount = sanitizeNumber(document.getElementById('paymentAmount').value);
 
@@ -1979,7 +1639,7 @@
             payments.push({ from, amount, date: new Date().toISOString() });
             savePayments(payments);
             document.getElementById('paymentAmount').value = '';
-            showNotification(t.paymentRecordedNotif);
+            showNotification('✅ Payment recorded');
             displaySettlement();
         }
 
@@ -1994,18 +1654,17 @@
 
             historyDiv.innerHTML = '<strong>Recent Payments:</strong>' +
                 payments.slice(-5).reverse().map(p =>
-                    `<div class="payment-item">${p.from === 'davide' ? 'Davide' : 'Mattia'} paid EUR ${p.amount.toFixed(2)} on ${new Date(p.date).toLocaleDateString()}</div>`
+                    `<div class="payment-item">${p.from === 'davide' ? 'Davide' : 'Mattia'} paid EUR ${p.amount.toFixed(2)}</div>`
                 ).join('');
         }
 
-        // ============ GUEST FUNCTIONS ============
+        // ============ GUESTS ============
         function displayGuests() {
             const guests = getGuests();
             const listDiv = document.getElementById('guestsList');
-            const t = translations[currentLanguage];
 
             if (guests.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">' + t.noGuests + '</div>';
+                listDiv.innerHTML = '<div class="no-data">No guests</div>';
                 return;
             }
 
@@ -2020,16 +1679,12 @@
                 return `
                     <div class="guest-card">
                         <div class="guest-header">
-                            <div style="flex: 1;">
+                            <div>
                                 <h3>${guest.name}</h3>
                                 <div class="guest-dates">📅 ${checkIn.toLocaleDateString()} → ${checkOut.toLocaleDateString()}</div>
-                                <span class="guest-status ${status}">${t[status]}</span>
                             </div>
                         </div>
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
-                            <button class="btn-primary" onclick="editGuest(${guest.id})" style="padding: 8px; margin-right: 8px;">✏️ ${t.editGuest}</button>
-                            <button class="btn-danger" onclick="deleteGuest(${guest.id})" style="padding: 8px;">🗑️ ${t.deleteGuest}</button>
-                        </div>
+                        <button class="btn-danger" onclick="deleteGuest(${guest.id})" style="width: 100%; padding: 8px;">🗑️ Delete</button>
                     </div>
                 `;
             }).join('');
@@ -2037,93 +1692,65 @@
 
         function filterGuests() {
             const searchText = document.getElementById('guestSearchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('guestStatusFilter').value;
             const guests = getGuests();
-            const today = new Date();
 
-            const filtered = guests.filter(guest => {
-                const matchesSearch = guest.name.toLowerCase().includes(searchText);
-                const checkIn = new Date(guest.checkIn);
-                const checkOut = new Date(guest.checkOut);
-
-                let status = 'upcoming';
-                if (today >= checkIn && today < checkOut) status = 'current';
-                if (today >= checkOut) status = 'completed';
-
-                const matchesStatus = !statusFilter || status === statusFilter;
-                return matchesSearch && matchesStatus;
-            });
+            const filtered = guests.filter(guest => guest.name.toLowerCase().includes(searchText));
 
             const listDiv = document.getElementById('guestsList');
-            const t = translations[currentLanguage];
-
             if (filtered.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">' + t.noGuests + '</div>';
+                listDiv.innerHTML = '<div class="no-data">No guests</div>';
                 return;
             }
 
             listDiv.innerHTML = filtered.map(guest => {
                 const checkIn = new Date(guest.checkIn);
                 const checkOut = new Date(guest.checkOut);
-                const today = new Date();
-                let status = 'upcoming';
-                if (today >= checkIn && today < checkOut) status = 'current';
-                if (today >= checkOut) status = 'completed';
 
                 return `
                     <div class="guest-card">
                         <div class="guest-header">
-                            <div style="flex: 1;">
+                            <div>
                                 <h3>${guest.name}</h3>
                                 <div class="guest-dates">📅 ${checkIn.toLocaleDateString()} → ${checkOut.toLocaleDateString()}</div>
-                                <span class="guest-status ${status}">${t[status]}</span>
                             </div>
                         </div>
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
-                            <button class="btn-primary" onclick="editGuest(${guest.id})" style="padding: 8px; margin-right: 8px;">✏️ ${t.editGuest}</button>
-                            <button class="btn-danger" onclick="deleteGuest(${guest.id})" style="padding: 8px;">🗑️ ${t.deleteGuest}</button>
-                        </div>
+                        <button class="btn-danger" onclick="deleteGuest(${guest.id})" style="width: 100%; padding: 8px;">🗑️ Delete</button>
                     </div>
                 `;
             }).join('');
         }
 
         function openAddGuestModal() {
-            const t = translations[currentLanguage];
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.innerHTML = `
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>${t.addGuestBtn}</h3>
+                        <h3>➕ Add Guest</h3>
                         <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
                     <div class="form-group">
-                        <label>${t.guestName}</label>
-                        <input type="text" id="guestName" placeholder="Full name" maxlength="100">
+                        <label>Name</label>
+                        <input type="text" id="guestName" placeholder="Guest name" maxlength="100">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>${t.checkIn}</label>
+                            <label>Check-in</label>
                             <input type="date" id="guestCheckIn">
                         </div>
                         <div class="form-group">
-                            <label>${t.checkOut}</label>
+                            <label>Check-out</label>
                             <input type="date" id="guestCheckOut">
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="addGuest()" style="width: 100%;">${t.saveGuest}</button>
+                    <button class="btn-primary" onclick="addGuest()" style="width: 100%;">Save</button>
                 </div>
             `;
             document.getElementById('modalContainer').innerHTML = '';
             document.getElementById('modalContainer').appendChild(modal);
-            modal.onclick = (e) => {
-                if (e.target === modal) closeModal();
-            };
         }
 
         function addGuest() {
-            const t = translations[currentLanguage];
             const name = sanitizeInput(document.getElementById('guestName').value);
             const checkIn = document.getElementById('guestCheckIn').value;
             const checkOut = document.getElementById('guestCheckOut').value;
@@ -2133,7 +1760,9 @@
                 return;
             }
 
-            if (!validateDateRange(checkIn, checkOut)) {
+            const start = new Date(checkIn);
+            const end = new Date(checkOut);
+            if (start >= end) {
                 showNotification('❌ Invalid dates');
                 return;
             }
@@ -2142,91 +1771,22 @@
                 id: Date.now(),
                 name,
                 checkIn,
-                checkOut,
-                email: '',
-                phone: '',
-                notes: ''
+                checkOut
             };
 
             let guests = getGuests();
             guests.push(guest);
             saveGuests(guests);
             closeModal();
-            showNotification(t.guestAdded);
-        }
-
-        function editGuest(id) {
-            const guests = getGuests();
-            const guest = guests.find(g => g.id === id);
-            if (!guest) return;
-
-            const t = translations[currentLanguage];
-            const modal = document.createElement('div');
-            modal.className = 'modal show';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>${t.editGuest}</h3>
-                        <button class="modal-close" onclick="closeModal()">×</button>
-                    </div>
-                    <div class="form-group">
-                        <label>${t.guestName}</label>
-                        <input type="text" id="guestName" value="${guest.name}" maxlength="100">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>${t.checkIn}</label>
-                            <input type="date" id="guestCheckIn" value="${guest.checkIn}">
-                        </div>
-                        <div class="form-group">
-                            <label>${t.checkOut}</label>
-                            <input type="date" id="guestCheckOut" value="${guest.checkOut}">
-                        </div>
-                    </div>
-                    <button class="btn-primary" onclick="updateGuest(${id})" style="width: 100%;">${t.saveGuest}</button>
-                </div>
-            `;
-            document.getElementById('modalContainer').innerHTML = '';
-            document.getElementById('modalContainer').appendChild(modal);
-            modal.onclick = (e) => {
-                if (e.target === modal) closeModal();
-            };
-        }
-
-        function updateGuest(id) {
-            const t = translations[currentLanguage];
-            const name = sanitizeInput(document.getElementById('guestName').value);
-            const checkIn = document.getElementById('guestCheckIn').value;
-            const checkOut = document.getElementById('guestCheckOut').value;
-
-            if (!name || !checkIn || !checkOut) {
-                showNotification('❌ Fill all fields');
-                return;
-            }
-
-            if (!validateDateRange(checkIn, checkOut)) {
-                showNotification('❌ Invalid dates');
-                return;
-            }
-
-            let guests = getGuests();
-            const guest = guests.find(g => g.id === id);
-            if (guest) {
-                guest.name = name;
-                guest.checkIn = checkIn;
-                guest.checkOut = checkOut;
-                saveGuests(guests);
-                closeModal();
-                showNotification(t.guestAdded);
-            }
+            showNotification('✅ Guest added');
         }
 
         function deleteGuest(id) {
-            if (confirm('Delete this guest?')) {
+            if (confirm('Delete guest?')) {
                 let guests = getGuests();
                 guests = guests.filter(g => g.id !== id);
                 saveGuests(guests);
-                showNotification(translations[currentLanguage].guestDeleted);
+                showNotification('🗑️ Deleted');
             }
         }
 
@@ -2234,7 +1794,7 @@
             document.getElementById('modalContainer').innerHTML = '';
         }
 
-        // ============ CALENDAR FUNCTIONS ============
+        // ============ CALENDAR ============
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
@@ -2251,7 +1811,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const status = calendar[dateStr] || 'available';
-                html += `<div class="calendar-day ${status}" onclick="changeCalendarDay('${dateStr}', '${status}')">${day}</div>`;
+                html += `<div class="calendar-day ${status}" onclick="changeCalendarDay('${dateStr}')">${day}</div>`;
             }
 
             const daysToFill = 42 - (firstDay + daysInMonth);
@@ -2263,12 +1823,13 @@
             document.getElementById('currentMonth').textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
         }
 
-        function changeCalendarDay(dateStr, currentStatus) {
+        function changeCalendarDay(dateStr) {
+            const calendar = getCalendarData();
             const statuses = ['available', 'occupied', 'cleaning'];
+            const currentStatus = calendar[dateStr] || 'available';
             const currentIdx = statuses.indexOf(currentStatus);
             const newStatus = statuses[(currentIdx + 1) % statuses.length];
 
-            const calendar = getCalendarData();
             if (newStatus === 'available') {
                 delete calendar[dateStr];
             } else {
@@ -2293,9 +1854,8 @@
             document.getElementById('date').value = dateStr;
         }
 
-        // ============ EXPORT/REPORT FUNCTIONS ============
+        // ============ EXPORT ============
         function generateReport() {
-            const t = translations[currentLanguage];
             const expenses = getExpenses();
             const payments = getPayments();
             const guests = getGuests();
@@ -2318,41 +1878,32 @@
                     </div>
                     <div class="report-grid">
                         <div class="report-section">
-                            <h3>💰 Financial Summary</h3>
+                            <h3>💰 Financial</h3>
                             <div class="report-item">
-                                <span class="report-label">Total Expenses</span>
+                                <span class="report-label">Total</span>
                                 <span class="report-value highlight">EUR ${total.toFixed(2)}</span>
                             </div>
                             <div class="report-item">
-                                <span class="report-label">Davide Paid</span>
+                                <span class="report-label">Davide</span>
                                 <span class="report-value">EUR ${davideSpent.toFixed(2)}</span>
                             </div>
                             <div class="report-item">
-                                <span class="report-label">Mattia Paid</span>
+                                <span class="report-label">Mattia</span>
                                 <span class="report-value">EUR ${mattiaSpent.toFixed(2)}</span>
                             </div>
                         </div>
                         <div class="report-section">
-                            <h3>👥 Guests This Month</h3>
+                            <h3>👥 Guests</h3>
                             ${guests.length > 0 ? guests.map(g => `
                                 <div class="report-item">
                                     <span class="report-label">${g.name}</span>
-                                    <span style="font-size: 11px;">${g.checkIn} → ${g.checkOut}</span>
+                                    <span style="font-size: 11px;">${g.checkIn}</span>
                                 </div>
-                            `).join('') : '<div class="report-item"><span class="report-label">No guests</span></div>'}
-                        </div>
-                        <div class="report-section">
-                            <h3>📈 Recent Payments</h3>
-                            ${payments.length > 0 ? payments.slice(-5).map(p => `
-                                <div class="report-item">
-                                    <span class="report-label">${p.from === 'davide' ? 'Davide' : 'Mattia'} paid</span>
-                                    <span class="report-value">EUR ${p.amount.toFixed(2)}</span>
-                                </div>
-                            `).join('') : '<div class="report-item"><span class="report-label">No payments</span></div>'}
+                            `).join('') : '<div class="report-item"><span>No guests</span></div>'}
                         </div>
                     </div>
                     <div class="report-footer">
-                        <p>Generated by Chillinguito • ${new Date().toLocaleString()}</p>
+                        <p>Generated: ${new Date().toLocaleString()}</p>
                     </div>
                 </div>
             `;
@@ -2363,14 +1914,13 @@
 
         async function downloadReportAsImage() {
             try {
-                showNotification('⏳ Generating image...');
+                showNotification('⏳ Generating...');
                 const element = document.getElementById('reportContent');
                 const canvas = await html2canvas(element, {
                     backgroundColor: '#ffffff',
                     scale: 2,
                     logging: false,
-                    useCORS: true,
-                    allowTaint: true
+                    useCORS: true
                 });
 
                 const image = canvas.toDataURL('image/png');
@@ -2378,36 +1928,19 @@
                 link.href = image;
                 link.download = `chillinguito-report-${new Date().toISOString().split('T')[0]}.png`;
                 link.click();
-                showNotification('✅ Report downloaded');
+                showNotification('✅ Downloaded');
             } catch (error) {
-                showNotification('❌ Error generating image');
+                showNotification('❌ Error');
             }
         }
 
         function printReport() {
             const printWindow = window.open('', '', 'height=800,width=1000');
-            printWindow.document.write('<html><head><title>Chillinguito Report</title><style>' + document.querySelector('style').innerHTML + '</style></head><body>');
+            printWindow.document.write('<html><head><title>Report</title><style>' + document.querySelector('style').innerHTML + '</style></head><body>');
             printWindow.document.write(document.getElementById('reportContent').innerHTML);
             printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.print();
-        }
-
-        // ============ CAMERA FUNCTIONS ============
-        function openCamera() {
-            document.getElementById('cameraInput').click();
-        }
-
-        function handleCameraCapture() {
-            const file = document.getElementById('cameraInput').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    receiptBase64 = e.target.result;
-                    document.getElementById('receiptPreview').innerHTML = `<img src="${receiptBase64}" style="max-width: 200px; border-radius: 6px;">`;
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         // ============ INIT ============
