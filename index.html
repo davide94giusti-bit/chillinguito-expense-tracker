@@ -490,7 +490,7 @@
         /* CALENDAR STYLES */
         .calendar-container {
             background: white;
-            padding: 24px;
+            padding: 12px;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
@@ -499,14 +499,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
         }
 
         .calendar-header h2 {
             color: var(--primary);
-            font-size: 20px;
+            font-size: 18px;
             margin: 0;
             flex: 1;
             text-align: center;
@@ -514,61 +514,65 @@
 
         .calendar-nav {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .calendar-nav button {
-            padding: 10px 16px;
+            padding: 8px 14px;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
-            min-height: 44px;
+            font-size: 13px;
+            min-height: 40px;
             flex-shrink: 0;
         }
 
         .calendar-weekdays {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 6px;
         }
 
         .weekday {
             text-align: center;
             font-weight: 600;
             color: var(--text-secondary);
-            padding: 8px 4px;
-            font-size: 12px;
+            padding: 8px 0px;
+            font-size: 11px;
             text-transform: uppercase;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .calendar-days {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 6px;
         }
 
         .calendar-day {
             aspect-ratio: 1;
             border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 4px;
+            border-radius: 6px;
+            padding: 4px 2px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
-            min-height: 56px;
-            font-size: 14px;
+            font-size: 13px;
             position: relative;
+            min-height: 50px;
         }
 
-        .calendar-day:hover {
+        .calendar-day:hover:not(.other-month) {
             transform: scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
@@ -576,37 +580,42 @@
         .calendar-day.other-month {
             background: var(--light);
             color: var(--text-secondary);
-            opacity: 0.5;
+            opacity: 0.3;
             cursor: default;
+            border-color: transparent;
         }
 
         .calendar-day-number {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
         }
 
         .calendar-day-status {
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
-            font-weight: 600;
-            line-height: 1.2;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.3px;
         }
 
         .calendar-day.occupied {
-            background: rgba(33, 150, 243, 0.2);
-            border-color: var(--primary);
+            background: #FF6B6B;
+            border-color: #D32F2F;
+            color: white;
         }
 
         .calendar-day.available {
-            background: rgba(76, 175, 80, 0.15);
-            border-color: var(--success);
+            background: #51CF66;
+            border-color: #2F9E44;
+            color: white;
         }
 
         .calendar-day.cleaning {
-            background: rgba(255, 152, 0, 0.2);
-            border-color: var(--warning);
+            background: #FFA94D;
+            border-color: #F76707;
+            color: white;
         }
 
         .modal {
@@ -772,9 +781,13 @@
         }
 
         @media (max-width: 600px) {
+            .calendar-container {
+                padding: 10px;
+            }
+
             .calendar-day {
                 min-height: 48px;
-                padding: 4px 2px;
+                padding: 3px 1px;
                 font-size: 12px;
             }
             
@@ -786,6 +799,16 @@
                 font-size: 8px;
             }
 
+            .calendar-nav button {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-height: 36px;
+            }
+
+            .calendar-header h2 {
+                font-size: 16px;
+            }
+
             .totp-digit {
                 width: 40px;
                 height: 40px;
@@ -794,9 +817,13 @@
         }
 
         @media (max-width: 400px) {
+            .calendar-container {
+                padding: 8px;
+            }
+
             .calendar-day {
-                min-height: 40px;
-                padding: 3px 1px;
+                min-height: 44px;
+                padding: 2px 1px;
             }
             
             .calendar-day-number {
@@ -804,8 +831,28 @@
             }
 
             .calendar-nav button {
-                padding: 8px 12px;
-                font-size: 12px;
+                padding: 6px 8px;
+                font-size: 11px;
+                min-height: 34px;
+            }
+
+            .calendar-header h2 {
+                font-size: 14px;
+            }
+
+            .calendar-weekdays {
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+
+            .calendar-days {
+                gap: 4px;
+            }
+
+            .weekday {
+                font-size: 10px;
+                padding: 6px 0px;
+                height: 28px;
             }
 
             .totp-digit {
@@ -997,13 +1044,13 @@
                     </div>
 
                     <div class="calendar-weekdays">
-                        <div class="weekday">Sun</div>
-                        <div class="weekday">Mon</div>
-                        <div class="weekday">Tue</div>
-                        <div class="weekday">Wed</div>
-                        <div class="weekday">Thu</div>
-                        <div class="weekday">Fri</div>
-                        <div class="weekday">Sat</div>
+                        <div class="weekday" data-i18n="weekdaySun">Sun</div>
+                        <div class="weekday" data-i18n="weekdayMon">Mon</div>
+                        <div class="weekday" data-i18n="weekdayTue">Tue</div>
+                        <div class="weekday" data-i18n="weekdayWed">Wed</div>
+                        <div class="weekday" data-i18n="weekdayThu">Thu</div>
+                        <div class="weekday" data-i18n="weekdayFri">Fri</div>
+                        <div class="weekday" data-i18n="weekdaySat">Sat</div>
                     </div>
 
                     <div id="calendarDays" class="calendar-days"></div>
@@ -1209,9 +1256,16 @@
                 calendarTitle: 'Airbnb Calendar',
                 previousMonth: 'Previous',
                 nextMonth: 'Next',
-                occupied: 'Occupied',
+                occupied: 'Not Available',
                 available: 'Available',
                 cleaning: 'Cleaning',
+                weekdaySun: 'Sun',
+                weekdayMon: 'Mon',
+                weekdayTue: 'Tue',
+                weekdayWed: 'Wed',
+                weekdayThu: 'Thu',
+                weekdayFri: 'Fri',
+                weekdaySat: 'Sat',
                 monthlySummary: 'Monthly Summary & Export',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
@@ -1252,9 +1306,16 @@
                 calendarTitle: 'Calendario Airbnb',
                 previousMonth: 'Precedente',
                 nextMonth: 'Successivo',
-                occupied: 'Occupato',
+                occupied: 'Non Disponibile',
                 available: 'Disponibile',
                 cleaning: 'Pulizia',
+                weekdaySun: 'Dom',
+                weekdayMon: 'Lun',
+                weekdayTue: 'Mar',
+                weekdayWed: 'Mer',
+                weekdayThu: 'Gio',
+                weekdayFri: 'Ven',
+                weekdaySat: 'Sab',
                 monthlySummary: 'Riepilogo Mensile ed Esportazione',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
@@ -1544,6 +1605,7 @@
 
             if (!isOtherMonth) {
                 dayDiv.onclick = () => openDayModal(date, dayData);
+                dayDiv.style.cursor = 'pointer';
             }
 
             return dayDiv;
