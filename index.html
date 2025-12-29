@@ -3,97 +3,862 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chillinguito Lake Como</title>
+    <title>Chillinguito Lake Como - Expense Tracker</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
-        body.locked { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 12px; }
-        header { background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 16px 0; margin-bottom: 16px; }
-        header h1 { font-size: 20px; margin-bottom: 4px; }
-        .auth-screen { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); max-width: 400px; text-align: center; }
-        .user-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-        .user-btn { padding: 16px; border: 2px solid #e0e0e0; border-radius: 12px; background: white; cursor: pointer; font-weight: 600; font-size: 16px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s; }
-        .user-btn:hover { border-color: #2196F3; background: rgba(33, 150, 243, 0.05); }
-        .user-btn.selected { border-color: #2196F3; background: rgba(33, 150, 243, 0.1); color: #2196F3; }
-        .totp-input { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        .totp-digit { width: 50px; height: 50px; border: 2px solid #e0e0e0; border-radius: 8px; text-align: center; font-size: 24px; font-weight: 600; color: #2196F3; }
-        .totp-digit:focus { outline: none; border-color: #2196F3; box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1); }
-        .unlock-btn { width: 100%; padding: 12px; background: #2196F3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; min-height: 44px; }
-        .unlock-btn:hover { background: #1976D2; }
-        .unlock-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .error-message { color: #f44336; margin-top: 10px; font-size: 14px; min-height: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; overflow-x: auto; }
-        .tab-btn { padding: 10px 16px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 500; color: #666; border-bottom: 3px solid transparent; white-space: nowrap; flex-shrink: 0; min-height: 44px; }
-        .tab-btn.active { color: #2196F3; border-bottom-color: #2196F3; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: inherit; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #2196F3; box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1); }
-        .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 600px) { .form-row { grid-template-columns: 1fr 1fr; } }
-        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; min-height: 44px; transition: all 0.3s; }
-        .btn-primary { background: #2196F3; color: white; }
-        .btn-primary:hover { background: #1976D2; }
-        .btn-secondary { background: #f5f5f5; color: #333; border: 1px solid #e0e0e0; }
-        .btn-danger { background: #f44336; color: white; padding: 8px 14px; font-size: 14px; }
-        .btn-danger:hover { background: #d32f2f; }
-        .expense-item { display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #f5f5f5; border-radius: 8px; margin-bottom: 12px; }
-        .expense-amount { font-weight: 600; color: #2196F3; font-size: 18px; }
-        .settlement-summary { background: white; padding: 24px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .summary-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; color: #2196F3; text-align: center; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px; margin-bottom: 24px; }
-        .stat-box { background: #f5f5f5; padding: 20px; border-radius: 12px; text-align: center; }
-        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 8px; }
-        .stat-value { font-size: 28px; font-weight: 700; color: #2196F3; }
-        .no-data { text-align: center; padding: 40px 20px; color: #666; }
-        .category-badge { display: inline-block; padding: 4px 8px; background: #2196F3; color: white; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px; }
-        .user-badge-inline { display: inline-block; padding: 2px 6px; background: rgba(33, 150, 243, 0.2); color: #2196F3; border-radius: 3px; font-size: 10px; font-weight: 600; margin-left: 6px; }
-        .settlement-box { padding: 20px; border-radius: 8px; margin-bottom: 16px; font-weight: 500; text-align: center; }
-        .settlement-box.owed { background: rgba(244, 67, 54, 0.1); color: #c62828; border-left: 4px solid #f44336; }
-        .notification { background: #4CAF50; color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        .user-badge { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 12px; border-radius: 20px; font-weight: 500; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-        .logout-btn { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 12px; border-radius: 20px; cursor: pointer; font-weight: 500; font-size: 14px; min-height: 40px; }
-        .logout-btn:hover { background: rgba(255, 255, 255, 0.3); }
-        .sync-badge { background: rgba(255, 255, 255, 0.2); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #4CAF50; display: inline-block; margin-right: 6px; }
+        :root {
+            --primary: #2196F3;
+            --primary-dark: #1976D2;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --light: #f5f5f5;
+            --border: #e0e0e0;
+            --text: #333;
+            --text-secondary: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        body.locked {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-screen {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .auth-screen h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .auth-screen p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .auth-screen .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .user-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .user-btn {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .user-btn:hover {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.05);
+        }
+
+        .user-btn.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--primary);
+        }
+
+        .user-icon {
+            font-size: 24px;
+        }
+
+        .totp-input {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .totp-digit {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .totp-digit:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .unlock-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            min-height: 44px;
+        }
+
+        .unlock-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .unlock-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: var(--danger);
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .auth-info {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 16px 0;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sync-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+        }
+
+        .sync-dot.syncing {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .expense-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-description {
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .expense-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .expense-amount {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .settlement-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .settlement-box.owed {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .settlement-summary {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .user-badge-inline {
+            display: inline-block;
+            padding: 2px 6px;
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--primary);
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+
+        .calendar-container {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-height: 500px;
+            width: 100%;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .calendar-header h2 {
+            color: var(--primary);
+            font-size: 18px;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .calendar-nav button {
+            padding: 8px 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            min-height: 40px;
+            flex-shrink: 0;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 8px 0px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            min-height: 320px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1.2 / 1;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            position: relative;
+            min-height: 50px;
+            overflow: hidden;
+        }
+
+        .calendar-day:active:not(.other-month) {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .calendar-day.other-month {
+            background: var(--light);
+            color: var(--text-secondary);
+            opacity: 0.3;
+            cursor: default;
+            border-color: transparent;
+        }
+
+        .calendar-day-number {
+            font-weight: 700;
+            font-size: 11px;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+
+        .calendar-day-status {
+            font-size: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .calendar-day.occupied {
+            background: #FF6B6B;
+            border-color: #D32F2F;
+            color: white;
+        }
+
+        .calendar-day.available {
+            background: #51CF66;
+            border-color: #2F9E44;
+            color: white;
+        }
+
+        .calendar-day.cleaning {
+            background: #FFA94D;
+            border-color: #F76707;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .day-status-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .status-option {
+            padding: 16px 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            min-height: 60px;
+            transition: all 0.2s;
+        }
+
+        .status-option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .export-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .notification-banner {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-banner.warning {
+            background: #FF9800;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .lang-btn, .theme-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-height: 40px;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] {
+            --primary: #64B5F6;
+            --primary-dark: #42A5F5;
+            --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --light: #2a2a2a;
+            --border: #404040;
+            --background: #121212;
+        }
+
+        [data-theme="dark"] body {
+            background: var(--background);
+        }
+
+        [data-theme="dark"] .card,
+        [data-theme="dark"] .settlement-summary,
+        [data-theme="dark"] .calendar-container,
+        [data-theme="dark"] .modal-content,
+        [data-theme="dark"] .export-section,
+        [data-theme="dark"] .auth-screen {
+            background: #1e1e1e;
+        }
+
+        [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
+            background: #2a2a2a;
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .user-btn {
+            background: #2a2a2a;
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .user-btn.selected {
+            background: rgba(100, 181, 246, 0.1);
+            border-color: #64B5F6;
+            color: #64B5F6;
+        }
+
+        @media (max-width: 600px) {
+            .calendar-container { padding: 8px; }
+            .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; }
+        }
     </style>
 </head>
 <body id="appBody">
     <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-screen" style="display: none;">
-        <div style="font-size: 60px; margin-bottom: 20px;">🏠</div>
-        <h1 style="color: #2196F3; margin-bottom: 10px; font-size: 28px;">Chillinguito</h1>
-        <p style="color: #666; margin-bottom: 30px; font-size: 15px;">Select your account & enter 2FA code</p>
+        <div class="auth-screen">
+            <div class="icon">🏠</div>
+            <h1>Chillinguito</h1>
+            <p>Select your account & enter 2FA code</p>
 
-        <div class="user-selector">
-            <button class="user-btn" onclick="selectUser('davide')">
-                <span style="font-size: 24px;">👨</span>
-                <span>Davide</span>
-            </button>
-            <button class="user-btn" onclick="selectUser('mattia')">
-                <span style="font-size: 24px;">👨‍🦱</span>
-                <span>Mattia</span>
-            </button>
+            <div class="user-selector">
+                <button class="user-btn" onclick="selectUser('davide')">
+                    <span class="user-icon">👨</span>
+                    <span>Davide</span>
+                </button>
+                <button class="user-btn" onclick="selectUser('mattia')">
+                    <span class="user-icon">👨‍🦱</span>
+                    <span>Mattia</span>
+                </button>
+            </div>
+
+            <label style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code:</label>
+            <div class="totp-input">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
+            </div>
+
+            <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="auth-info">
+                💡 Both users use the same code from Microsoft Authenticator
+            </div>
         </div>
-
-        <label style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code:</label>
-        <div class="totp-input">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-        </div>
-
-        <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
-        <div class="error-message" id="errorMessage"></div>
     </div>
 
     <!-- MAIN APP -->
@@ -103,17 +868,22 @@
                 <div class="header-top">
                     <div>
                         <h1>🏠 Chillinguito Lake Como</h1>
-                        <p style="font-size: 13px; opacity: 0.9;">Expense Tracker & Settlement</p>
+                        <p>Expense Tracker & Settlement Calculator</p>
                     </div>
+                    
+                    <div id="syncStatusIndicator" class="sync-status-indicator" style="display: none;">
+                        <div class="sync-dot" id="syncDot"></div>
+                        <span id="syncStatus">Syncing...</span>
+                    </div>
+
                     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <div class="user-badge" id="userBadge">
                             <span id="userIcon">👨</span>
                             <span id="userName">Davide</span>
                         </div>
-                        <div class="sync-badge" id="syncBadge" style="display: none;">
-                            <span class="sync-dot" id="syncDot"></span>
-                            <span id="syncText">Syncing...</span>
-                        </div>
+                        <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
+                        <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
+                        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
                         <button class="logout-btn" onclick="logout()">🔒 Logout</button>
                     </div>
                 </div>
@@ -127,16 +897,17 @@
                 <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
                 <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
                 <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('calendar')">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')">Export & Summary</button>
             </div>
 
-            <!-- ADD EXPENSE TAB -->
             <div id="add-expense" class="tab-content active">
                 <div class="card">
                     <h2 style="margin-bottom: 20px;">Add New Expense</h2>
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning, Groceries" required>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required>
                         </div>
 
                         <div class="form-row">
@@ -147,10 +918,11 @@
                             <div class="form-group">
                                 <label for="category">Category</label>
                                 <select id="category" required>
-                                    <option value="">Select</option>
-                                    <option value="Cleaning">Cleaning</option>
-                                    <option value="Utilities">Utilities</option>
-                                    <option value="Groceries">Groceries</option>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Cleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries">Groceries & Food</option>
+                                    <option value="Repairs">Repairs & Equipment</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
@@ -160,15 +932,15 @@
                             <div class="form-group">
                                 <label for="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value="">Select</option>
+                                    <option value="">-- Select --</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="splitBetween">Split</label>
+                                <label for="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value="">Select</option>
+                                    <option value="">-- Select --</option>
                                     <option value="Both">Both (50/50)</option>
                                     <option value="Davide">Davide Only</option>
                                     <option value="Mattia">Mattia Only</option>
@@ -181,29 +953,32 @@
                             <input type="date" id="date" required>
                         </div>
 
-                        <button type="submit" class="btn-primary" style="width: 100%;">Add Expense</button>
+                        <div class="form-group">
+                            <label for="notes">Notes (optional)</label>
+                            <textarea id="notes" placeholder="Add notes..." rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Add Expense</button>
                     </form>
                 </div>
             </div>
 
-            <!-- EXPENSES LIST TAB -->
             <div id="expenses-list" class="tab-content">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
-                        <h2 style="margin: 0;">All Expenses</h2>
-                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: #f44336;">Clear All</button>
+                    <div class="card-header">
+                        <h2>All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);">Clear All</button>
                     </div>
                     <div id="expensesList"></div>
                 </div>
             </div>
 
-            <!-- SETTLEMENT TAB -->
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
-                    <div class="summary-title">Settlement Status</div>
+                    <div class="summary-title">Current Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-label">Total</div>
+                            <div class="stat-label">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
@@ -215,12 +990,51 @@
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
-                    <div id="settlementDetails"></div>
+
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
+                        <div id="settlementDetails"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="calendar" class="tab-content">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h2>Airbnb Calendar</h2>
+                        <div class="calendar-nav">
+                            <button onclick="previousMonth()">Previous</button>
+                            <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
+                            <button onclick="nextMonth()">Next</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <div class="weekday">Sun</div>
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
+                    </div>
+
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
+            </div>
+
+            <div id="export" class="tab-content">
+                <div class="export-section">
+                    <h2 style="margin-bottom: 20px;">Monthly Summary & Export</h2>
+                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()">📊 Download Report</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="modalContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -233,7 +1047,8 @@
             projectId: "airbnb-expense-tracker-7f531",
             storageBucket: "airbnb-expense-tracker-7f531.firebasestorage.app",
             messagingSenderId: "466998817774",
-            appId: "1:466998817774:web:f4b244ac7cfa1723dbd4ff"
+            appId: "1:466998817774:web:f4b244ac7cfa1723dbd4ff",
+            measurementId: "G-04S033MK7F"
         };
 
         let firebaseApp = null;
@@ -253,6 +1068,9 @@
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         let currentUser = null;
         let listenersSetup = false;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentCalendarDate = new Date();
 
         // ============ TOTP ============
         function base32Decode(str) {
@@ -299,6 +1117,14 @@
         function setupTOTPInput() {
             const inputs = document.querySelectorAll('.totp-digit');
             inputs.forEach((input, index) => {
+                input.addEventListener('keydown', (e) => {
+                    if (!/[0-9]/.test(e.key) && !['Backspace', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
                 input.addEventListener('input', (e) => {
                     if (e.target.value.length === 1 && index < inputs.length - 1) {
                         inputs[index + 1].focus();
@@ -348,7 +1174,7 @@
         }
 
         function logout() {
-            if (confirm('Lock the app?')) {
+            if (confirm('🔒 Lock the app?')) {
                 localStorage.removeItem('currentUser');
                 location.reload();
             }
@@ -368,6 +1194,14 @@
                 localStorage.setItem('expenses_shared', JSON.stringify(expenses));
                 displayExpenses();
                 displaySettlement();
+            });
+
+            // LISTEN TO SHARED CALENDAR
+            db.ref('shared/calendar').on('value', (snapshot) => {
+                const calendar = snapshot.val() || {};
+                console.log('📅 Calendar from Firebase:', calendar);
+                localStorage.setItem('calendar_shared', JSON.stringify(calendar));
+                renderCalendar();
             });
         }
 
@@ -393,29 +1227,47 @@
             displaySettlement();
         }
 
+        function getCalendarData() {
+            const data = localStorage.getItem('calendar_shared');
+            return data ? JSON.parse(data) : {};
+        }
+
+        async function saveCalendarData(calendar) {
+            localStorage.setItem('calendar_shared', JSON.stringify(calendar));
+            if (isFirebaseReady) {
+                showSync();
+                try {
+                    await db.ref('shared/calendar').set(calendar);
+                    console.log('✅ Calendar synced to Firebase');
+                    hideSync();
+                } catch (error) {
+                    console.error('❌ Firebase error:', error);
+                }
+            }
+            renderCalendar();
+        }
+
         // ============ UI FUNCTIONS ============
         function showNotification(msg) {
             const container = document.getElementById('notificationContainer');
             const div = document.createElement('div');
-            div.className = 'notification';
+            div.className = 'notification-banner';
             div.textContent = msg;
             container.appendChild(div);
             setTimeout(() => div.remove(), 2500);
         }
 
         function showSync() {
-            const badge = document.getElementById('syncBadge');
+            const badge = document.getElementById('syncStatusIndicator');
             const dot = document.getElementById('syncDot');
             badge.style.display = 'flex';
-            dot.style.background = '#ff9800';
-            dot.style.animation = 'pulse 1s infinite';
+            dot.classList.add('syncing');
         }
 
         function hideSync() {
-            const badge = document.getElementById('syncBadge');
+            const badge = document.getElementById('syncStatusIndicator');
             const dot = document.getElementById('syncDot');
-            dot.style.animation = 'none';
-            dot.style.background = '#4CAF50';
+            dot.classList.remove('syncing');
             setTimeout(() => {
                 badge.style.display = 'none';
             }, 1500);
@@ -426,8 +1278,26 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            if (tabName === 'calendar') {
+                setTimeout(() => renderCalendar(), 50);
+            }
         }
 
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ============ EXPENSE FUNCTIONS ============
         function addExpense(e) {
             e.preventDefault();
             const expense = {
@@ -438,7 +1308,9 @@
                 paidBy: document.getElementById('paidBy').value,
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
-                addedBy: currentUser
+                notes: document.getElementById('notes').value,
+                addedBy: currentUser,
+                timestamp: new Date().toISOString()
             };
 
             let expenses = getExpenses();
@@ -462,15 +1334,17 @@
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
             listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
-                    <div>
-                        <span class="category-badge">${exp.category}</span>
-                        ${exp.description}
-                        <span class="user-badge-inline">${exp.addedBy}</span>
+                    <div class="expense-info">
+                        <div class="expense-description">
+                            <span class="category-badge">${exp.category}</span>
+                            ${exp.description}
+                            <span class="user-badge-inline">${exp.addedBy}</span>
+                        </div>
+                        <div class="expense-details">
+                            ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
+                        </div>
                     </div>
-                    <div>
-                        ${exp.date} • ${exp.paidBy} pays • ${exp.splitBetween}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                         <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
                         <button class="btn-danger" onclick="deleteExpense(${exp.id})">Delete</button>
                     </div>
@@ -488,12 +1362,13 @@
         }
 
         function clearAllExpenses() {
-            if (confirm('Delete ALL expenses?')) {
+            if (confirm('⚠️ Delete ALL expenses?')) {
                 saveExpenses([]);
                 showNotification('🗑️ All cleared');
             }
         }
 
+        // ============ SETTLEMENT CALCULATION ============
         function displaySettlement() {
             const expenses = getExpenses();
             const balances = { Davide: 0, Mattia: 0 };
@@ -532,11 +1407,172 @@
             if (Math.abs(balances.Davide) < 0.01) {
                 html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">✅ All settled!</div>`;
             } else if (balances.Davide > 0.01) {
-                html = `<div class="settlement-box owed">💳 Mattia owes Davide:<br><strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 Mattia owes Davide: <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
             } else if (balances.Mattia > 0.01) {
-                html = `<div class="settlement-box owed">💳 Davide owes Mattia:<br><strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 Davide owes Mattia: <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
             }
             detailsDiv.innerHTML = html;
+        }
+
+        // ============ CALENDAR FUNCTIONS ============
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            const calendarDaysDiv = document.getElementById('calendarDays');
+            calendarDaysDiv.innerHTML = '';
+            const calendarData = getCalendarData();
+
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const prevDate = new Date(year, month - 1, day);
+                calendarDaysDiv.appendChild(createDayElement(prevDate, true, calendarData));
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                calendarDaysDiv.appendChild(createDayElement(date, false, calendarData));
+            }
+
+            const totalCells = calendarDaysDiv.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                calendarDaysDiv.appendChild(createDayElement(nextDate, true, calendarData));
+            }
+        }
+
+        function createDayElement(date, isOtherMonth, calendarData) {
+            const dayDiv = document.createElement('div');
+            const dateKey = date.toISOString().split('T')[0];
+            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
+            
+            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
+            dayDiv.innerHTML = `
+                <div class="calendar-day-number">${date.getDate()}</div>
+                ${!isOtherMonth ? `<div class="calendar-day-status">${dayData.status}</div>` : ''}
+            `;
+
+            if (!isOtherMonth) {
+                dayDiv.onclick = () => openDayModal(date, dayData);
+            }
+
+            return dayDiv;
+        }
+
+        function openDayModal(date, dayData) {
+            const dateKey = date.toISOString().split('T')[0];
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.id = 'dayModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${dateStr}</h3>
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="day-status-selector">
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this, 'occupied')">Occupied</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this, 'available')">Available</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this, 'cleaning')">Cleaning</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="dayNote" placeholder="Add notes..." rows="3">${dayData.note || ''}</textarea>
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
+                </div>
+            `;
+
+            document.getElementById('modalContainer').innerHTML = '';
+            document.getElementById('modalContainer').appendChild(modal);
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('dayModal');
+            if (modal) modal.remove();
+        }
+
+        function selectStatus(button, status) {
+            button.parentElement.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            button.dataset.selectedStatus = status;
+        }
+
+        function saveDayData(dateKey) {
+            const modal = document.getElementById('dayModal');
+            const selectedStatus = modal.querySelector('.status-option.selected');
+            const status = selectedStatus ? (selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1]) : 'available';
+            const note = modal.querySelector('#dayNote').value;
+            
+            const calendarData = getCalendarData();
+            calendarData[dateKey] = { status, note, timestamp: new Date().toISOString() };
+            saveCalendarData(calendarData);
+            closeModal();
+            showNotification('✅ Calendar updated');
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // ============ EXPORT FUNCTION ============
+        async function generateAndDownloadReport() {
+            const expenses = getExpenses();
+            const now = new Date();
+            let total = 0;
+            expenses.forEach(exp => { total += exp.amount; });
+
+            const html = `
+                <div style="text-align: center; padding: 40px; background: white;">
+                    <h1 style="color: #2196F3; margin-bottom: 10px;">Chillinguito Lake Como</h1>
+                    <p style="color: #666; margin-bottom: 30px;">Financial Report - ${now.toLocaleDateString()}</p>
+                    <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <h2 style="color: #2196F3; margin-bottom: 20px;">Expense Summary</h2>
+                        <p><strong>Total Expenses:</strong> EUR ${total.toFixed(2)}</p>
+                        <p><strong>Number of Expenses:</strong> ${expenses.length}</p>
+                    </div>
+                </div>
+            `;
+
+            const reportDiv = document.getElementById('exportReport') || document.createElement('div');
+            reportDiv.id = 'exportReport';
+            reportDiv.innerHTML = html;
+            reportDiv.style.display = 'block';
+            document.body.appendChild(reportDiv);
+
+            try {
+                const canvas = await html2canvas(reportDiv, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    width: 900
+                });
+                canvas.toBlob(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
+                    link.click();
+                    showNotification('✅ Report downloaded');
+                });
+            } catch (error) {
+                alert('Error creating report: ' + error.message);
+            }
         }
 
         // ============ INIT ============
@@ -552,14 +1588,17 @@
 
             displayExpenses();
             displaySettlement();
+            renderCalendar();
 
-            // Setup listeners AFTER displaying initial data
             setTimeout(() => {
                 setupListeners();
             }, 500);
         }
 
         window.addEventListener('load', () => {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
                 currentUser = savedUser;
