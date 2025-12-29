@@ -202,6 +202,38 @@
             gap: 12px;
         }
 
+        .header-status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            display: inline-block;
+        }
+
+        .status-dot.offline {
+            background: #999;
+        }
+
         .user-badge {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -328,6 +360,11 @@
             box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
 
+        input[type="date"] {
+            width: 100%;
+            padding: 12px 14px;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr;
@@ -410,6 +447,16 @@
             margin-bottom: 12px;
         }
 
+        .expense-receipt {
+            margin-top: 10px;
+            max-width: 200px;
+        }
+
+        .expense-receipt img {
+            width: 100%;
+            border-radius: 6px;
+        }
+
         .expense-info {
             flex: 1;
         }
@@ -429,6 +476,27 @@
             font-weight: 600;
             color: var(--primary);
             font-size: 18px;
+        }
+
+        .settlement-banner {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .settlement-banner.paid {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .settlement-banner.owed {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border-left: 4px solid #f44336;
         }
 
         .settlement-box {
@@ -745,6 +813,10 @@
             background: #FF9800;
         }
 
+        .notification-banner.error {
+            background: #f44336;
+        }
+
         @keyframes slideIn {
             from {
                 transform: translateY(-20px);
@@ -829,7 +901,7 @@
 
         .filter-input {
             flex: 1;
-            min-width: 150px;
+            min-width: 120px;
         }
 
         .filter-input input, .filter-input select {
@@ -840,11 +912,45 @@
             font-size: 14px;
         }
 
+        .payment-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: flex-end;
+        }
+
+        .payment-input-group input {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .payment-input-group button {
+            flex-shrink: 0;
+        }
+
+        .settlement-payments {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .payment-history {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .payment-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
         @media (max-width: 600px) {
             .calendar-container { padding: 8px; }
             .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; }
             .filter-section { flex-direction: column; }
             .filter-input { min-width: 100%; }
+            .header-status { gap: 6px; }
         }
     </style>
 </head>
@@ -897,9 +1003,21 @@
                         <p id="appSubtitle">Expense Tracker & Settlement Calculator</p>
                     </div>
                     
-                    <div id="syncStatusIndicator" class="sync-status-indicator" style="display: none;">
-                        <div class="sync-dot" id="syncDot"></div>
-                        <span id="syncStatus">Syncing...</span>
+                    <div class="header-status">
+                        <div id="syncStatusIndicator" class="sync-status-indicator" style="display: none;">
+                            <div class="sync-dot" id="syncDot"></div>
+                            <span id="syncStatus">Syncing...</span>
+                        </div>
+
+                        <div id="dbStatusIndicator" class="status-badge" style="display: none;">
+                            <span class="status-dot" id="dbStatusDot"></span>
+                            <span id="dbStatus">DB Connected</span>
+                        </div>
+
+                        <div id="otherUserStatusIndicator" class="status-badge" style="display: none;">
+                            <span class="status-dot" id="otherUserDot"></span>
+                            <span id="otherUserStatus">Mattia online</span>
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -977,12 +1095,18 @@
 
                         <div class="form-group">
                             <label for="date" id="dateLabel">Date</label>
-                            <input type="date" id="date" required>
+                            <input type="date" id="date" required style="width: 100%;">
                         </div>
 
                         <div class="form-group">
                             <label for="notes" id="notesLabel">Notes (optional)</label>
                             <textarea id="notes" placeholder="Add notes..." rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="receipt" id="receiptLabel">Receipt Photo (optional)</label>
+                            <input type="file" id="receipt" accept="image/*" onchange="previewReceipt()">
+                            <div id="receiptPreview" style="margin-top: 10px;"></div>
                         </div>
 
                         <button type="submit" class="btn-primary" id="addExpenseBtn" style="width: 100%; padding: 12px;">Add Expense</button>
@@ -1006,7 +1130,16 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <button class="btn-secondary" onclick="filterExpenses()" id="filterBtn">Filter</button>
+                    <div class="filter-input">
+                        <select id="filterMonth" onchange="filterExpenses()">
+                            <option value="">All Months</option>
+                        </select>
+                    </div>
+                    <div class="filter-input">
+                        <select id="filterYear" onchange="filterExpenses()">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -1020,6 +1153,8 @@
             <!-- SETTLEMENT TAB -->
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
+                    <div class="settlement-banner" id="settlementBanner" style="display: none;"></div>
+                    
                     <div class="summary-title" id="settlementTitle">Current Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box">
@@ -1039,6 +1174,19 @@
                     <div style="margin-top: 20px;">
                         <h3 id="whoOwesLabel" style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
                         <div id="settlementDetails"></div>
+                    </div>
+
+                    <div class="settlement-payments">
+                        <h4 id="recordPaymentLabel" style="margin-bottom: 15px; color: var(--primary);">💰 Record Partial Payment</h4>
+                        <div class="payment-input-group">
+                            <input type="number" id="paymentAmount" placeholder="Amount (EUR)" step="0.01" min="0">
+                            <select id="paymentFrom">
+                                <option value="davide">Davide pays</option>
+                                <option value="mattia">Mattia pays</option>
+                            </select>
+                            <button type="button" class="btn-primary" onclick="recordPayment()" id="recordPaymentBtn">Record</button>
+                        </div>
+                        <div id="paymentHistory" class="payment-history"></div>
                     </div>
                 </div>
             </div>
@@ -1073,6 +1221,29 @@
             <div id="export" class="tab-content">
                 <div class="export-section">
                     <h2 id="exportTitle" style="margin-bottom: 20px;">Monthly Summary & Export</h2>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h4 id="expensePeriodLabel" style="margin-bottom: 10px;">Expense Period</h4>
+                        <select id="expensePeriod" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 15px;">
+                            <option value="1">Current Month</option>
+                            <option value="3">Last 3 Months</option>
+                            <option value="6">Last 6 Months</option>
+                            <option value="9">Last 9 Months</option>
+                            <option value="12">Last 12 Months</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h4 id="cleaningPeriodLabel" style="margin-bottom: 10px;">Cleaning Dates Period</h4>
+                        <select id="cleaningPeriod" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 15px;">
+                            <option value="1">Current Month</option>
+                            <option value="3">Next 3 Months</option>
+                            <option value="6">Next 6 Months</option>
+                            <option value="9">Next 9 Months</option>
+                            <option value="12">Next 12 Months</option>
+                        </select>
+                    </div>
+
                     <button class="btn-primary" id="downloadReportBtn" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()">📊 Download Report</button>
                 </div>
             </div>
@@ -1099,6 +1270,10 @@
                 langEnBtn: "🇬🇧 EN",
                 langItBtn: "🇮🇹 IT",
                 logoutBtn: "🔒 Logout",
+                dbConnected: "✓ DB Connected",
+                dbDisconnected: "✗ DB Offline",
+                userOnline: "online",
+                userOffline: "offline",
                 tabAddExpense: "Add Expense",
                 tabExpensesList: "All Expenses",
                 tabSettlement: "Settlement",
@@ -1112,6 +1287,7 @@
                 splitLabel: "Split Between",
                 dateLabel: "Date",
                 notesLabel: "Notes (optional)",
+                receiptLabel: "Receipt Photo (optional)",
                 addExpenseBtn: "Add Expense",
                 catCleaning: "Cleaning & Maintenance",
                 catUtilities: "Utilities (Water, Gas, Electric)",
@@ -1129,24 +1305,34 @@
                 davidePaidLabel: "Davide Paid",
                 mattiaPaidLabel: "Mattia Paid",
                 whoOwesLabel: "💸 Who Owes Whom",
+                recordPaymentLabel: "💰 Record Partial Payment",
+                recordPaymentBtn: "Record",
                 calendarTitle: "Airbnb Calendar",
                 prevBtn: "Previous",
                 nextBtn: "Next",
                 exportTitle: "Monthly Summary & Export",
+                expensePeriodLabel: "Expense Period",
+                cleaningPeriodLabel: "Cleaning Dates Period",
                 downloadReportBtn: "📊 Download Report",
                 addedNotif: "✅ Expense added",
                 deletedNotif: "🗑️ Expense deleted",
                 clearedNotif: "🗑️ All cleared",
                 calendarUpdatedNotif: "✅ Calendar updated",
+                calendarChangedNotif: "📅 Calendar changed by {user}",
+                expenseAddedNotif: "💰 New expense added by {user}",
+                expenseDeletedNotif: "🗑️ Expense deleted by {user}",
+                paymentRecordedNotif: "✅ Payment recorded",
                 reportDownloadedNotif: "✅ Report downloaded",
                 allSettledMsg: "✅ All settled!",
-                owesMsg: "💳 {person} owes {other}: EUR {amount}",
+                owesMsg: "{person} owes {other}: EUR {amount}",
                 mattiaPays: "Mattia pays",
                 davidePays: "Davide pays",
                 searchPlaceholder: "Search by description...",
                 occupied: "Occupied",
                 available: "Available",
-                cleaning: "Cleaning"
+                cleaning: "Cleaning",
+                overdueNotif: "⚠️ Overdue expenses! {person} still owes EUR {amount}",
+                noExpenses: "No expenses found"
             },
             it: {
                 authTitle: "Chillinguito",
@@ -1159,6 +1345,10 @@
                 langEnBtn: "🇬🇧 EN",
                 langItBtn: "🇮🇹 IT",
                 logoutBtn: "🔒 Esci",
+                dbConnected: "✓ DB Connesso",
+                dbDisconnected: "✗ DB Offline",
+                userOnline: "online",
+                userOffline: "offline",
                 tabAddExpense: "Aggiungi Spesa",
                 tabExpensesList: "Tutte le Spese",
                 tabSettlement: "Saldo",
@@ -1172,6 +1362,7 @@
                 splitLabel: "Dividi Tra",
                 dateLabel: "Data",
                 notesLabel: "Note (opzionale)",
+                receiptLabel: "Foto Ricevuta (opzionale)",
                 addExpenseBtn: "Aggiungi Spesa",
                 catCleaning: "Pulizia e Manutenzione",
                 catUtilities: "Utenze (Acqua, Gas, Elettricità)",
@@ -1189,15 +1380,23 @@
                 davidePaidLabel: "Davide ha Pagato",
                 mattiaPaidLabel: "Mattia ha Pagato",
                 whoOwesLabel: "💸 Chi Deve a Chi",
+                recordPaymentLabel: "💰 Registra Pagamento Parziale",
+                recordPaymentBtn: "Registra",
                 calendarTitle: "Calendario Airbnb",
                 prevBtn: "Precedente",
                 nextBtn: "Successivo",
                 exportTitle: "Riepilogo Mensile & Esporta",
+                expensePeriodLabel: "Periodo Spese",
+                cleaningPeriodLabel: "Periodo Date Pulizia",
                 downloadReportBtn: "📊 Scarica Report",
                 addedNotif: "✅ Spesa aggiunta",
                 deletedNotif: "🗑️ Spesa eliminata",
                 clearedNotif: "🗑️ Tutto cancellato",
                 calendarUpdatedNotif: "✅ Calendario aggiornato",
+                calendarChangedNotif: "📅 Calendario modificato da {user}",
+                expenseAddedNotif: "💰 Nuova spesa aggiunta da {user}",
+                expenseDeletedNotif: "🗑️ Spesa eliminata da {user}",
+                paymentRecordedNotif: "✅ Pagamento registrato",
                 reportDownloadedNotif: "✅ Report scaricato",
                 allSettledMsg: "✅ Tutto pagato!",
                 owesMsg: "{person} deve a {other}: EUR {amount}",
@@ -1206,7 +1405,9 @@
                 searchPlaceholder: "Cerca per descrizione...",
                 occupied: "Occupato",
                 available: "Disponibile",
-                cleaning: "Pulizia"
+                cleaning: "Pulizia",
+                overdueNotif: "⚠️ Spese scadute! {person} deve ancora EUR {amount}",
+                noExpenses: "Nessuna spesa trovata"
             }
         };
 
@@ -1242,6 +1443,10 @@
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentCalendarDate = new Date();
         let filteredExpenses = [];
+        let receiptBase64 = null;
+        let dbConnected = false;
+        let otherUserOnline = false;
+        let lastExpenseTimestamp = 0;
 
         // ============ TRANSLATIONS UPDATE ============
         function updateTranslations() {
@@ -1269,6 +1474,7 @@
             document.getElementById('splitLabel').textContent = t.splitLabel;
             document.getElementById('dateLabel').textContent = t.dateLabel;
             document.getElementById('notesLabel').textContent = t.notesLabel;
+            document.getElementById('receiptLabel').textContent = t.receiptLabel;
             document.getElementById('addExpenseBtn').textContent = t.addExpenseBtn;
             document.getElementById('catCleaning').textContent = t.catCleaning;
             document.getElementById('catUtilities').textContent = t.catUtilities;
@@ -1280,18 +1486,23 @@
             document.getElementById('splitMattia').textContent = t.splitMattia;
             document.getElementById('allExpensesTitle').textContent = t.allExpensesTitle;
             document.getElementById('clearAllBtn').textContent = t.clearAllBtn;
-            document.getElementById('filterBtn').textContent = t.filterBtn;
             document.getElementById('settlementTitle').textContent = t.settlementTitle;
             document.getElementById('totalLabel').textContent = t.totalLabel;
             document.getElementById('davidePaidLabel').textContent = t.davidePaidLabel;
             document.getElementById('mattiaPaidLabel').textContent = t.mattiaPaidLabel;
             document.getElementById('whoOwesLabel').textContent = t.whoOwesLabel;
+            document.getElementById('recordPaymentLabel').textContent = t.recordPaymentLabel;
+            document.getElementById('recordPaymentBtn').textContent = t.recordPaymentBtn;
             document.getElementById('calendarTitle').textContent = t.calendarTitle;
             document.getElementById('prevBtn').textContent = t.prevBtn;
             document.getElementById('nextBtn').textContent = t.nextBtn;
             document.getElementById('exportTitle').textContent = t.exportTitle;
+            document.getElementById('expensePeriodLabel').textContent = t.expensePeriodLabel;
+            document.getElementById('cleaningPeriodLabel').textContent = t.cleaningPeriodLabel;
             document.getElementById('downloadReportBtn').textContent = t.downloadReportBtn;
             document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            populateMonthYearFilters();
+            renderCalendar();
         }
 
         // ============ TOTP ============
@@ -1402,6 +1613,70 @@
             }
         }
 
+        // ============ DATABASE CONNECTION STATUS ============
+        function setupDBStatusCheck() {
+            if (!isFirebaseReady) return;
+
+            db.ref('.info/connected').on('value', (snapshot) => {
+                dbConnected = snapshot.val() === true;
+                updateDBStatus();
+            });
+        }
+
+        function updateDBStatus() {
+            const indicator = document.getElementById('dbStatusIndicator');
+            const dot = document.getElementById('dbStatusDot');
+            const status = document.getElementById('dbStatus');
+            const t = translations[currentLanguage];
+
+            if (dbConnected) {
+                indicator.style.display = 'flex';
+                dot.className = 'status-dot';
+                status.textContent = t.dbConnected;
+            } else {
+                indicator.style.display = 'flex';
+                dot.className = 'status-dot offline';
+                status.textContent = t.dbDisconnected;
+            }
+        }
+
+        // ============ OTHER USER ONLINE STATUS ============
+        function checkOtherUserStatus() {
+            setInterval(() => {
+                const otherUser = currentUser === 'davide' ? 'mattia' : 'davide';
+                const lastActivity = localStorage.getItem(`lastActivity_${otherUser}`);
+                const now = Date.now();
+                const threshold = 30000; // 30 seconds
+
+                if (lastActivity && now - parseInt(lastActivity) < threshold) {
+                    otherUserOnline = true;
+                } else {
+                    otherUserOnline = false;
+                }
+                updateOtherUserStatus();
+            }, 5000);
+        }
+
+        function updateOtherUserStatus() {
+            const indicator = document.getElementById('otherUserStatusIndicator');
+            const dot = document.getElementById('otherUserDot');
+            const status = document.getElementById('otherUserStatus');
+            const t = translations[currentLanguage];
+            const otherUser = currentUser === 'davide' ? 'Mattia' : 'Davide';
+
+            if (otherUserOnline) {
+                indicator.style.display = 'flex';
+                dot.className = 'status-dot';
+                status.textContent = `${otherUser} ${t.userOnline}`;
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        function updateLastActivity() {
+            localStorage.setItem(`lastActivity_${currentUser}`, Date.now().toString());
+        }
+
         // ============ FIREBASE LISTENERS ============
         function setupListeners() {
             if (!isFirebaseReady || listenersSetup) return;
@@ -1413,6 +1688,17 @@
                 const expenses = snapshot.val() || [];
                 console.log('📊 Expenses from Firebase:', expenses);
                 localStorage.setItem('expenses_shared', JSON.stringify(expenses));
+                
+                // Check if new expense was added by other user
+                const newTimestamp = expenses.length > 0 ? Math.max(...expenses.map(e => e.timestamp || '')) : 0;
+                if (newTimestamp > lastExpenseTimestamp) {
+                    const lastExpense = expenses.find(e => (e.timestamp || '') === newTimestamp);
+                    if (lastExpense && lastExpense.addedBy !== currentUser) {
+                        showNotification(translations[currentLanguage].expenseAddedNotif.replace('{user}', lastExpense.addedBy));
+                    }
+                    lastExpenseTimestamp = newTimestamp;
+                }
+                
                 displayExpenses();
                 displaySettlement();
             });
@@ -1422,6 +1708,13 @@
                 console.log('📅 Calendar from Firebase:', calendar);
                 localStorage.setItem('calendar_shared', JSON.stringify(calendar));
                 renderCalendar();
+            });
+
+            db.ref('shared/payments').on('value', (snapshot) => {
+                const payments = snapshot.val() || [];
+                localStorage.setItem('payments_shared', JSON.stringify(payments));
+                displaySettlement();
+                displayPaymentHistory();
             });
         }
 
@@ -1467,14 +1760,35 @@
             renderCalendar();
         }
 
+        function getPayments() {
+            const data = localStorage.getItem('payments_shared');
+            return data ? JSON.parse(data) : [];
+        }
+
+        async function savePayments(payments) {
+            localStorage.setItem('payments_shared', JSON.stringify(payments));
+            if (isFirebaseReady) {
+                showSync();
+                try {
+                    await db.ref('shared/payments').set(payments);
+                    console.log('✅ Payments synced to Firebase');
+                    hideSync();
+                } catch (error) {
+                    console.error('❌ Firebase error:', error);
+                }
+            }
+        }
+
         // ============ UI FUNCTIONS ============
         function showNotification(msg) {
             const container = document.getElementById('notificationContainer');
             const div = document.createElement('div');
             div.className = 'notification-banner';
+            if (msg.includes('⚠️')) div.classList.add('warning');
+            if (msg.includes('❌')) div.classList.add('error');
             div.textContent = msg;
             container.appendChild(div);
-            setTimeout(() => div.remove(), 2500);
+            setTimeout(() => div.remove(), 3000);
         }
 
         function showSync() {
@@ -1509,7 +1823,6 @@
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             updateTranslations();
-            renderCalendar();
         }
 
         function toggleTheme() {
@@ -1517,6 +1830,20 @@
             localStorage.setItem('theme', currentTheme);
             document.documentElement.setAttribute('data-theme', currentTheme);
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ============ RECEIPT PREVIEW ============
+        function previewReceipt() {
+            const file = document.getElementById('receipt').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    receiptBase64 = e.target.result;
+                    const preview = document.getElementById('receiptPreview');
+                    preview.innerHTML = `<img src="${receiptBase64}" style="max-width: 200px; border-radius: 6px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // ============ EXPENSE FUNCTIONS ============
@@ -1531,6 +1858,7 @@
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
                 notes: document.getElementById('notes').value,
+                receipt: receiptBase64 || null,
                 addedBy: currentUser,
                 timestamp: new Date().toISOString()
             };
@@ -1540,19 +1868,66 @@
             saveExpenses(expenses);
             
             document.querySelector('form').reset();
+            document.getElementById('receiptPreview').innerHTML = '';
+            receiptBase64 = null;
             document.getElementById('date').valueAsDate = new Date();
             showNotification(translations[currentLanguage].addedNotif);
+        }
+
+        function populateMonthYearFilters() {
+            const expenses = getExpenses();
+            const months = new Set();
+            const years = new Set();
+
+            expenses.forEach(exp => {
+                const date = new Date(exp.date);
+                months.add(date.getMonth());
+                years.add(date.getFullYear());
+            });
+
+            const monthSelect = document.getElementById('filterMonth');
+            const yearSelect = document.getElementById('filterYear');
+            const t = translations[currentLanguage];
+            const monthNames = currentLanguage === 'en'
+                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+            const selectedMonth = monthSelect.value;
+            const selectedYear = yearSelect.value;
+
+            monthSelect.innerHTML = '<option value="">All Months</option>';
+            months.forEach(month => {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = monthNames[month];
+                monthSelect.appendChild(option);
+            });
+            monthSelect.value = selectedMonth;
+
+            yearSelect.innerHTML = '<option value="">All Years</option>';
+            Array.from(years).sort().forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+            yearSelect.value = selectedYear;
         }
 
         function filterExpenses() {
             const searchText = document.getElementById('searchInput').value.toLowerCase();
             const categoryFilter = document.getElementById('filterCategory').value;
+            const monthFilter = document.getElementById('filterMonth').value;
+            const yearFilter = document.getElementById('filterYear').value;
             const expenses = getExpenses();
 
             filteredExpenses = expenses.filter(exp => {
                 const matchesSearch = exp.description.toLowerCase().includes(searchText);
                 const matchesCategory = !categoryFilter || exp.category === categoryFilter;
-                return matchesSearch && matchesCategory;
+                const expDate = new Date(exp.date);
+                const matchesMonth = !monthFilter || expDate.getMonth() == monthFilter;
+                const matchesYear = !yearFilter || expDate.getFullYear() == yearFilter;
+                return matchesSearch && matchesCategory && matchesMonth && matchesYear;
             });
 
             displayFilteredExpenses();
@@ -1562,7 +1937,7 @@
             const listDiv = document.getElementById('expensesList');
             
             if (filteredExpenses.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">' + (currentLanguage === 'en' ? 'No expenses found' : 'Nessuna spesa trovata') + '</div>';
+                listDiv.innerHTML = '<div class="no-data">' + translations[currentLanguage].noExpenses + '</div>';
                 return;
             }
 
@@ -1579,6 +1954,7 @@
                         <div class="expense-details">
                             ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
                         </div>
+                        ${exp.receipt ? `<div class="expense-receipt"><img src="${exp.receipt}" alt="Receipt"></div>` : ''}
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                         <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
@@ -1592,6 +1968,9 @@
             const expenses = getExpenses();
             document.getElementById('searchInput').value = '';
             document.getElementById('filterCategory').value = '';
+            document.getElementById('filterMonth').value = '';
+            document.getElementById('filterYear').value = '';
+            populateMonthYearFilters();
             filteredExpenses = expenses;
             displayFilteredExpenses();
         }
@@ -1615,6 +1994,7 @@
         // ============ SETTLEMENT CALCULATION ============
         function displaySettlement() {
             const expenses = getExpenses();
+            const payments = getPayments();
             const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
 
@@ -1630,6 +2010,17 @@
                 }
             });
 
+            // Apply payments
+            payments.forEach(payment => {
+                if (payment.from === 'davide') {
+                    balances.Davide -= payment.amount;
+                    balances.Mattia += payment.amount;
+                } else {
+                    balances.Mattia -= payment.amount;
+                    balances.Davide += payment.amount;
+                }
+            });
+
             document.getElementById('totalExpenses').textContent = `EUR ${total.toFixed(2)}`;
 
             let davidePaid = 0, mattiaPaid = 0;
@@ -1641,22 +2032,86 @@
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
 
+            // Settlement banner
+            const banner = document.getElementById('settlementBanner');
             const detailsDiv = document.getElementById('settlementDetails');
             const t = translations[currentLanguage];
+            
             if (total === 0) {
+                banner.style.display = 'none';
                 detailsDiv.innerHTML = '<div class="no-data">' + (currentLanguage === 'en' ? 'No expenses yet' : 'Nessuna spesa ancora') + '</div>';
                 return;
             }
 
+            banner.style.display = 'block';
             let html = '';
             if (Math.abs(balances.Davide) < 0.01) {
-                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t.allSettledMsg}</div>`;
+                banner.className = 'settlement-banner paid';
+                banner.textContent = t.allSettledMsg;
+                detailsDiv.innerHTML = '<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">' + t.allSettledMsg + '</div>';
             } else if (balances.Davide > 0.01) {
+                banner.className = 'settlement-banner owed';
+                banner.textContent = `Mattia ${currentLanguage === 'en' ? 'owes' : 'deve'} Davide: EUR ${balances.Davide.toFixed(2)}`;
                 html = `<div class="settlement-box owed">💳 Mattia ${currentLanguage === 'en' ? 'owes' : 'deve'} Davide: <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                detailsDiv.innerHTML = html;
             } else if (balances.Mattia > 0.01) {
+                banner.className = 'settlement-banner owed';
+                banner.textContent = `Davide ${currentLanguage === 'en' ? 'owes' : 'deve'} Mattia: EUR ${Math.abs(balances.Mattia).toFixed(2)}`;
                 html = `<div class="settlement-box owed">💳 Davide ${currentLanguage === 'en' ? 'owes' : 'deve'} Mattia: <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                detailsDiv.innerHTML = html;
             }
-            detailsDiv.innerHTML = html;
+
+            // Check if overdue (end of month)
+            const today = new Date();
+            const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            if (today.getDate() >= lastDayOfMonth - 2 && Math.abs(balances.Davide) > 0.01) {
+                const owesPerson = balances.Davide > 0 ? 'Mattia' : 'Davide';
+                const owesAmount = Math.abs(balances.Davide);
+                showNotification(t.overdueNotif.replace('{person}', owesPerson).replace('{amount}', owesAmount.toFixed(2)));
+            }
+        }
+
+        function recordPayment() {
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const from = document.getElementById('paymentFrom').value;
+
+            if (isNaN(amount) || amount <= 0) {
+                showNotification('❌ ' + (currentLanguage === 'en' ? 'Enter a valid amount' : 'Inserisci un importo valido'));
+                return;
+            }
+
+            const payments = getPayments();
+            payments.push({
+                id: Date.now(),
+                amount: amount,
+                from: from,
+                date: new Date().toISOString(),
+                recordedBy: currentUser
+            });
+
+            savePayments(payments);
+            document.getElementById('paymentAmount').value = '';
+            showNotification(translations[currentLanguage].paymentRecordedNotif);
+            displaySettlement();
+            displayPaymentHistory();
+        }
+
+        function displayPaymentHistory() {
+            const payments = getPayments();
+            const historyDiv = document.getElementById('paymentHistory');
+
+            if (payments.length === 0) {
+                historyDiv.innerHTML = '';
+                return;
+            }
+
+            payments.sort((a, b) => new Date(b.date) - new Date(a.date));
+            historyDiv.innerHTML = '<strong>' + (currentLanguage === 'en' ? 'Recent Payments:' : 'Pagamenti Recenti:') + '</strong>' + 
+                payments.slice(0, 5).map(p => `
+                <div class="payment-item">
+                    ${p.from === 'davide' ? 'Davide' : 'Mattia'} → EUR ${p.amount.toFixed(2)} (${new Date(p.date).toLocaleDateString()})
+                </div>
+            `).join('');
         }
 
         // ============ CALENDAR FUNCTIONS ============
@@ -1790,18 +2245,98 @@
         // ============ EXPORT FUNCTION ============
         async function generateAndDownloadReport() {
             const expenses = getExpenses();
+            const payments = getPayments();
             const now = new Date();
-            let total = 0;
-            expenses.forEach(exp => { total += exp.amount; });
+            const expensePeriod = parseInt(document.getElementById('expensePeriod').value);
+            const cleaningPeriod = parseInt(document.getElementById('cleaningPeriod').value);
 
-            const html = `
-                <div style="text-align: center; padding: 40px; background: white;">
+            // Filter expenses by period
+            const periodStart = new Date();
+            periodStart.setMonth(periodStart.getMonth() - expensePeriod);
+            const filteredExpenses = expenses.filter(e => new Date(e.date) >= periodStart);
+
+            let total = 0;
+            filteredExpenses.forEach(exp => { total += exp.amount; });
+
+            const calendarData = getCalendarData();
+            const cleaningStart = new Date();
+            const cleaningEnd = new Date();
+            cleaningEnd.setMonth(cleaningEnd.getMonth() + cleaningPeriod);
+            const cleaningDates = Object.entries(calendarData).filter(([date, data]) => {
+                const d = new Date(date);
+                return d >= cleaningStart && d <= cleaningEnd && data.status === 'cleaning';
+            });
+
+            const t = translations[currentLanguage];
+            const bgColor = currentTheme === 'dark' ? '#121212' : '#ffffff';
+            const textColor = currentTheme === 'dark' ? '#e0e0e0' : '#333';
+
+            let html = `
+                <div style="text-align: center; padding: 40px; background: ${bgColor}; color: ${textColor}; font-family: Arial, sans-serif;">
                     <h1 style="color: #2196F3; margin-bottom: 10px;">Chillinguito Lake Como</h1>
                     <p style="color: #666; margin-bottom: 30px;">${currentLanguage === 'en' ? 'Financial Report' : 'Rapporto Finanziario'} - ${now.toLocaleDateString()}</p>
-                    <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    
+                    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
                         <h2 style="color: #2196F3; margin-bottom: 20px;">${currentLanguage === 'en' ? 'Expense Summary' : 'Riepilogo Spese'}</h2>
                         <p><strong>${currentLanguage === 'en' ? 'Total Expenses' : 'Spese Totali'}:</strong> EUR ${total.toFixed(2)}</p>
-                        <p><strong>${currentLanguage === 'en' ? 'Number of Expenses' : 'Numero di Spese'}:</strong> ${expenses.length}</p>
+                        <p><strong>${currentLanguage === 'en' ? 'Number of Expenses' : 'Numero di Spese'}:</strong> ${filteredExpenses.length}</p>
+                        <p><strong>${currentLanguage === 'en' ? 'Period' : 'Periodo'}:</strong> ${periodStart.toLocaleDateString()} - ${now.toLocaleDateString()}</p>
+                        
+                        <h3 style="color: #2196F3; margin-top: 30px; margin-bottom: 15px;">${currentLanguage === 'en' ? 'Detailed Expenses' : 'Spese Dettagliate'}</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                            <tr style="background: #f5f5f5;">
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">${currentLanguage === 'en' ? 'Date' : 'Data'}</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">${currentLanguage === 'en' ? 'Description' : 'Descrizione'}</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">${currentLanguage === 'en' ? 'Paid By' : 'Pagato Da'}</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">${currentLanguage === 'en' ? 'Amount' : 'Importo'}</th>
+                            </tr>
+                            ${filteredExpenses.map(exp => `
+                                <tr>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${exp.date}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${exp.description}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">${exp.paidBy}</td>
+                                    <td style="border: 1px solid #ddd; padding: 8px;">EUR ${exp.amount.toFixed(2)}</td>
+                                </tr>
+                                ${exp.receipt ? `<tr><td colspan="4" style="border: 1px solid #ddd; padding: 8px;"><img src="${exp.receipt}" style="max-width: 300px; border-radius: 6px;"></td></tr>` : ''}
+                            `).join('')}
+                        </table>
+
+                        <h3 style="color: #2196F3; margin-top: 30px; margin-bottom: 15px;">${currentLanguage === 'en' ? 'Settlement Status' : 'Stato Saldo'}</h3>
+                        <p>${currentLanguage === 'en' ? 'Settlement based on all historical expenses' : 'Saldo basato su tutte le spese storiche'}</p>
+                        ${(() => {
+                            const balances = { Davide: 0, Mattia: 0 };
+                            expenses.forEach(exp => {
+                                balances[exp.paidBy] += exp.amount;
+                                if (exp.splitBetween === 'Both') {
+                                    balances.Davide -= exp.amount / 2;
+                                    balances.Mattia -= exp.amount / 2;
+                                } else {
+                                    balances[exp.splitBetween] -= exp.amount;
+                                }
+                            });
+                            payments.forEach(p => {
+                                if (p.from === 'davide') {
+                                    balances.Davide -= p.amount;
+                                    balances.Mattia += p.amount;
+                                } else {
+                                    balances.Mattia -= p.amount;
+                                    balances.Davide += p.amount;
+                                }
+                            });
+                            if (Math.abs(balances.Davide) < 0.01) {
+                                return '<p style="color: #2e7d32; font-weight: bold;">✅ ' + t.allSettledMsg + '</p>';
+                            } else if (balances.Davide > 0) {
+                                return '<p style="color: #c62828; font-weight: bold;">💳 Mattia ' + (currentLanguage === 'en' ? 'owes' : 'deve') + ' Davide: EUR ' + balances.Davide.toFixed(2) + '</p>';
+                            } else {
+                                return '<p style="color: #c62828; font-weight: bold;">💳 Davide ' + (currentLanguage === 'en' ? 'owes' : 'deve') + ' Mattia: EUR ' + Math.abs(balances.Mattia).toFixed(2) + '</p>';
+                            }
+                        })()}
+
+                        <h3 style="color: #2196F3; margin-top: 30px; margin-bottom: 15px;">${currentLanguage === 'en' ? 'Cleaning Dates' : 'Date Pulizia'}</h3>
+                        <p>${currentLanguage === 'en' ? 'Scheduled for:' : 'Programmato per:'} ${cleaningStart.toLocaleDateString()} - ${cleaningEnd.toLocaleDateString()}</p>
+                        <ul>
+                            ${cleaningDates.map(([date]) => `<li>${new Date(date).toLocaleDateString()}</li>`).join('')}
+                        </ul>
                     </div>
                 </div>
             `;
@@ -1814,7 +2349,7 @@
 
             try {
                 const canvas = await html2canvas(reportDiv, {
-                    backgroundColor: '#ffffff',
+                    backgroundColor: bgColor,
                     scale: 2,
                     width: 900
                 });
@@ -1823,7 +2358,7 @@
                     link.href = URL.createObjectURL(blob);
                     link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
                     link.click();
-                    showNotification(translations[currentLanguage].reportDownloadedNotif);
+                    showNotification(t.reportDownloadedNotif);
                 });
             } catch (error) {
                 alert(currentLanguage === 'en' ? 'Error creating report: ' + error.message : 'Errore nella creazione del report: ' + error.message);
@@ -1844,7 +2379,16 @@
 
             displayExpenses();
             displaySettlement();
+            displayPaymentHistory();
             renderCalendar();
+            setupDBStatusCheck();
+            checkOtherUserStatus();
+            updateLastActivity();
+
+            setInterval(() => {
+                updateLastActivity();
+                updateOtherUserStatus();
+            }, 5000);
 
             setTimeout(() => {
                 setupListeners();
