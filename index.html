@@ -2442,6 +2442,25 @@
             }
         }
 
+        // ============ CALENDAR AUTO-FILL (v10 NEW) ============
+        function markGuestDatesOnCalendar(guest) {
+            const calendar = getCalendarData();
+            const checkIn = new Date(guest.checkIn);
+            const checkOut = new Date(guest.checkOut);
+           
+           // Mark each night as occupied (from checkin to day before checkout)
+            let currentDate = new Date(checkIn);
+            while (currentDate < checkOut) {
+               const dateStr = currentDate.toISOString().split('T')[0];
+               calendar[dateStr] = 'occupied';
+               currentDate.setDate(currentDate.getDate() + 1);
+           }
+           
+           // Save and refresh calendar
+           saveCalendarData(calendar);
+       }
+       
+
         // ============ GUEST FUNCTIONS ============
         function openAddGuestModal() {
             currentEditingGuestId = null;
@@ -2622,6 +2641,7 @@
 
             guestPhotos = [];
             saveGuests(guests);
+            markGuestDatesOnCalendar(guestBase);
             closeModal();
             showNotification(t.guestAdded);
         }
