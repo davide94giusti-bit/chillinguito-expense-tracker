@@ -39,7 +39,7 @@
             padding: 20px;
         }
 
-        .lock-screen {
+        .auth-screen {
             background: white;
             border-radius: 16px;
             padding: 40px;
@@ -49,21 +49,60 @@
             width: 100%;
         }
 
-        .lock-screen h1 {
+        .auth-screen h1 {
             color: var(--primary);
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 28px;
         }
 
-        .lock-screen p {
+        .auth-screen p {
             color: var(--text-secondary);
             margin-bottom: 30px;
             font-size: 15px;
         }
 
-        .lock-screen .icon {
+        .auth-screen .icon {
             font-size: 60px;
             margin-bottom: 20px;
+        }
+
+        .user-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .user-btn {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .user-btn:hover {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.05);
+        }
+
+        .user-btn.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--primary);
+        }
+
+        .user-icon {
+            font-size: 24px;
         }
 
         .totp-input {
@@ -121,7 +160,7 @@
             min-height: 20px;
         }
 
-        .lock-screen-info {
+        .auth-info {
             background: rgba(33, 150, 243, 0.1);
             padding: 16px;
             border-radius: 8px;
@@ -161,6 +200,20 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
+        }
+
+        .user-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .logout-btn {
@@ -302,8 +355,6 @@
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -363,17 +414,6 @@
 
         .btn-danger:hover {
             background: #d32f2f;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-            padding: 10px 16px;
-            font-size: 14px;
-        }
-
-        .btn-success:hover {
-            background: #45a049;
         }
 
         .card {
@@ -462,7 +502,6 @@
 
         .receipt-preview.has-image {
             border-color: var(--success);
-            background-size: cover;
         }
 
         .receipt-icon {
@@ -564,6 +603,16 @@
             margin-right: 8px;
         }
 
+        .user-badge-inline {
+            display: inline-block;
+            padding: 2px 6px;
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--primary);
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
         .calendar-container {
             background: white;
             padding: 12px;
@@ -622,10 +671,6 @@
             padding: 8px 0px;
             font-size: 11px;
             text-transform: uppercase;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .calendar-days {
@@ -649,7 +694,6 @@
             font-size: 11px;
             position: relative;
             min-height: 50px;
-            word-wrap: break-word;
             overflow: hidden;
         }
 
@@ -678,7 +722,6 @@
             text-transform: uppercase;
             font-weight: 700;
             line-height: 1;
-            letter-spacing: 0.2px;
         }
 
         .calendar-day.occupied {
@@ -779,46 +822,11 @@
             background: rgba(33, 150, 243, 0.1);
         }
 
-        .status-option.occupied.selected {
-            background: rgba(33, 150, 243, 0.2);
-            border-color: var(--primary);
-        }
-
-        .status-option.available.selected {
-            background: rgba(76, 175, 80, 0.15);
-            border-color: var(--success);
-        }
-
-        .status-option.cleaning.selected {
-            background: rgba(255, 152, 0, 0.2);
-            border-color: var(--warning);
-        }
-
         .export-section {
             background: white;
             padding: 24px;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .summary-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 16px;
-            border-left: 4px solid var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .summary-card h3 {
-            color: var(--primary);
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-
-        .summary-card p {
-            margin-bottom: 8px;
-            font-size: 14px;
         }
 
         .button-group {
@@ -844,10 +852,6 @@
 
         .notification-banner.warning {
             background: #FF9800;
-        }
-
-        .notification-banner.alert {
-            background: var(--primary);
         }
 
         @keyframes slideIn {
@@ -880,99 +884,6 @@
             font-weight: 600;
         }
 
-        #exportReport {
-            display: none;
-            padding: 40px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            min-height: 100%;
-            z-index: -1;
-            width: 900px;
-            margin: 0 auto;
-        }
-
-        #exportReport.light-mode {
-            background: white;
-            color: #333;
-        }
-
-        #exportReport.light-mode .report-header {
-            border-bottom: 3px solid #2196F3;
-            color: #333;
-        }
-
-        #exportReport.light-mode .report-header h1 {
-            color: #2196F3;
-        }
-
-        #exportReport.light-mode .report-section h2 {
-            color: #2196F3;
-            border-left-color: #2196F3;
-        }
-
-        #exportReport.dark-mode {
-            background: #1e1e1e;
-            color: #e0e0e0;
-        }
-
-        #exportReport.dark-mode .report-header {
-            border-bottom: 3px solid #64B5F6;
-            color: #e0e0e0;
-        }
-
-        #exportReport.dark-mode .report-header h1 {
-            color: #64B5F6;
-        }
-
-        #exportReport.dark-mode .report-section h2 {
-            color: #64B5F6;
-            border-left-color: #64B5F6;
-        }
-
-        .report-header {
-            text-align: center;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .report-header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .report-section {
-            margin-bottom: 40px;
-            page-break-inside: avoid;
-        }
-
-        .report-section h2 {
-            font-size: 20px;
-            border-left: 4px solid;
-            padding-left: 12px;
-            margin-bottom: 16px;
-        }
-
-        .report-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            font-size: 14px;
-        }
-
-        .report-item strong {
-            font-weight: 600;
-        }
-
-        .report-settlement {
-            padding: 16px;
-            border-radius: 8px;
-            border-left: 4px solid;
-            font-weight: 600;
-            margin: 16px 0;
-        }
-
         [data-theme="dark"] {
             --primary: #64B5F6;
             --primary-dark: #42A5F5;
@@ -992,8 +903,7 @@
         [data-theme="dark"] .calendar-container,
         [data-theme="dark"] .modal-content,
         [data-theme="dark"] .export-section,
-        [data-theme="dark"] .lock-screen,
-        [data-theme="dark"] .summary-card {
+        [data-theme="dark"] .auth-screen {
             background: #1e1e1e;
         }
 
@@ -1003,83 +913,46 @@
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .calendar-day {
-            background: #2a2a2a;
-            border-color: var(--border);
-        }
-
-        [data-theme="dark"] .calendar-day.occupied {
-            background: #FF6B6B !important;
-            border-color: #D32F2F !important;
-            color: white !important;
-        }
-
-        [data-theme="dark"] .calendar-day.available {
-            background: #51CF66 !important;
-            border-color: #2F9E44 !important;
-            color: white !important;
-        }
-
-        [data-theme="dark"] .calendar-day.cleaning {
-            background: #FFA94D !important;
-            border-color: #F76707 !important;
-            color: white !important;
-        }
-
-        [data-theme="dark"] .status-option {
+        [data-theme="dark"] .user-btn {
             background: #2a2a2a;
             color: var(--text);
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .lock-screen-info {
+        [data-theme="dark"] .user-btn.selected {
             background: rgba(100, 181, 246, 0.1);
-            color: #b0b0b0;
-        }
-
-        [data-theme="dark"] .summary-card {
-            border-left-color: #64B5F6;
+            border-color: #64B5F6;
+            color: #64B5F6;
         }
 
         @media (max-width: 600px) {
             .calendar-container { padding: 8px; }
-            .calendar-header { flex-direction: column; gap: 12px; }
-            .calendar-header h2 { font-size: 14px; width: 100%; }
-            .calendar-nav { width: 100%; justify-content: space-between; }
-            .calendar-nav button { flex: 1; padding: 6px 8px; font-size: 11px; min-height: 36px; }
-            .calendar-weekdays { gap: 2px; margin-bottom: 2px; }
-            .weekday { font-size: 9px; padding: 4px 0px; }
-            .calendar-days { gap: 2px; }
-            .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; border-radius: 3px; font-size: 9px; }
-            .calendar-day-number { font-size: 10px; margin-bottom: 0px; }
-            .calendar-day-status { font-size: 7px; letter-spacing: 0px; }
-            input[type="date"], input[type="month"] { min-height: 44px; font-size: 16px; padding: 10px 8px; }
+            .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; }
             .button-group { flex-direction: column; }
             .button-group button { width: 100%; }
-        }
-
-        @media (max-width: 400px) {
-            .calendar-container { padding: 6px; }
-            .calendar-header { flex-direction: column; gap: 10px; }
-            .calendar-header h2 { font-size: 12px; }
-            .calendar-nav button { padding: 6px 6px; font-size: 10px; }
-            .calendar-weekdays { gap: 1px; }
-            .weekday { font-size: 8px; padding: 3px 0px; }
-            .calendar-days { gap: 1px; }
-            .calendar-day { aspect-ratio: 1 / 1; min-height: 40px; padding: 1px; border-radius: 2px; font-size: 8px; }
-            .calendar-day-number { font-size: 9px; }
-            .calendar-day-status { font-size: 6px; line-height: 1; }
-            input[type="date"], input[type="month"] { min-height: 40px; font-size: 14px; padding: 8px 6px; }
         }
     </style>
 </head>
 <body id="appBody">
-    <div id="lockScreen" class="lock-screen" style="display: none;">
-        <div class="lock-screen">
-            <div class="icon">🔐</div>
+    <!-- AUTH SCREEN -->
+    <div id="authScreen" class="auth-screen" style="display: none;">
+        <div class="auth-screen">
+            <div class="icon">🏠</div>
             <h1>Chillinguito</h1>
-            <p>Enter the 6-digit code from your authenticator app</p>
+            <p>Select your account & enter 2FA code</p>
 
+            <div class="user-selector">
+                <button class="user-btn" onclick="selectUser('davide')">
+                    <span class="user-icon">👨</span>
+                    <span>Davide</span>
+                </button>
+                <button class="user-btn" onclick="selectUser('mattia')">
+                    <span class="user-icon">👨‍🦱</span>
+                    <span>Mattia</span>
+                </button>
+            </div>
+
+            <label style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code:</label>
             <div class="totp-input">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
@@ -1093,13 +966,14 @@
 
             <div class="error-message" id="errorMessage"></div>
 
-            <div class="lock-screen-info">
-                💡 Both Davide & Mattia use the same 6-digit code from Microsoft Authenticator
+            <div class="auth-info">
+                💡 Both users use the same code from Microsoft Authenticator
             </div>
         </div>
     </div>
 
-    <div id="mainApp">
+    <!-- MAIN APP -->
+    <div id="mainApp" style="display: none;">
         <header>
             <div class="container">
                 <div class="header-top">
@@ -1118,7 +992,11 @@
                         <span id="otherUserStatus">Mattia is online</span>
                     </div>
 
-                    <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div class="user-badge" id="userBadge">
+                            <span id="userIcon">👨</span>
+                            <span id="userName">Davide</span>
+                        </div>
                         <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
                         <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
                         <button class="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -1132,83 +1010,71 @@
             <div id="notificationContainer"></div>
 
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense">Add Expense</button>
-                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses">All Expenses</button>
-                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement">Settlement</button>
-                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar">Calendar</button>
-                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export">Export & Summary</button>
+                <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
+                <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('calendar')">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')">Export & Summary</button>
             </div>
 
             <div id="add-expense" class="tab-content active">
                 <div class="card">
-                    <h2 style="margin-bottom: 20px;" data-i18n="addNewExpense">Add New Expense</h2>
+                    <h2 style="margin-bottom: 20px;">Add New Expense</h2>
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
-                            <label for="description" data-i18n="description">Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
+                            <label for="description">Description</label>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="amount" data-i18n="amount">Amount (EUR)</label>
+                                <label for="amount">Amount (EUR)</label>
                                 <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
                             </div>
                             <div class="form-group">
-                                <label for="category" data-i18n="category">Category</label>
+                                <label for="category">Category</label>
                                 <select id="category" required>
-                                    <option value="" data-i18n="selectCategory">-- Select Category --</option>
-                                    <option value="Cleaning" data-i18n="catCleaning">Cleaning & Maintenance</option>
-                                    <option value="Utilities" data-i18n="catUtilities">Utilities (Water, Gas, Electric)</option>
-                                    <option value="Groceries" data-i18n="catGroceries">Groceries & Food</option>
-                                    <option value="Repairs" data-i18n="catRepairs">Repairs & Equipment</option>
-                                    <option value="Furnishing" data-i18n="catFurnishing">Furnishing & Decoration</option>
-                                    <option value="Marketing" data-i18n="catMarketing">Marketing & Advertising</option>
-                                    <option value="Insurance" data-i18n="catInsurance">Insurance</option>
-                                    <option value="Supplies" data-i18n="catSupplies">Supplies & Materials</option>
-                                    <option value="Other" data-i18n="catOther">Other</option>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Cleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries">Groceries & Food</option>
+                                    <option value="Repairs">Repairs & Equipment</option>
+                                    <option value="Other">Other</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="paidBy" data-i18n="paidBy">Paid By</label>
+                                <label for="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value="" data-i18n="selectPerson">-- Select --</option>
+                                    <option value="">-- Select --</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="splitBetween" data-i18n="splitBetween">Split Between</label>
+                                <label for="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value="" data-i18n="selectSplit">-- Select --</option>
-                                    <option value="Both" data-i18n="splitBoth">Both (50/50)</option>
-                                    <option value="Davide" data-i18n="splitDavide">Davide Only</option>
-                                    <option value="Mattia" data-i18n="splitMattia">Mattia Only</option>
+                                    <option value="">-- Select --</option>
+                                    <option value="Both">Both (50/50)</option>
+                                    <option value="Davide">Davide Only</option>
+                                    <option value="Mattia">Mattia Only</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="date" data-i18n="date">Date</label>
+                            <label for="date">Date</label>
                             <input type="date" id="date" required>
                         </div>
 
-                        <div class="form-group receipt-section">
-                            <label data-i18n="receipt">Receipt Photo (optional)</label>
-                            <div class="receipt-preview" id="receiptPreview">
-                                <span class="receipt-icon">📷</span>
-                            </div>
-                            <input type="file" id="receiptInput" accept="image/*" style="display: none;">
-                        </div>
-
                         <div class="form-group">
-                            <label for="notes" data-i18n="notes">Notes (optional)</label>
-                            <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
+                            <label for="notes">Notes (optional)</label>
+                            <textarea id="notes" placeholder="Add notes..." rows="3"></textarea>
                         </div>
 
-                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn">Add Expense</button>
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Add Expense</button>
                     </form>
                 </div>
             </div>
@@ -1216,8 +1082,8 @@
             <div id="expenses-list" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 data-i18n="allExpenses">All Expenses</h2>
-                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll">Clear All</button>
+                        <h2>All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);">Clear All</button>
                     </div>
                     <div id="expensesList"></div>
                 </div>
@@ -1225,24 +1091,24 @@
 
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
-                    <div class="summary-title" data-i18n="currentSettlement">Current Settlement Status</div>
+                    <div class="summary-title">Current Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="totalExpenses">Total Expenses</div>
+                            <div class="stat-label">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="davidePaid">Davide Paid</div>
+                            <div class="stat-label">Davide Paid</div>
                             <div class="stat-value" id="davidePaid">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="mattiaPaid">Mattia Paid</div>
+                            <div class="stat-label">Mattia Paid</div>
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
 
                     <div style="margin-top: 20px;">
-                        <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes">💸 Who Owes Whom</h3>
+                        <h3 style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
                         <div id="settlementDetails"></div>
                     </div>
                 </div>
@@ -1251,22 +1117,22 @@
             <div id="calendar" class="tab-content">
                 <div class="calendar-container">
                     <div class="calendar-header">
-                        <h2 data-i18n="calendarTitle">Airbnb Calendar</h2>
+                        <h2>Airbnb Calendar</h2>
                         <div class="calendar-nav">
-                            <button onclick="previousMonth()" data-i18n="previousMonth">Previous</button>
+                            <button onclick="previousMonth()">Previous</button>
                             <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
-                            <button onclick="nextMonth()" data-i18n="nextMonth">Next</button>
+                            <button onclick="nextMonth()">Next</button>
                         </div>
                     </div>
 
                     <div class="calendar-weekdays">
-                        <div class="weekday" data-i18n="weekdaySun">Sun</div>
-                        <div class="weekday" data-i18n="weekdayMon">Mon</div>
-                        <div class="weekday" data-i18n="weekdayTue">Tue</div>
-                        <div class="weekday" data-i18n="weekdayWed">Wed</div>
-                        <div class="weekday" data-i18n="weekdayThu">Thu</div>
-                        <div class="weekday" data-i18n="weekdayFri">Fri</div>
-                        <div class="weekday" data-i18n="weekdaySat">Sat</div>
+                        <div class="weekday">Sun</div>
+                        <div class="weekday">Mon</div>
+                        <div class="weekday">Tue</div>
+                        <div class="weekday">Wed</div>
+                        <div class="weekday">Thu</div>
+                        <div class="weekday">Fri</div>
+                        <div class="weekday">Sat</div>
                     </div>
 
                     <div id="calendarDays" class="calendar-days"></div>
@@ -1275,32 +1141,22 @@
 
             <div id="export" class="tab-content">
                 <div class="export-section">
-                    <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
-
-                    <div style="margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
-                        <div class="button-group" id="expensePeriodButtons">
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,3)" data-i18n="last3Months">Last 3 Months</button>
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,6)" data-i18n="last6Months">Last 6 Months</button>
-                        </div>
-                    </div>
-
-                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()" data-i18n="downloadReport">📊 Download Complete Report</button>
+                    <h2 style="margin-bottom: 20px;">Monthly Summary & Export</h2>
+                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()">📊 Download Report</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="exportReport"></div>
     <div id="modalContainer"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // FIREBASE CONFIG - YOUR REAL CREDENTIALS
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyCwF7bvS12h3AM14gmAEKV16BjH4Bq6TWU",
             authDomain: "airbnb-expense-tracker-7f531.firebaseapp.com",
@@ -1314,88 +1170,28 @@
 
         let firebaseApp = null;
         let firebaseDatabase = null;
+        let firebaseAuth = null;
         let firebaseInitialized = false;
 
         try {
             firebaseApp = firebase.initializeApp(firebaseConfig);
             firebaseDatabase = firebase.database();
+            firebaseAuth = firebase.auth();
             firebaseInitialized = true;
-            console.log('✅ Firebase initialized successfully');
+            console.log('✅ Firebase initialized');
         } catch (error) {
-            console.warn('⚠️ Firebase initialization warning:', error.message);
+            console.warn('⚠️ Firebase warning:', error.message);
         }
 
-        // SYNC FUNCTIONS
-        function updateSyncStatus(status, isError = false) {
-            const indicator = document.getElementById('syncStatusIndicator');
-            const dot = document.getElementById('syncDot');
-            const statusText = document.getElementById('syncStatus');
-            
-            if (status === 'synced') {
-                dot.classList.remove('syncing', 'error');
-                statusText.textContent = '✓ Synced';
-                indicator.style.display = 'flex';
-                setTimeout(() => {
-                    indicator.style.display = 'none';
-                }, 3000);
-            } else if (status === 'syncing') {
-                dot.classList.add('syncing');
-                dot.classList.remove('error');
-                statusText.textContent = 'Syncing...';
-                indicator.style.display = 'flex';
-            } else if (status === 'error') {
-                dot.classList.add('error');
-                dot.classList.remove('syncing');
-                statusText.textContent = '✕ Offline';
-                indicator.style.display = 'flex';
-            }
-        }
-
-        async function syncToFirebase(path, data) {
-            if (!firebaseInitialized) return;
-            try {
-                updateSyncStatus('syncing');
-                await firebaseDatabase.ref(path).set(data);
-                updateSyncStatus('synced');
-            } catch (error) {
-                console.error('Sync error:', error);
-                updateSyncStatus('error');
-            }
-        }
-
-        function listenToFirebaseChanges() {
-            if (!firebaseInitialized) return;
-
-            firebaseDatabase.ref('expenses').on('value', (snapshot) => {
-                const remoteExpenses = snapshot.val();
-                if (remoteExpenses) {
-                    const localExpenses = getExpenses();
-                    if (JSON.stringify(localExpenses) !== JSON.stringify(remoteExpenses)) {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(remoteExpenses));
-                        displayExpenses();
-                        displaySettlement();
-                        showNotification('📊 Expenses synced from cloud');
-                    }
-                }
-            });
-
-            firebaseDatabase.ref('calendar').on('value', (snapshot) => {
-                const remoteCalendar = snapshot.val();
-                if (remoteCalendar) {
-                    const localCalendar = getCalendarData();
-                    if (JSON.stringify(localCalendar) !== JSON.stringify(remoteCalendar)) {
-                        localStorage.setItem(CALENDAR_KEY, JSON.stringify(remoteCalendar));
-                        renderCalendar();
-                        showNotification('📅 Calendar synced from cloud');
-                    }
-                }
-            });
-        }
-
-        // TOTP 2FA
+        // STATE
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
-        const UNLOCK_KEY = 'chillinguito_unlocked';
+        let currentUser = null;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentCalendarDate = new Date();
+        let currentReceiptImage = null;
 
+        // TOTP FUNCTIONS
         function base32Decode(str) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             const bits = [];
@@ -1423,8 +1219,7 @@
                 const sig = new Uint8Array(signature);
                 const offset = sig[sig.length - 1] & 0x0f;
                 const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
-                const code = String(p % 1000000).padStart(6, '0');
-                return code;
+                return String(p % 1000000).padStart(6, '0');
             } catch (error) {
                 console.error('TOTP error:', error);
                 return null;
@@ -1439,25 +1234,18 @@
             return false;
         }
 
-        function setupLockScreen() {
-            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
-            if (!isUnlocked) {
-                document.getElementById('appBody').classList.add('locked');
-                document.getElementById('lockScreen').style.display = 'flex';
-                document.getElementById('mainApp').style.display = 'none';
-                setupTOTPInput();
-            } else {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initializeApp();
-            }
+        // AUTH FUNCTIONS
+        function selectUser(user) {
+            currentUser = user;
+            document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.user-btn').classList.add('selected');
         }
 
         function setupTOTPInput() {
             const inputs = document.querySelectorAll('.totp-digit');
             inputs.forEach((input, index) => {
                 input.addEventListener('keydown', (e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                    if (!/[0-9]/.test(e.key) && !['Backspace', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
                         e.preventDefault();
                     }
                     if (e.key === 'Backspace' && input.value === '' && index > 0) {
@@ -1465,12 +1253,8 @@
                     }
                 });
                 input.addEventListener('input', (e) => {
-                    if (e.target.value.length === 1) {
-                        if (index < inputs.length - 1) {
-                            inputs[index + 1].focus();
-                        } else {
-                            validateTOTP();
-                        }
+                    if (e.target.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
                     }
                 });
             });
@@ -1478,24 +1262,32 @@
         }
 
         async function validateTOTP() {
+            if (!currentUser) {
+                document.getElementById('errorMessage').textContent = '❌ Please select a user first';
+                return;
+            }
+
             const inputs = document.querySelectorAll('.totp-digit');
             const code = Array.from(inputs).map(input => input.value).join('');
             const errorDiv = document.getElementById('errorMessage');
+
             if (code.length !== 6) {
                 errorDiv.textContent = '❌ Please enter all 6 digits';
                 return;
             }
+
             const unlockBtn = document.querySelector('.unlock-btn');
             unlockBtn.disabled = true;
             unlockBtn.textContent = '⏳ Verifying...';
+
             const isValid = await validateTOTPCode(code);
             if (isValid) {
-                localStorage.setItem(UNLOCK_KEY, 'true');
+                localStorage.setItem('currentUser', currentUser);
                 errorDiv.textContent = '✅ Welcome!';
                 setTimeout(() => {
-                    document.getElementById('appBody').classList.remove('locked');
-                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('authScreen').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
+                    document.body.classList.remove('locked');
                     initializeApp();
                 }, 500);
             } else {
@@ -1508,151 +1300,123 @@
         }
 
         function logout() {
-            if (confirm('🔒 Lock the app? You will need to enter your 2FA code again.')) {
-                localStorage.removeItem(UNLOCK_KEY);
+            if (confirm('🔒 Lock the app?')) {
+                localStorage.removeItem('currentUser');
                 location.reload();
             }
         }
 
-        // TRANSLATIONS
-        const translations = {
-            en: {
-                addExpense: 'Add Expense', allExpenses: 'All Expenses', settlement: 'Settlement', calendar: 'Calendar', export: 'Export & Summary',
-                addNewExpense: 'Add New Expense', description: 'Description', amount: 'Amount (EUR)', category: 'Category', selectCategory: '-- Select Category --',
-                catCleaning: 'Cleaning & Maintenance', catUtilities: 'Utilities (Water, Gas, Electric)', catGroceries: 'Groceries & Food', catRepairs: 'Repairs & Equipment',
-                catFurnishing: 'Furnishing & Decoration', catMarketing: 'Marketing & Advertising', catInsurance: 'Insurance', catSupplies: 'Supplies & Materials', catOther: 'Other',
-                paidBy: 'Paid By', selectPerson: '-- Select --', splitBetween: 'Split Between', selectSplit: '-- Select --', splitBoth: 'Both (50/50)', splitDavide: 'Davide Only', splitMattia: 'Mattia Only',
-                date: 'Date', notes: 'Notes (optional)', receipt: 'Receipt Photo (optional)', addExpenseBtn: 'Add Expense', clearAll: 'Clear All', expenseAdded: '✅ Expense added successfully!',
-                deleteConfirm: 'Delete this expense?', clearAllConfirm: '⚠️ Delete ALL expenses? This cannot be undone.', noExpenses: 'No expenses yet. Start by adding one!',
-                currentSettlement: 'Current Settlement Status', totalExpenses: 'Total Expenses', davidePaid: 'Davide Paid', mattiaPaid: 'Mattia Paid', whoOwes: '💸 Who Owes Whom',
-                allSettled: '✅ All settled! No payments needed.', mattiaOwes: 'Mattia still owes Davide:', davideOwes: 'Davide still owes Mattia:',
-                calendarTitle: 'Airbnb Calendar', previousMonth: 'Previous', nextMonth: 'Next', occupied: 'Not Available', available: 'Available', cleaning: 'Cleaning',
-                weekdaySun: 'Sun', weekdayMon: 'Mon', weekdayTue: 'Tue', weekdayWed: 'Wed', weekdayThu: 'Thu', weekdayFri: 'Fri', weekdaySat: 'Sat',
-                monthlySummary: 'Monthly Summary & Export', expenseSummary: 'Expense Summary', currentMonth: 'Current Month', last3Months: 'Last 3 Months', last6Months: 'Last 6 Months',
-                downloadReport: '📊 Download Complete Report', updateNotification: 'Updated!', reportGenerated: '✅ Report downloaded successfully!',
-                mattiaOnline: 'Mattia is online', mattiaOffline: 'Mattia is offline'
-            },
-            it: {
-                addExpense: 'Aggiungi Spesa', allExpenses: 'Tutte le Spese', settlement: 'Regolamento', calendar: 'Calendario', export: 'Esporta e Riepilogo',
-                addNewExpense: 'Aggiungi Nuova Spesa', description: 'Descrizione', amount: 'Importo (EUR)', category: 'Categoria', selectCategory: '-- Seleziona Categoria --',
-                catCleaning: 'Pulizia e Manutenzione', catUtilities: 'Servizi (Acqua, Gas, Elettricità)', catGroceries: 'Generi Alimentari e Cibo', catRepairs: 'Riparazioni e Attrezzature',
-                catFurnishing: 'Arredamento e Decorazione', catMarketing: 'Marketing e Pubblicità', catInsurance: 'Assicurazione', catSupplies: 'Forniture e Materiali', catOther: 'Altro',
-                paidBy: 'Pagato da', selectPerson: '-- Seleziona --', splitBetween: 'Dividi tra', selectSplit: '-- Seleziona --', splitBoth: 'Entrambi (50/50)', splitDavide: 'Solo Davide', splitMattia: 'Solo Mattia',
-                date: 'Data', notes: 'Note (facoltativo)', receipt: 'Foto Ricevuta (facoltativo)', addExpenseBtn: 'Aggiungi Spesa', clearAll: 'Cancella Tutto', expenseAdded: '✅ Spesa aggiunta con successo!',
-                deleteConfirm: 'Eliminare questa spesa?', clearAllConfirm: '⚠️ Eliminare TUTTE le spese? Questa azione non può essere annullata.', noExpenses: 'Nessuna spesa ancora. Inizia aggiungendone una!',
-                currentSettlement: 'Stato Regolamento Attuale', totalExpenses: 'Spese Totali', davidePaid: 'Davide Ha Pagato', mattiaPaid: 'Mattia Ha Pagato', whoOwes: '💸 Chi Deve a Chi',
-                allSettled: '✅ Tutto regolato! Nessun pagamento necessario.', mattiaOwes: 'Mattia deve ancora a Davide:', davideOwes: 'Davide deve ancora a Mattia:',
-                calendarTitle: 'Calendario Airbnb', previousMonth: 'Precedente', nextMonth: 'Successivo', occupied: 'Non Disponibile', available: 'Disponibile', cleaning: 'Pulizia',
-                weekdaySun: 'Dom', weekdayMon: 'Lun', weekdayTue: 'Mar', weekdayWed: 'Mer', weekdayThu: 'Gio', weekdayFri: 'Ven', weekdaySat: 'Sab',
-                monthlySummary: 'Riepilogo Mensile ed Esportazione', expenseSummary: 'Riepilogo Spese', currentMonth: 'Mese Attuale', last3Months: 'Ultimi 3 Mesi', last6Months: 'Ultimi 6 Mesi',
-                downloadReport: '📊 Scarica Rapporto Completo', updateNotification: 'Aggiornato!', reportGenerated: '✅ Rapporto scaricato con successo!',
-                mattiaOnline: 'Mattia è online', mattiaOffline: 'Mattia è offline'
-            }
-        };
-
-        let currentLanguage = localStorage.getItem('language') || 'en';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let currentReceiptImage = null;
-        let currentCalendarDate = new Date();
-        let selectedExpensePeriod = 'current';
-        let userOnlineStatus = {};
-
-        function t(key) {
-            return translations[currentLanguage][key] || key;
-        }
-
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            updatePageText();
-            updateDropdownOptions();
-            renderCalendar();
-            updateOnlineIndicator();
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        function updatePageText() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.getAttribute('data-i18n'));
-            });
-            displayExpenses();
-            displaySettlement();
-        }
-
-        function updateDropdownOptions() {
-            document.querySelectorAll('option[data-i18n]').forEach(option => {
-                option.textContent = t(option.getAttribute('data-i18n'));
-            });
-        }
-
-        function initializeOnlineStatus() {
-            userOnlineStatus = { 'Davide': false, 'Mattia': true };
-            updateOnlineIndicator();
-            setInterval(() => {
-                userOnlineStatus['Mattia'] = Math.random() > 0.3;
-                updateOnlineIndicator();
-            }, 8000);
-        }
-
-        function updateOnlineIndicator() {
-            const indicator = document.getElementById('onlineIndicator');
-            const dot = document.getElementById('otherUserOnline');
-            const status = document.getElementById('otherUserStatus');
-            
-            if (userOnlineStatus['Mattia']) {
-                dot.classList.remove('offline');
-                status.textContent = t('mattiaOnline');
-                indicator.style.display = 'flex';
+        function setupAuthScreen() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                initializeApp();
             } else {
-                dot.classList.add('offline');
-                status.textContent = t('mattiaOffline');
-                indicator.style.display = 'none';
+                document.body.classList.add('locked');
+                document.getElementById('authScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                setupTOTPInput();
             }
         }
 
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification-banner ${type}`;
-            notification.textContent = message;
-            container.appendChild(notification);
-            setTimeout(() => notification.remove(), 4000);
+        // SYNC FUNCTIONS
+        function updateSyncStatus(status, isError = false) {
+            const indicator = document.getElementById('syncStatusIndicator');
+            const dot = document.getElementById('syncDot');
+            const statusText = document.getElementById('syncStatus');
+            
+            if (status === 'synced') {
+                dot.classList.remove('syncing', 'error');
+                statusText.textContent = '✓ Synced';
+                setTimeout(() => {
+                    indicator.style.display = 'none';
+                }, 2000);
+            } else if (status === 'syncing') {
+                dot.classList.add('syncing');
+                dot.classList.remove('error');
+                statusText.textContent = 'Syncing...';
+                indicator.style.display = 'flex';
+            }
         }
 
-        const STORAGE_KEY = 'chillinguito_expenses';
-        const CALENDAR_KEY = 'chillinguito_calendar';
+        async function syncToFirebase(path, data) {
+            if (!firebaseInitialized) return;
+            try {
+                updateSyncStatus('syncing');
+                const fullPath = `users/${currentUser}/${path}`;
+                await firebaseDatabase.ref(fullPath).set(data);
+                updateSyncStatus('synced');
+            } catch (error) {
+                console.error('Sync error:', error);
+            }
+        }
+
+        function listenToFirebaseChanges() {
+            if (!firebaseInitialized) return;
+
+            // Listen to expenses
+            firebaseDatabase.ref(`users/${currentUser}/expenses`).on('value', (snapshot) => {
+                const remoteExpenses = snapshot.val() || [];
+                const localExpenses = getExpenses();
+                if (JSON.stringify(localExpenses) !== JSON.stringify(remoteExpenses)) {
+                    localStorage.setItem('expenses_' + currentUser, JSON.stringify(remoteExpenses));
+                    displayExpenses();
+                    displaySettlement();
+                    showNotification('📊 Expenses synced');
+                }
+            });
+
+            // Listen to calendar
+            firebaseDatabase.ref(`users/${currentUser}/calendar`).on('value', (snapshot) => {
+                const remoteCalendar = snapshot.val() || {};
+                const localCalendar = getCalendarData();
+                if (JSON.stringify(localCalendar) !== JSON.stringify(remoteCalendar)) {
+                    localStorage.setItem('calendar_' + currentUser, JSON.stringify(remoteCalendar));
+                    renderCalendar();
+                    showNotification('📅 Calendar synced');
+                }
+            });
+        }
+
+        // DATA FUNCTIONS
+        const STORAGE_KEY_EXPENSES = 'expenses_';
+        const STORAGE_KEY_CALENDAR = 'calendar_';
 
         function getExpenses() {
-            const data = localStorage.getItem(STORAGE_KEY);
+            const data = localStorage.getItem(STORAGE_KEY_EXPENSES + currentUser);
             return data ? JSON.parse(data) : [];
         }
 
         function saveExpenses(expenses) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+            localStorage.setItem(STORAGE_KEY_EXPENSES + currentUser, JSON.stringify(expenses));
             syncToFirebase('expenses', expenses);
             displayExpenses();
             displaySettlement();
-            showNotification(t('updateNotification'));
+            showNotification('✅ Expense saved');
         }
 
         function getCalendarData() {
-            const data = localStorage.getItem(CALENDAR_KEY);
+            const data = localStorage.getItem(STORAGE_KEY_CALENDAR + currentUser);
             return data ? JSON.parse(data) : {};
         }
 
         function saveCalendarData(data) {
-            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
+            localStorage.setItem(STORAGE_KEY_CALENDAR + currentUser, JSON.stringify(data));
             syncToFirebase('calendar', data);
             renderCalendar();
-            showNotification(t('updateNotification'));
+            showNotification('✅ Calendar updated');
+        }
+
+        // UI FUNCTIONS
+        function showNotification(message) {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = 'notification-banner';
+            notification.textContent = message;
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
         }
 
         function switchTab(tabName) {
@@ -1665,8 +1429,23 @@
             }
         }
 
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
         function setupReceiptUpload() {
             const receiptPreview = document.getElementById('receiptPreview');
+            if (!receiptPreview) return;
             const receiptInput = document.getElementById('receiptInput');
             receiptPreview.onclick = () => receiptInput.click();
             receiptInput.onchange = (e) => {
@@ -1675,23 +1454,10 @@
                     const reader = new FileReader();
                     reader.onload = (ev) => {
                         currentReceiptImage = ev.target.result;
-                        receiptPreview.style.backgroundImage = `url(${ev.target.result})`;
-                        receiptPreview.classList.add('has-image');
-                        receiptPreview.innerHTML = '<button class="receipt-remove" onclick="removeReceipt(event)" type="button">✕</button>';
                     };
                     reader.readAsDataURL(file);
                 }
             };
-        }
-
-        function removeReceipt(e) {
-            if (e) e.stopPropagation();
-            currentReceiptImage = null;
-            const receiptPreview = document.getElementById('receiptPreview');
-            receiptPreview.style.backgroundImage = '';
-            receiptPreview.classList.remove('has-image');
-            receiptPreview.innerHTML = '<span class="receipt-icon">📷</span>';
-            document.getElementById('receiptInput').value = '';
         }
 
         function addExpense(e) {
@@ -1705,22 +1471,20 @@
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
                 notes: document.getElementById('notes').value,
-                receipt: currentReceiptImage
+                addedBy: currentUser
             };
             const expenses = getExpenses();
             expenses.push(expense);
             saveExpenses(expenses);
             document.querySelector('form').reset();
-            removeReceipt();
             document.getElementById('date').valueAsDate = new Date();
-            alert(t('expenseAdded'));
         }
 
         function displayExpenses() {
             const expenses = getExpenses();
             const listDiv = document.getElementById('expensesList');
             if (expenses.length === 0) {
-                listDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                listDiv.innerHTML = '<div class="no-data">No expenses yet</div>';
                 return;
             }
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -1730,12 +1494,11 @@
                         <div class="expense-description">
                             <span class="category-badge">${exp.category}</span>
                             ${exp.description}
+                            <span class="user-badge-inline">${exp.addedBy}</span>
                         </div>
                         <div class="expense-details">
                             ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
-                            ${exp.notes ? '<br><em>' + exp.notes + '</em>' : ''}
                         </div>
-                        ${exp.receipt ? `<img src="${exp.receipt}" class="expense-receipt" alt="Receipt" onclick="viewReceipt('${exp.receipt}')">` : ''}
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                         <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
@@ -1745,15 +1508,8 @@
             `).join('');
         }
 
-        function viewReceipt(src) {
-            const modal = document.createElement('div');
-            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:2000;';
-            modal.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:8px;" onclick="this.parentElement.remove()">`;
-            document.body.appendChild(modal);
-        }
-
         function deleteExpense(id) {
-            if (confirm(t('deleteConfirm'))) {
+            if (confirm('Delete this expense?')) {
                 let expenses = getExpenses();
                 expenses = expenses.filter(e => e.id !== id);
                 saveExpenses(expenses);
@@ -1761,8 +1517,8 @@
         }
 
         function clearAllExpenses() {
-            if (confirm(t('clearAllConfirm'))) {
-                localStorage.removeItem(STORAGE_KEY);
+            if (confirm('⚠️ Delete ALL expenses?')) {
+                localStorage.removeItem(STORAGE_KEY_EXPENSES + currentUser);
                 syncToFirebase('expenses', []);
                 displayExpenses();
                 displaySettlement();
@@ -1791,18 +1547,19 @@
             });
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
+            
             const detailsDiv = document.getElementById('settlementDetails');
             if (total === 0) {
-                detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                detailsDiv.innerHTML = '<div class="no-data">No expenses</div>';
                 return;
             }
             let html = '';
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
+                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">✅ All settled!</div>`;
             } else if (balances.Davide > 0.01) {
-                html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 Mattia owes Davide: <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
             } else if (balances.Mattia > 0.01) {
-                html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 Davide owes Mattia: <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
             }
             detailsDiv.innerHTML = html;
         }
@@ -1810,16 +1567,16 @@
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
-            const monthNames = currentLanguage === 'en'
-                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-                : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
             const calendarDaysDiv = document.getElementById('calendarDays');
             calendarDaysDiv.innerHTML = '';
             const calendarData = getCalendarData();
+
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
                 const prevDate = new Date(year, month - 1, day);
@@ -1844,7 +1601,7 @@
             dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
             dayDiv.innerHTML = `
                 <div class="calendar-day-number">${date.getDate()}</div>
-                ${!isOtherMonth ? `<div class="calendar-day-status">${t(dayData.status)}</div>` : ''}
+                ${!isOtherMonth ? `<div class="calendar-day-status">${dayData.status}</div>` : ''}
             `;
             if (!isOtherMonth) {
                 dayDiv.onclick = () => openDayModal(date, dayData);
@@ -1865,20 +1622,19 @@
                         <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
                     <div class="day-status-selector">
-                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this,'occupied')">${t('occupied')}</button>
-                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this,'available')">${t('available')}</button>
-                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this,'cleaning')">${t('cleaning')}</button>
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this,'occupied')">Not Available</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this,'available')">Available</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this,'cleaning')">Cleaning</button>
                     </div>
                     <div class="form-group">
-                        <label>${t('notes')}</label>
-                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
+                        <label>Notes</label>
+                        <textarea id="dayNote" placeholder="Add notes..." rows="4">${dayData.note || ''}</textarea>
                     </div>
                     <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
                 </div>
             `;
-            const container = document.getElementById('modalContainer');
-            container.innerHTML = '';
-            container.appendChild(modal);
+            document.getElementById('modalContainer').innerHTML = '';
+            document.getElementById('modalContainer').appendChild(modal);
             modal.onclick = (e) => {
                 if (e.target === modal) closeModal();
             };
@@ -1890,8 +1646,7 @@
         }
 
         function selectStatus(button, status) {
-            const parent = button.parentElement;
-            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.parentElement.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
             button.dataset.selectedStatus = status;
         }
@@ -1917,114 +1672,86 @@
             renderCalendar();
         }
 
-        function selectExpensePeriod(ev, months) {
-            const buttons = document.querySelectorAll('#expensePeriodButtons button');
-            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
-            ev.target.style.background = 'var(--primary)';
-            ev.target.style.color = 'white';
-        }
-
-        function getExpensesForPeriod(months) {
+        async function generateAndDownloadReport() {
             const expenses = getExpenses();
             const now = new Date();
-            if (months === 'current') {
-                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-                return expenses.filter(exp => {
-                    const expDate = new Date(exp.date);
-                    return expDate >= startDate && expDate <= now;
-                });
-            } else {
-                const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
-                return expenses.filter(exp => {
-                    const expDate = new Date(exp.date);
-                    return expDate >= startDate && expDate <= now;
-                });
-            }
-        }
-
-        async function generateAndDownloadReport() {
-            const expenses = getExpensesForPeriod('current');
-            const now = new Date();
-            const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
-            expenses.forEach(exp => {
-                total += exp.amount;
-                balances[exp.paidBy] += exp.amount;
-                if (exp.splitBetween === 'Both') {
-                    balances['Davide'] -= exp.amount / 2;
-                    balances['Mattia'] -= exp.amount / 2;
-                } else {
-                    balances[exp.splitBetween] -= exp.amount;
-                }
-            });
+            expenses.forEach(exp => { total += exp.amount; });
 
-            let html = `
-                <div class="report-header">
-                    <h1>Chillinguito Lake Como</h1>
-                    <p>Financial Report - ${now.toLocaleDateString()}</p>
-                </div>
-                <div class="report-section">
-                    <h2>📊 Expense Summary</h2>
-                    <div class="report-item">
-                        <strong>Total Expenses:</strong>
-                        <strong>EUR ${total.toFixed(2)}</strong>
-                    </div>
-                    <div class="report-item">
-                        <strong>Number of Expenses:</strong>
-                        <strong>${expenses.length}</strong>
+            const html = `
+                <div style="text-align: center; padding: 40px; background: white;">
+                    <h1 style="color: #2196F3; margin-bottom: 10px;">Chillinguito Lake Como</h1>
+                    <p style="color: #666; margin-bottom: 30px;">Financial Report - ${now.toLocaleDateString()}</p>
+                    <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <h2 style="color: #2196F3; margin-bottom: 20px;">Expense Summary</h2>
+                        <p><strong>Total Expenses:</strong> EUR ${total.toFixed(2)}</p>
+                        <p><strong>Number of Expenses:</strong> ${expenses.length}</p>
                     </div>
                 </div>
             `;
 
-            const reportDiv = document.getElementById('exportReport');
+            const reportDiv = document.getElementById('exportReport') || document.createElement('div');
+            reportDiv.id = 'exportReport';
             reportDiv.innerHTML = html;
-            reportDiv.classList.remove('light-mode', 'dark-mode');
-            reportDiv.classList.add(`${currentTheme}-mode`);
             reportDiv.style.display = 'block';
+            document.body.appendChild(reportDiv);
+
             try {
                 const canvas = await html2canvas(reportDiv, {
-                    backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e',
+                    backgroundColor: '#ffffff',
                     scale: 2,
-                    useCORS: true,
-                    width: 900,
-                    windowHeight: reportDiv.offsetHeight
+                    width: 900
                 });
                 canvas.toBlob(blob => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
                     link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
                     link.click();
-                    URL.revokeObjectURL(link.href);
-                    reportDiv.style.display = 'none';
-                    showNotification(t('reportGenerated'));
+                    showNotification('✅ Report downloaded');
                 });
             } catch (error) {
                 alert('Error creating report: ' + error.message);
-                reportDiv.style.display = 'none';
             }
         }
 
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
+            
+            // Update user badge
+            const icon = currentUser === 'davide' ? '👨' : '👨‍🦱';
+            const name = currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
+            document.getElementById('userIcon').textContent = icon;
+            document.getElementById('userName').textContent = name;
+
             setupReceiptUpload();
-            initializeOnlineStatus();
             displayExpenses();
             displaySettlement();
-            updatePageText();
-            updateDropdownOptions();
-            setTimeout(() => renderCalendar(), 150);
+            renderCalendar();
+            
             if (firebaseInitialized) {
                 listenToFirebaseChanges();
             }
+
+            // Simulate other user online
+            setInterval(() => {
+                const otherUser = currentUser === 'davide' ? 'Mattia' : 'Davide';
+                const isOnline = Math.random() > 0.3;
+                const indicator = document.getElementById('onlineIndicator');
+                if (isOnline) {
+                    indicator.style.display = 'flex';
+                    document.getElementById('otherUserStatus').textContent = `${otherUser} is online`;
+                } else {
+                    indicator.style.display = 'none';
+                }
+            }, 5000);
         }
 
         window.addEventListener('load', () => {
             document.documentElement.setAttribute('data-theme', currentTheme);
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-            setupLockScreen();
+            setupAuthScreen();
+            console.log('🚀 Chillinguito loaded');
         });
-
-        console.log('🚀 Chillinguito Lake Como loaded');
     </script>
 </body>
 </html>
