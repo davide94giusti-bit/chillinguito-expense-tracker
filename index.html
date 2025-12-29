@@ -109,6 +109,11 @@
             background: var(--primary-dark);
         }
 
+        .unlock-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .error-message {
             color: var(--danger);
             margin-top: 10px;
@@ -156,36 +161,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-        }
-
-        .sync-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(255,255,255,0.2);
-            padding: 6px 12px;
-            border-radius: 20px;
-            margin-right: auto;
-        }
-
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4CAF50;
-            animation: pulse 2s infinite;
-        }
-
-        .sync-dot.offline {
-            background: #999;
-            animation: none;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         .online-indicator {
@@ -293,6 +268,8 @@
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -378,6 +355,17 @@
             margin-bottom: 16px;
         }
 
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
         .expense-item {
             display: flex;
             flex-direction: column;
@@ -437,7 +425,7 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--primary);
         }
@@ -462,6 +450,34 @@
             border-left: 4px solid #f44336;
         }
 
+        .partial-payment-form {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .partial-payment-form h4 {
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .payment-progress {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .payment-bar {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+
         .settlement-payment {
             background: var(--light);
             padding: 16px;
@@ -482,34 +498,6 @@
             font-size: 18px;
             color: var(--primary);
             font-weight: 700;
-        }
-
-        .payment-progress {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-
-        .payment-bar {
-            height: 100%;
-            background: var(--success);
-            transition: width 0.3s;
-        }
-
-        .partial-payment-form {
-            background: rgba(33, 150, 243, 0.1);
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .partial-payment-form h4 {
-            margin-bottom: 12px;
-            color: var(--primary);
         }
 
         .button-group {
@@ -569,6 +557,167 @@
             background: rgba(255, 255, 255, 0.4);
         }
 
+        .receipt-preview {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .receipt-preview:hover {
+            border-color: var(--primary);
+        }
+
+        .receipt-preview.has-image {
+            border-color: var(--success);
+        }
+
+        .receipt-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+        }
+
+        /* REPORT STYLES */
+        #exportReport {
+            display: none;
+            padding: 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        #exportReport.light-mode {
+            background: white;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header {
+            border-bottom: 3px solid #2196F3;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header h1 {
+            color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-section h2 {
+            color: #2196F3;
+            border-left-color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-item {
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--success);
+            color: #2e7d32;
+        }
+
+        #exportReport.light-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: var(--danger);
+            color: #c62828;
+        }
+
+        #exportReport.dark-mode {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header {
+            border-bottom: 3px solid #64B5F6;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header h1 {
+            color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-section h2 {
+            color: #64B5F6;
+            border-left-color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-item {
+            border-bottom: 1px solid #404040;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.15);
+            border-left-color: var(--success);
+            color: #81c784;
+        }
+
+        #exportReport.dark-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.15);
+            border-left-color: var(--danger);
+            color: #ef5350;
+        }
+
+        .report-header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .report-header p {
+            font-size: 14px;
+        }
+
+        .report-section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        .report-section h2 {
+            font-size: 20px;
+            border-left: 4px solid;
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        .report-item strong {
+            font-weight: 600;
+        }
+
+        .report-settlement {
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            font-weight: 600;
+            margin: 16px 0;
+        }
+
         [data-theme="dark"] {
             --primary: #64B5F6;
             --primary-dark: #42A5F5;
@@ -584,8 +733,7 @@
         }
 
         [data-theme="dark"] .card,
-        [data-theme="dark"] .settlement-summary,
-        [data-theme="dark"] .partial-payment-form {
+        [data-theme="dark"] .settlement-summary {
             background: #1e1e1e;
         }
 
@@ -600,6 +748,10 @@
         [data-theme="dark"] .expense-item,
         [data-theme="dark"] .settlement-payment {
             background: #2a2a2a;
+        }
+
+        [data-theme="dark"] .partial-payment-form {
+            background: rgba(100, 181, 246, 0.1);
         }
 
         @media (max-width: 600px) {
@@ -636,7 +788,7 @@
 
             <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
             <div class="error-message" id="errorMessage"></div>
-            <div class="lock-screen-info">💡 Both use same 6-digit code from Microsoft Authenticator</div>
+            <div class="lock-screen-info">💡 Both Davide & Mattia use the same 6-digit code from Microsoft Authenticator</div>
         </div>
     </div>
 
@@ -650,17 +802,12 @@
                         <p>Expense Tracker & Settlement Calculator</p>
                     </div>
                     
-                    <div class="sync-status">
-                        <div class="sync-dot" id="syncDot"></div>
-                        <span id="syncStatus">Syncing...</span>
-                    </div>
-
-                    <div class="online-indicator">
+                    <div id="onlineIndicator" class="online-indicator" style="display: none;">
                         <div class="online-dot" id="otherUserOnline"></div>
                         <span id="otherUserStatus">Mattia is online</span>
                     </div>
 
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 EN</button>
                         <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 IT</button>
                         <button class="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -677,7 +824,7 @@
                 <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
                 <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
                 <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
-                <button class="tab-btn" onclick="switchTab('export')">Export</button>
+                <button class="tab-btn" onclick="switchTab('export')">Export & Summary</button>
             </div>
 
             <!-- ADD EXPENSE TAB -->
@@ -687,7 +834,7 @@
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
                             <label>Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning supplies" required>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required>
                         </div>
 
                         <div class="form-row">
@@ -772,13 +919,16 @@
 
                     <h3 style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
                     <div id="settlementDetails"></div>
-
-                    <button class="btn-primary" style="width:100%;margin-top:20px;" onclick="markCurrentMonthSettled()">
-                        ✅ Mark this month as settled
-                    </button>
                 </div>
 
                 <div id="partialPaymentsSection"></div>
+
+                <!-- MARK MONTH SETTLED BUTTON IN SETTLEMENT TAB -->
+                <div class="card" style="margin-top: 20px;">
+                    <button class="btn-primary" style="width:100%;" onclick="markCurrentMonthSettled()">
+                        ✅ Mark this month as settled
+                    </button>
+                </div>
             </div>
 
             <!-- EXPORT TAB -->
@@ -799,49 +949,38 @@
 
     <div id="exportReport"></div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebaseapp/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebaseapp/10.7.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // ========== FIREBASE CONFIG ==========
-        // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        let database;
-        let currentUser = localStorage.getItem('currentUser') || 'Davide';
-
-        // Initialize Firebase
-        try {
-            const app = firebase.initializeApp(firebaseConfig);
-            database = firebase.database(app);
-            initializeSyncListeners();
-            updateSyncStatus(true);
-        } catch (error) {
-            console.log('Firebase not configured. Using local storage only.');
-            updateSyncStatus(false);
-        }
-
-        // ========== TOTP ==========
+        // ========== CONFIGURATION ==========
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         const UNLOCK_KEY = 'chillinguito_unlocked';
         const STORAGE_KEY = 'chillinguito_expenses';
-        const SETTLEMENT_KEY = 'chillinguito_settlements';
         const PAYMENTS_KEY = 'chillinguito_payments';
+        const SETTLEMENT_KEY = 'chillinguito_settlements';
 
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentTheme = localStorage.getItem('theme') || 'light';
         let selectedExpensePeriod = 'current';
         let userOnlineStatus = { 'Davide': false, 'Mattia': true };
 
+        // ========== TRANSLATIONS ==========
+        const translations = {
+            en: {
+                mattiaOnline: 'Mattia is online',
+                mattiaOffline: 'Mattia is offline'
+            },
+            it: {
+                mattiaOnline: 'Mattia è online',
+                mattiaOffline: 'Mattia è offline'
+            }
+        };
+
+        function t(key) {
+            return translations[currentLanguage][key] || key;
+        }
+
+        // ========== TOTP ==========
         async function base32Decode(str) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             const bits = [];
@@ -946,77 +1085,6 @@
             }
         }
 
-        // ========== SYNC FUNCTIONS ==========
-        function initializeSyncListeners() {
-            if (!database) return;
-
-            // Listen to expenses
-            firebase.database().ref('expenses').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const expenses = Object.values(data);
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-                    displayExpenses();
-                    displaySettlement();
-                    showNotification('📡 Synced with Mattia!', 'alert');
-                }
-            });
-
-            // Listen to payments
-            firebase.database().ref('payments').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const payments = Object.values(data);
-                    localStorage.setItem(PAYMENTS_KEY, JSON.stringify(payments));
-                    displaySettlement();
-                }
-            });
-
-            // Listen to online status
-            firebase.database().ref('.info/connected').on('value', (snapshot) => {
-                if (snapshot.val()) {
-                    updateSyncStatus(true);
-                    // Set current user online
-                    firebase.database().ref(`users/${currentUser}/online`).set(true);
-                    firebase.database().ref(`users/${currentUser}/online`).onDisconnect().set(false);
-                } else {
-                    updateSyncStatus(false);
-                }
-            });
-
-            // Listen to other user's online status
-            const otherUser = currentUser === 'Davide' ? 'Mattia' : 'Davide';
-            firebase.database().ref(`users/${otherUser}/online`).on('value', (snapshot) => {
-                userOnlineStatus[otherUser] = snapshot.val() === true;
-                updateOnlineIndicator();
-            });
-        }
-
-        function updateSyncStatus(isOnline) {
-            const dot = document.getElementById('syncDot');
-            const status = document.getElementById('syncStatus');
-            if (isOnline) {
-                dot.classList.remove('offline');
-                status.textContent = 'Synced';
-            } else {
-                dot.classList.add('offline');
-                status.textContent = 'Local Only';
-            }
-        }
-
-        function updateOnlineIndicator() {
-            const otherUser = currentUser === 'Davide' ? 'Mattia' : 'Davide';
-            const dot = document.getElementById('otherUserOnline');
-            const status = document.getElementById('otherUserStatus');
-            if (userOnlineStatus[otherUser]) {
-                dot.classList.remove('offline');
-                status.textContent = `${otherUser} is online`;
-            } else {
-                dot.classList.add('offline');
-                status.textContent = `${otherUser} is offline`;
-            }
-        }
-
         // ========== STORAGE ==========
         function getExpenses() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -1024,14 +1092,6 @@
 
         function saveExpenses(expenses) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-            // Sync to Firebase
-            if (database) {
-                const expenseObj = {};
-                expenses.forEach((e, i) => {
-                    expenseObj[e.id] = e;
-                });
-                firebase.database().ref('expenses').set(expenseObj);
-            }
             displayExpenses();
             displaySettlement();
         }
@@ -1042,14 +1102,6 @@
 
         function savePaymentsData(data) {
             localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
-            // Sync to Firebase
-            if (database) {
-                const paymentObj = {};
-                data.forEach((p, i) => {
-                    paymentObj[i] = p;
-                });
-                firebase.database().ref('payments').set(paymentObj);
-            }
         }
 
         // ========== LANGUAGE & THEME ==========
@@ -1058,6 +1110,7 @@
             localStorage.setItem('language', lang);
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            updateOnlineIndicator();
         }
 
         function toggleTheme() {
@@ -1065,6 +1118,32 @@
             localStorage.setItem('theme', currentTheme);
             document.documentElement.setAttribute('data-theme', currentTheme);
             event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // ========== ONLINE STATUS ==========
+        function initializeOnlineStatus() {
+            userOnlineStatus['Mattia'] = true;
+            updateOnlineIndicator();
+            setInterval(() => {
+                userOnlineStatus['Mattia'] = Math.random() > 0.3;
+                updateOnlineIndicator();
+            }, 8000);
+        }
+
+        function updateOnlineIndicator() {
+            const indicator = document.getElementById('onlineIndicator');
+            const dot = document.getElementById('otherUserOnline');
+            const status = document.getElementById('otherUserStatus');
+            
+            if (userOnlineStatus['Mattia']) {
+                dot.classList.remove('offline');
+                status.textContent = t('mattiaOnline');
+                indicator.style.display = 'flex';
+            } else {
+                dot.classList.add('offline');
+                status.textContent = t('mattiaOffline');
+                indicator.style.display = 'none';
+            }
         }
 
         // ========== TABS ==========
@@ -1093,7 +1172,7 @@
             saveExpenses(expenses);
             e.target.reset();
             document.getElementById('date').valueAsDate = new Date();
-            showNotification('✅ Expense added! Syncing...', 'alert');
+            alert('✅ Expense added!');
         }
 
         function displayExpenses() {
@@ -1193,7 +1272,7 @@
             const percentage = totalOwed > 0 ? (totalPaid / totalOwed) * 100 : 0;
 
             let html = `
-                <div class="card">
+                <div class="card" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 12px; color: var(--primary);">📊 Payment History</h3>
                     <div class="settlement-payment">
                         <div class="settlement-payment-header">
@@ -1215,7 +1294,7 @@
             html += `
                     </div>
                     <div class="partial-payment-form">
-                        <h4>💳 Record a Payment</h4>
+                        <h4>💳 Record a Partial Payment</h4>
                         <div style="display: flex; gap: 10px;">
                             <input type="number" id="partialPaymentAmount" placeholder="Amount (EUR)" step="0.01" min="0" max="${remaining}">
                             <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})">Record</button>
@@ -1254,7 +1333,7 @@
             savePaymentsData(payments);
             amountInput.value = '';
             displaySettlement();
-            showNotification('✅ Payment recorded! Syncing...', 'alert');
+            alert('✅ Payment recorded!');
         }
 
         function markCurrentMonthSettled() {
@@ -1262,20 +1341,7 @@
             const key = new Date().toISOString().slice(0, 7);
             data[key] = { settled: true, timestamp: new Date().toISOString() };
             localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
-            if (database) {
-                firebase.database().ref(`settlements/${key}`).set(data[key]);
-            }
-            showNotification('✅ Month marked as settled! Syncing...', 'alert');
-        }
-
-        // ========== NOTIFICATIONS ==========
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = `notification-banner ${type}`;
-            notification.textContent = message;
-            container.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
+            alert('✅ Month marked as settled');
         }
 
         // ========== EXPORT ==========
@@ -1312,36 +1378,83 @@
                 }
             });
 
+            // LANGUAGE-AWARE EXPORT
+            const reportTitle = currentLanguage === 'en' ? 'Financial Report' : 'Rapporto Finanziario';
+            const expenseSummaryTitle = currentLanguage === 'en' ? 'Expense Summary' : 'Riepilogo Spese';
+            const settlementTitle = currentLanguage === 'en' ? 'Settlement Information' : 'Informazioni di Regolamento';
+            const totalLabel = currentLanguage === 'en' ? 'Total Expenses:' : 'Spese Totali:';
+            const davidePaidLabel = currentLanguage === 'en' ? 'Davide Paid:' : 'Davide Ha Pagato:';
+            const mattiaPaidLabel = currentLanguage === 'en' ? 'Mattia Paid:' : 'Mattia Ha Pagato:';
+            const allSettledMsg = currentLanguage === 'en' ? 'All Settled - No payments needed' : 'Tutto Regolato - Nessun pagamento necessario';
+            const mattiaOwesMsg = currentLanguage === 'en' ? 'Mattia owes Davide:' : 'Mattia deve a Davide:';
+            const davideOwesMsg = currentLanguage === 'en' ? 'Davide owes Mattia:' : 'Davide deve a Mattia:';
+            const paymentHistoryTitle = currentLanguage === 'en' ? 'Payment History' : 'Storico Pagamenti';
+
+            // INCLUDE PARTIAL PAYMENT INFO IN EXPORT
+            const payments = getPaymentsData();
+            let paymentHistoryHtml = '';
+            if (payments.length > 0) {
+                paymentHistoryHtml = `
+                    <div class="report-section">
+                        <h2>${paymentHistoryTitle}</h2>
+                `;
+                payments.forEach(payment => {
+                    paymentHistoryHtml += `<div class="report-item"><strong>${payment.from} → Davide</strong> EUR ${payment.amount.toFixed(2)} (${payment.date})</div>`;
+                });
+                paymentHistoryHtml += `</div>`;
+            }
+
             let html = `
-                <div style="padding: 40px; background: ${currentTheme === 'light' ? 'white' : '#1e1e1e'}; color: ${currentTheme === 'light' ? '#333' : '#e0e0e0'};">
-                    <h1 style="text-align: center; margin-bottom: 10px; color: #2196F3;">Chillinguito Lake Como</h1>
-                    <p style="text-align: center; font-size: 14px; margin-bottom: 30px; color: #666;">Report - ${now.toLocaleDateString()}</p>
-                    
-                    <h2 style="color: #2196F3; margin-bottom: 16px;">📊 Expense Summary</h2>
-                    <p><strong>Total: EUR ${total.toFixed(2)}</strong></p>
-                    <p><strong>Count: ${filtered.length}</strong></p>
-                    <p style="margin-top: 16px;"><strong>Davide Paid: EUR ${filtered.filter(e => e.paidBy === 'Davide').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong></p>
-                    <p><strong>Mattia Paid: EUR ${filtered.filter(e => e.paidBy === 'Mattia').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong></p>
-                    
-                    <h2 style="color: #2196F3; margin-top: 30px; margin-bottom: 16px;">💳 Settlement</h2>
-                    <p><strong>Status: ${Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01 ? '✅ All Settled' : (balances.Davide > 0 ? `Mattia owes EUR ${balances.Davide.toFixed(2)}` : `Davide owes EUR ${Math.abs(balances.Mattia).toFixed(2)}`)}</strong></p>
+                <div class="report-header">
+                    <h1>Chillinguito Lake Como</h1>
+                    <p>${reportTitle} - ${now.toLocaleDateString()}</p>
                 </div>
+                <div class="report-section">
+                    <h2>📊 ${expenseSummaryTitle}</h2>
+                    <div class="report-item">
+                        <strong>${totalLabel}</strong>
+                        <strong>EUR ${total.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${davidePaidLabel}</strong>
+                        <strong>EUR ${filtered.filter(e => e.paidBy === 'Davide').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${mattiaPaidLabel}</strong>
+                        <strong>EUR ${filtered.filter(e => e.paidBy === 'Mattia').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong>
+                    </div>
+                </div>
+                <div class="report-section">
+                    <h2>💳 ${settlementTitle}</h2>
             `;
 
-            const div = document.getElementById('exportReport');
-            div.innerHTML = html;
-            div.style.display = 'block';
+            if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${allSettledMsg}</div>`;
+            } else if (balances.Davide > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${mattiaOwesMsg} EUR ${balances.Davide.toFixed(2)}</div>`;
+            } else if (balances.Mattia > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${davideOwesMsg} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+            }
+
+            html += `</div>`;
+            html += paymentHistoryHtml;
+
+            const reportDiv = document.getElementById('exportReport');
+            reportDiv.innerHTML = html;
+            reportDiv.classList.remove('light-mode', 'dark-mode');
+            reportDiv.classList.add(`${currentTheme}-mode`);
+            reportDiv.style.display = 'block';
 
             try {
-                const canvas = await html2canvas(div, {
+                const canvas = await html2canvas(reportDiv, {
                     backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e'
                 });
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL('image/png');
-                link.download = `Report-${now.toISOString().split('T')[0]}.png`;
+                link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
                 link.click();
-                div.style.display = 'none';
-                showNotification('✅ Report downloaded!', 'alert');
+                reportDiv.style.display = 'none';
+                alert('✅ Report downloaded!');
             } catch (error) {
                 alert('Error: ' + error.message);
             }
@@ -1352,6 +1465,7 @@
             document.getElementById('date').valueAsDate = new Date();
             displayExpenses();
             displaySettlement();
+            initializeOnlineStatus();
             document.documentElement.setAttribute('data-theme', currentTheme);
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
         }
