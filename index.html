@@ -823,7 +823,6 @@
         /* EXPORT REPORT STYLES */
         #exportReport {
             display: none;
-            background: white;
             padding: 40px;
             position: fixed;
             top: 0;
@@ -835,21 +834,100 @@
             margin: 0 auto;
         }
 
+        /* Light Mode Report */
+        #exportReport.light-mode {
+            background: white;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header {
+            border-bottom: 3px solid #2196F3;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header h1 {
+            color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-header p {
+            color: #666;
+        }
+
+        #exportReport.light-mode .report-section h2 {
+            color: #2196F3;
+            border-left-color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-item {
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--success);
+            color: #2e7d32;
+        }
+
+        #exportReport.light-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: var(--danger);
+            color: #c62828;
+        }
+
+        /* Dark Mode Report */
+        #exportReport.dark-mode {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header {
+            border-bottom: 3px solid #64B5F6;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header h1 {
+            color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-header p {
+            color: #b0b0b0;
+        }
+
+        #exportReport.dark-mode .report-section h2 {
+            color: #64B5F6;
+            border-left-color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-item {
+            border-bottom: 1px solid #404040;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.15);
+            border-left-color: var(--success);
+            color: #81c784;
+        }
+
+        #exportReport.dark-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.15);
+            border-left-color: var(--danger);
+            color: #ef5350;
+        }
+
         .report-header {
             text-align: center;
-            border-bottom: 3px solid var(--primary);
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
 
         .report-header h1 {
-            color: var(--primary);
             font-size: 32px;
             margin-bottom: 10px;
         }
 
         .report-header p {
-            color: var(--text-secondary);
             font-size: 14px;
         }
 
@@ -859,9 +937,8 @@
         }
 
         .report-section h2 {
-            color: var(--primary);
             font-size: 20px;
-            border-left: 4px solid var(--primary);
+            border-left: 4px solid;
             padding-left: 12px;
             margin-bottom: 16px;
         }
@@ -870,7 +947,6 @@
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
-            border-bottom: 1px solid var(--border);
             font-size: 14px;
         }
 
@@ -878,30 +954,12 @@
             font-weight: 600;
         }
 
-        .report-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 16px 0;
-            background: var(--light);
-            padding: 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            margin-top: 16px;
-        }
-
         .report-settlement {
-            background: rgba(76, 175, 80, 0.1);
             padding: 16px;
             border-radius: 8px;
-            border-left: 4px solid var(--success);
+            border-left: 4px solid;
             font-weight: 600;
             margin: 16px 0;
-        }
-
-        .report-settlement.owed {
-            background: rgba(244, 67, 54, 0.1);
-            border-left-color: var(--danger);
         }
 
         /* DARK MODE */
@@ -1118,7 +1176,7 @@
             <div class="icon">🔐</div>
             <h1>Chillinguito</h1>
             <p>Enter the 6-digit code from your authenticator app</p>
-            
+
             <div class="totp-input">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
                 <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
@@ -1129,7 +1187,7 @@
             </div>
 
             <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
-            
+
             <div class="error-message" id="errorMessage"></div>
 
             <div class="lock-screen-info">
@@ -1315,12 +1373,29 @@
                     <!-- EXPENSE SUMMARY OPTIONS -->
                     <div style="margin-bottom: 20px;">
                         <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
-                        <div class="button-group">
-                            <button class="btn-secondary" onclick="selectPeriod('current')" data-i18n="currentMonth">Current Month</button>
-                            <button class="btn-secondary" onclick="selectPeriod(3)" data-i18n="last3Months">Last 3 Months</button>
-                            <button class="btn-secondary" onclick="selectPeriod(6)" data-i18n="last6Months">Last 6 Months</button>
-                            <button class="btn-secondary" onclick="selectPeriod(9)" data-i18n="last9Months">Last 9 Months</button>
-                            <button class="btn-secondary" onclick="selectPeriod(12)" data-i18n="last12Months">Last 12 Months</button>
+                        <div class="button-group" id="expensePeriodButtons">
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,3)" data-i18n="last3Months">Last 3 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,6)" data-i18n="last6Months">Last 6 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,9)" data-i18n="last9Months">Last 9 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,12)" data-i18n="last12Months">Last 12 Months</button>
+                        </div>
+
+                        <!-- NEW: MARK MONTH SETTLED -->
+                        <button class="btn-primary" style="width:100%;margin-top:10px;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
+                            ✅ Mark this month as settled
+                        </button>
+                    </div>
+
+                    <!-- CLEANING SUMMARY OPTIONS -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">Cleaning Schedule</h3>
+                        <div class="button-group" id="cleaningPeriodButtons">
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,3)" data-i18n="next3Months">Next 3 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,6)" data-i18n="next6Months">Next 6 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,9)" data-i18n="next9Months">Next 9 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,12)" data-i18n="next12Months">Next 12 Months</button>
                         </div>
                     </div>
 
@@ -1348,13 +1423,11 @@
         function base32Decode(str) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             const bits = [];
-            
             for (let i = 0; i < str.length; i++) {
                 const val = alphabet.indexOf(str[i]);
                 if (val === -1) throw new Error('Invalid base32 character');
                 bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
             }
-            
             const bytes = [];
             for (let i = 0; i + 8 <= bits.length; i += 8) {
                 bytes.push(parseInt(bits.slice(i, i + 8).join(''), 2));
@@ -1369,15 +1442,12 @@
                 const msg = new ArrayBuffer(8);
                 const view = new DataView(msg);
                 view.setBigInt64(0, BigInt(epoch), false);
-                
                 const key = await crypto.subtle.importKey('raw', decoded, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
                 const signature = await crypto.subtle.sign('HMAC', key, msg);
                 const sig = new Uint8Array(signature);
-                
                 const offset = sig[sig.length - 1] & 0x0f;
                 const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
                 const code = String(p % 1000000).padStart(6, '0');
-                
                 return code;
             } catch (error) {
                 console.error('TOTP generation error:', error);
@@ -1398,7 +1468,6 @@
         // ========== LOCK SCREEN SETUP ==========
         function setupLockScreen() {
             const isUnlocked = localStorage.getItem(UNLOCK_KEY);
-            
             if (!isUnlocked) {
                 document.getElementById('appBody').classList.add('locked');
                 document.getElementById('lockScreen').style.display = 'flex';
@@ -1414,18 +1483,15 @@
 
         function setupTOTPInput() {
             const inputs = document.querySelectorAll('.totp-digit');
-            
             inputs.forEach((input, index) => {
                 input.addEventListener('keydown', (e) => {
                     if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
                         e.preventDefault();
                     }
-                    
                     if (e.key === 'Backspace' && input.value === '' && index > 0) {
                         inputs[index - 1].focus();
                     }
                 });
-                
                 input.addEventListener('input', (e) => {
                     if (e.target.value.length === 1) {
                         if (index < inputs.length - 1) {
@@ -1436,7 +1502,6 @@
                     }
                 });
             });
-
             inputs[0].focus();
         }
 
@@ -1444,18 +1509,14 @@
             const inputs = document.querySelectorAll('.totp-digit');
             const code = Array.from(inputs).map(input => input.value).join('');
             const errorDiv = document.getElementById('errorMessage');
-
             if (code.length !== 6) {
                 errorDiv.textContent = '❌ Please enter all 6 digits';
                 return;
             }
-
             const unlockBtn = document.querySelector('.unlock-btn');
             unlockBtn.disabled = true;
             unlockBtn.textContent = '⏳ Verifying...';
-
             const isValid = await validateTOTPCode(code);
-
             if (isValid) {
                 localStorage.setItem(UNLOCK_KEY, 'true');
                 errorDiv.textContent = '✅ Welcome!';
@@ -1549,8 +1610,13 @@
                 last6Months: 'Last 6 Months',
                 last9Months: 'Last 9 Months',
                 last12Months: 'Last 12 Months',
+                next3Months: 'Next 3 Months',
+                next6Months: 'Next 6 Months',
+                next9Months: 'Next 9 Months',
+                next12Months: 'Next 12 Months',
                 downloadReport: '📊 Download Complete Report',
-                noCleaning: 'No cleaning scheduled in the next 31 days',
+                cleaningSchedule: '🧹 Cleaning Schedule',
+                noCleaning: 'No cleaning scheduled',
                 cleaningDue: 'Cleaning scheduled:',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
@@ -1559,7 +1625,10 @@
                 calendarUpdated: 'The calendar was updated',
                 reportGenerated: '✅ Report downloaded successfully!',
                 cleaningTomorrow: '🧹 Cleaning scheduled tomorrow!',
-                cleaningTodayReminder: '🧹 Cleaning is TODAY!'
+                cleaningTodayReminder: '🧹 Cleaning is TODAY!',
+                markSettled: '✅ Mark this month as settled',
+                settlementMarked: '✅ This month is marked as settled.',
+                pendingSettlement: '💸 Last month’s balance is still pending.'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1626,8 +1695,13 @@
                 last6Months: 'Ultimi 6 Mesi',
                 last9Months: 'Ultimi 9 Mesi',
                 last12Months: 'Ultimi 12 Mesi',
+                next3Months: 'Prossimi 3 Mesi',
+                next6Months: 'Prossimi 6 Mesi',
+                next9Months: 'Prossimi 9 Mesi',
+                next12Months: 'Prossimi 12 Mesi',
                 downloadReport: '📊 Scarica Rapporto Completo',
-                noCleaning: 'Nessuna pulizia programmata nei prossimi 31 giorni',
+                cleaningSchedule: '🧹 Programma Pulizie',
+                noCleaning: 'Nessuna pulizia programmata',
                 cleaningDue: 'Pulizia programmata:',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
@@ -1636,7 +1710,10 @@
                 calendarUpdated: 'Il calendario è stato aggiornato',
                 reportGenerated: '✅ Rapporto scaricato con successo!',
                 cleaningTomorrow: '🧹 Pulizia programmata domani!',
-                cleaningTodayReminder: '🧹 La pulizia è OGGI!'
+                cleaningTodayReminder: '🧹 La pulizia è OGGI!',
+                markSettled: '✅ Segna questo mese come saldato',
+                settlementMarked: '✅ Questo mese è stato segnato come saldato.',
+                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.'
             }
         };
 
@@ -1644,8 +1721,10 @@
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentReceiptImage = null;
         let currentCalendarDate = new Date();
-        let selectedPeriod = 'current';
+        let selectedExpensePeriod = 'current';
+        let selectedCleaningPeriod = 'current';
         let cleaningNotificationShown = false;
+        let settlementNotificationShown = false;
 
         function t(key) {
             return translations[currentLanguage][key] || key;
@@ -1678,7 +1757,6 @@
             displaySettlement();
         }
 
-        // ========== UPDATE PLACEHOLDERS ==========
         function updatePlaceholders() {
             const notesTextarea = document.getElementById('notes');
             if (notesTextarea) {
@@ -1686,30 +1764,21 @@
             }
         }
 
-        // ========== UPDATE DROPDOWN OPTIONS ==========
         function updateDropdownOptions() {
             const categoryOptions = document.querySelectorAll('#category option');
             categoryOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
-                if (i18nKey) {
-                    option.textContent = t(i18nKey);
-                }
+                if (i18nKey) option.textContent = t(i18nKey);
             });
-
             const paidByOptions = document.querySelectorAll('#paidBy option');
             paidByOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
-                if (i18nKey) {
-                    option.textContent = t(i18nKey);
-                }
+                if (i18nKey) option.textContent = t(i18nKey);
             });
-
             const splitOptions = document.querySelectorAll('#splitBetween option');
             splitOptions.forEach(option => {
                 const i18nKey = option.getAttribute('data-i18n');
-                if (i18nKey) {
-                    option.textContent = t(i18nKey);
-                }
+                if (i18nKey) option.textContent = t(i18nKey);
             });
         }
 
@@ -1721,21 +1790,12 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             const today = now.toISOString().split('T')[0];
             const tomorrowKey = tomorrow.toISOString().split('T')[0];
-
             let hasTodayCleaning = false;
             let hasTomorrowCleaning = false;
-
             const todayData = calendarData[today];
-            if (todayData && todayData.status === 'cleaning') {
-                hasTodayCleaning = true;
-            }
-
+            if (todayData && todayData.status === 'cleaning') hasTodayCleaning = true;
             const tomorrowData = calendarData[tomorrowKey];
-            if (tomorrowData && tomorrowData.status === 'cleaning') {
-                hasTomorrowCleaning = true;
-            }
-
-            // Only show once per session
+            if (tomorrowData && tomorrowData.status === 'cleaning') hasTomorrowCleaning = true;
             if (!cleaningNotificationShown) {
                 if (hasTodayCleaning) {
                     showNotification(t('cleaningTodayReminder'), 'alert');
@@ -1747,6 +1807,74 @@
             }
         }
 
+        // ========== SETTLEMENT REMINDER ==========
+        const SETTLEMENT_KEY = 'chillinguito_settlements';
+
+        function getSettlementData() {
+            const data = localStorage.getItem(SETTLEMENT_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveSettlementData(data) {
+            localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
+        }
+
+        function getMonthKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        function getExpensesForMonth(date) {
+            const key = getMonthKey(date);
+            const expenses = getExpenses();
+            return expenses.filter(exp => {
+                const d = new Date(exp.date);
+                return getMonthKey(d) === key;
+            });
+        }
+
+        function computeMonthBalance(date) {
+            const expenses = getExpensesForMonth(date);
+            const balances = { Davide: 0, Mattia: 0 };
+            expenses.forEach(exp => {
+                const amt = exp.amount;
+                balances[exp.paidBy] += amt;
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= amt / 2;
+                    balances['Mattia'] -= amt / 2;
+                } else {
+                    balances[exp.splitBetween] -= amt;
+                }
+            });
+            return { balances, hasExpenses: expenses.length > 0 };
+        }
+
+        function markCurrentMonthSettled() {
+            const now = new Date();
+            const key = getMonthKey(now);
+            const data = getSettlementData();
+            data[key] = { settled: true, timestamp: new Date().toISOString() };
+            saveSettlementData(data);
+            showNotification(t('settlementMarked'), 'alert');
+        }
+
+        function checkPendingSettlementReminder() {
+            if (settlementNotificationShown) return;
+            const now = new Date();
+            const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const key = getMonthKey(prev);
+            const settlementData = getSettlementData();
+            if (settlementData[key] && settlementData[key].settled) return;
+            const { balances, hasExpenses } = computeMonthBalance(prev);
+            if (!hasExpenses) return;
+            const diff = Math.abs(balances.Davide - (-balances.Mattia));
+            const outstanding = Math.max(Math.abs(balances.Davide), Math.abs(balances.Mattia));
+            if (outstanding < 0.01) return;
+            showNotification(t('pendingSettlement'), 'warning');
+            settlementNotificationShown = true;
+        }
+
         // ========== NOTIFICATIONS ==========
         function showNotification(message, type = 'success') {
             const container = document.getElementById('notificationContainer');
@@ -1754,10 +1882,7 @@
             notification.className = `notification-banner ${type}`;
             notification.textContent = message;
             container.appendChild(notification);
-
-            setTimeout(() => {
-                notification.remove();
-            }, 4000);
+            setTimeout(() => notification.remove(), 4000);
         }
 
         // ========== STORAGE ==========
@@ -1793,7 +1918,6 @@
             }
         }
 
-        // ========== PUSH NOTIFICATIONS ==========
         function requestNotificationPermission() {
             if ('Notification' in window && Notification.permission === 'default') {
                 Notification.requestPermission();
@@ -1806,7 +1930,6 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-            
             if (tabName === 'calendar') {
                 setTimeout(() => renderCalendar(), 50);
             }
@@ -1816,9 +1939,7 @@
         function setupReceiptUpload() {
             const receiptPreview = document.getElementById('receiptPreview');
             const receiptInput = document.getElementById('receiptInput');
-
             receiptPreview.onclick = () => receiptInput.click();
-
             receiptInput.onchange = (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -1847,7 +1968,6 @@
         // ========== ADD EXPENSE ==========
         function addExpense(e) {
             e.preventDefault();
-
             const expense = {
                 id: Date.now(),
                 description: document.getElementById('description').value,
@@ -1859,15 +1979,12 @@
                 notes: document.getElementById('notes').value,
                 receipt: currentReceiptImage
             };
-
             const expenses = getExpenses();
             expenses.push(expense);
             saveExpenses(expenses);
-
             document.querySelector('form').reset();
             removeReceipt();
             document.getElementById('date').valueAsDate = new Date();
-
             alert(t('expenseAdded'));
         }
 
@@ -1875,14 +1992,11 @@
         function displayExpenses() {
             const expenses = getExpenses();
             const listDiv = document.getElementById('expensesList');
-
             if (expenses.length === 0) {
                 listDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
                 return;
             }
-
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-
             listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
                     <div class="expense-info">
@@ -1932,11 +2046,9 @@
             const expenses = getExpenses();
             const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
-
             expenses.forEach(exp => {
                 total += exp.amount;
                 balances[exp.paidBy] += exp.amount;
-
                 if (exp.splitBetween === 'Both') {
                     balances['Davide'] -= exp.amount / 2;
                     balances['Mattia'] -= exp.amount / 2;
@@ -1944,27 +2056,20 @@
                     balances[exp.splitBetween] -= exp.amount;
                 }
             });
-
             document.getElementById('totalExpenses').textContent = `EUR ${total.toFixed(2)}`;
-
             let davidePaid = 0, mattiaPaid = 0;
             expenses.forEach(exp => {
                 if (exp.paidBy === 'Davide') davidePaid += exp.amount;
                 if (exp.paidBy === 'Mattia') mattiaPaid += exp.amount;
             });
-
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
-
             const detailsDiv = document.getElementById('settlementDetails');
-
             if (total === 0) {
                 detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
                 return;
             }
-
             let html = '';
-
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
                 html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
@@ -1972,7 +2077,6 @@
             } else if (balances.Mattia > 0.01) {
                 html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
             }
-
             detailsDiv.innerHTML = html;
         }
 
@@ -1980,33 +2084,25 @@
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
-
-            const monthNames = currentLanguage === 'en' 
+            const monthNames = currentLanguage === 'en'
                 ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
                 : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
-            
             document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
-
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
-
             const calendarDaysDiv = document.getElementById('calendarDays');
             calendarDaysDiv.innerHTML = '';
-
             const calendarData = getCalendarData();
-
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
                 const prevDate = new Date(year, month - 1, day);
                 calendarDaysDiv.appendChild(createDayElement(prevDate, true, calendarData));
             }
-
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
                 calendarDaysDiv.appendChild(createDayElement(date, false, calendarData));
             }
-
             const totalCells = calendarDaysDiv.children.length;
             const remainingCells = 42 - totalCells;
             for (let day = 1; day <= remainingCells; day++) {
@@ -2019,25 +2115,21 @@
             const dayDiv = document.createElement('div');
             const dateKey = date.toISOString().split('T')[0];
             const dayData = calendarData[dateKey] || { status: 'available', note: '' };
-
             dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
             dayDiv.innerHTML = `
                 <div class="calendar-day-number">${date.getDate()}</div>
                 ${!isOtherMonth ? `<div class="calendar-day-status">${t(dayData.status)}</div>` : ''}
             `;
-
             if (!isOtherMonth) {
                 dayDiv.onclick = () => openDayModal(date, dayData);
                 dayDiv.style.cursor = 'pointer';
             }
-
             return dayDiv;
         }
 
         function openDayModal(date, dayData) {
             const dateKey = date.toISOString().split('T')[0];
             const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.id = 'dayModal';
@@ -2047,26 +2139,21 @@
                         <h3>${dateStr}</h3>
                         <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
-
                     <div class="day-status-selector">
-                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this, 'occupied')">${t('occupied')}</button>
-                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this, 'available')">${t('available')}</button>
-                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this, 'cleaning')">${t('cleaning')}</button>
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this,'occupied')">${t('occupied')}</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this,'available')">${t('available')}</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this,'cleaning')">${t('cleaning')}</button>
                     </div>
-
                     <div class="form-group">
                         <label>${t('notes')}</label>
                         <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
                     </div>
-
                     <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
                 </div>
             `;
-
             const container = document.getElementById('modalContainer');
             container.innerHTML = '';
             container.appendChild(modal);
-
             modal.onclick = (e) => {
                 if (e.target === modal) closeModal();
             };
@@ -2074,9 +2161,7 @@
 
         function closeModal() {
             const modal = document.getElementById('dayModal');
-            if (modal) {
-                modal.remove();
-            }
+            if (modal) modal.remove();
         }
 
         function selectStatus(button, status) {
@@ -2089,9 +2174,8 @@
         function saveDayData(dateKey) {
             const modal = document.getElementById('dayModal');
             const selectedStatus = modal.querySelector('.status-option.selected');
-            const status = selectedStatus ? selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1] : 'available';
+            const status = selectedStatus ? (selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1]) : 'available';
             const note = modal.querySelector('#dayNote').value;
-
             const calendarData = getCalendarData();
             calendarData[dateKey] = { status, note };
             saveCalendarData(calendarData);
@@ -2108,24 +2192,26 @@
             renderCalendar();
         }
 
-        // ========== EXPORT REPORT GENERATION ==========
-        function selectPeriod(months) {
-            selectedPeriod = months;
-            event.target.style.background = 'var(--primary)';
-            event.target.style.color = 'white';
-            // Reset sibling buttons
-            event.target.parentElement.querySelectorAll('button').forEach(btn => {
-                if (btn !== event.target) {
-                    btn.style.background = '';
-                    btn.style.color = '';
-                }
-            });
+        // ========== EXPORT REPORT ==========
+        function selectExpensePeriod(ev, months) {
+            selectedExpensePeriod = months;
+            const buttons = document.querySelectorAll('#expensePeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
+            ev.target.style.background = 'var(--primary)';
+            ev.target.style.color = 'white';
+        }
+
+        function selectCleaningPeriod(ev, months) {
+            selectedCleaningPeriod = months;
+            const buttons = document.querySelectorAll('#cleaningPeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
+            ev.target.style.background = 'var(--primary)';
+            ev.target.style.color = 'white';
         }
 
         function getExpensesForPeriod(months) {
             const expenses = getExpenses();
             const now = new Date();
-            
             if (months === 'current') {
                 const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 return expenses.filter(exp => {
@@ -2141,42 +2227,44 @@
             }
         }
 
-        function generateCleaningSchedule() {
+        function getCleaningForPeriod(months) {
             const calendarData = getCalendarData();
             const cleaningDays = [];
             const now = new Date();
-
-            for (let i = 0; i < 31; i++) {
-                const date = new Date(now);
-                date.setDate(date.getDate() + i);
-                const dateKey = date.toISOString().split('T')[0];
-                const dayData = calendarData[dateKey];
-
-                if (dayData && dayData.status === 'cleaning') {
-                    cleaningDays.push({
-                        date: date,
-                        dateKey: dateKey,
-                        note: dayData.note
-                    });
+            const endDate = new Date(now);
+            if (months === 'current') {
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+                for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
+                }
+            } else {
+                endDate.setMonth(endDate.getMonth() + months);
+                for (let date = new Date(now); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
                 }
             }
-
             return cleaningDays;
         }
 
         async function generateAndDownloadReport() {
-            const expenses = getExpensesForPeriod(selectedPeriod);
-            const cleaningDays = generateCleaningSchedule();
+            const expenses = getExpensesForPeriod(selectedExpensePeriod);
+            const cleaningDays = getCleaningForPeriod(selectedCleaningPeriod);
             const now = new Date();
-
-            // Calculate settlement
             const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
-
             expenses.forEach(exp => {
                 total += exp.amount;
                 balances[exp.paidBy] += exp.amount;
-
                 if (exp.splitBetween === 'Both') {
                     balances['Davide'] -= exp.amount / 2;
                     balances['Mattia'] -= exp.amount / 2;
@@ -2184,15 +2272,11 @@
                     balances[exp.splitBetween] -= exp.amount;
                 }
             });
-
-            // Build HTML Report
             let html = `
                 <div class="report-header">
                     <h1>Chillinguito Lake Como</h1>
                     <p>Financial Report - ${now.toLocaleDateString()}</p>
                 </div>
-
-                <!-- EXPENSE SUMMARY -->
                 <div class="report-section">
                     <h2>📊 Expense Summary</h2>
                     <div class="report-item">
@@ -2204,30 +2288,21 @@
                         <strong>${expenses.length}</strong>
                     </div>
             `;
-
-            // Group by category
             const byCategory = {};
             expenses.forEach(exp => {
-                if (!byCategory[exp.category]) {
-                    byCategory[exp.category] = 0;
-                }
+                if (!byCategory[exp.category]) byCategory[exp.category] = 0;
                 byCategory[exp.category] += exp.amount;
             });
-
             html += '<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">Breakdown by Category:</h3>';
-            Object.entries(byCategory).sort((a, b) => b[1] - a[1]).forEach(([category, amount]) => {
+            Object.entries(byCategory).sort((a,b) => b[1]-a[1]).forEach(([category, amount]) => {
                 html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
             });
-
             html += `</div>`;
-
-            // SETTLEMENT
             let davideSettlement = 0, mattiaSettlement = 0;
             expenses.forEach(exp => {
                 if (exp.paidBy === 'Davide') davideSettlement += exp.amount;
                 if (exp.paidBy === 'Mattia') mattiaSettlement += exp.amount;
             });
-
             html += `
                 <div class="report-section">
                     <h2>💳 Settlement Information</h2>
@@ -2240,7 +2315,6 @@
                         <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
                     </div>
             `;
-
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
                 html += `<div class="report-settlement" style="margin-top: 16px;">✅ All Settled - No payments needed</div>`;
             } else if (balances.Davide > 0.01) {
@@ -2248,44 +2322,36 @@
             } else if (balances.Mattia > 0.01) {
                 html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Davide owes Mattia: EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
             }
-
             html += `</div>`;
-
-            // CLEANING SCHEDULE
-            html += `<div class="report-section"><h2>🧹 Cleaning Schedule (Next 31 Days)</h2>`;
-            
+            html += `<div class="report-section"><h2>🧹 Cleaning Schedule</h2>`;
             if (cleaningDays.length === 0) {
-                html += `<div class="report-item"><em>No cleaning scheduled</em></div>`;
+                html += `<div class="report-item"><em>${t('noCleaning')}</em></div>`;
             } else {
                 cleaningDays.forEach(day => {
                     const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
                     html += `<div class="report-item"><strong>${dateStr}</strong> ${day.note ? day.note : 'Cleaning'}</div>`;
                 });
             }
-
             html += `</div>`;
-
-            // Render to canvas
             const reportDiv = document.getElementById('exportReport');
             reportDiv.innerHTML = html;
+            reportDiv.classList.remove('light-mode', 'dark-mode');
+            reportDiv.classList.add(`${currentTheme}-mode`);
             reportDiv.style.display = 'block';
-
             try {
                 const canvas = await html2canvas(reportDiv, {
-                    backgroundColor: '#ffffff',
+                    backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e',
                     scale: 2,
                     useCORS: true,
                     width: 900,
                     windowHeight: reportDiv.offsetHeight
                 });
-
                 canvas.toBlob(blob => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
                     link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
                     link.click();
                     URL.revokeObjectURL(link.href);
-                    
                     reportDiv.style.display = 'none';
                     showNotification(t('reportGenerated'));
                 });
@@ -2306,8 +2372,10 @@
             updatePlaceholders();
             setTimeout(() => renderCalendar(), 150);
             requestNotificationPermission();
-            // Check for cleaning reminder
-            setTimeout(() => checkCleaningReminder(), 500);
+            setTimeout(() => {
+                checkCleaningReminder();
+                checkPendingSettlementReminder();
+            }, 500);
         }
 
         // ========== PAGE LOAD ==========
@@ -2317,8 +2385,7 @@
             setupLockScreen();
         });
 
-        // ========== VERSION ==========
-        const APP_VERSION = '2.3.0-cleaning-reminder';
+        const APP_VERSION = '2.5.0-settlement-reminders';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
