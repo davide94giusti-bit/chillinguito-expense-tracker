@@ -1128,13 +1128,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // ========== STORAGE KEYS - DECLARE FIRST ==========
+        // ========== ALL CONSTANTS & VARIABLES - DECLARE FIRST ==========
         const STORAGE_KEY = 'chillinguito_expenses';
         const CALENDAR_KEY = 'chillinguito_calendar';
         const PAYMENTS_KEY = 'chillinguito_payments';
         const REMINDERS_KEY = 'chillinguito_reminders_shown';
         const UNLOCK_KEY = 'chillinguito_unlocked';
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
+        
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentReceiptImage = null;
+        let currentCalendarDate = new Date();
+        let currentCategoryFilter = 'All';
 
         // ========== FIREBASE CONFIG ==========
         const firebaseConfig = {
@@ -1147,13 +1153,11 @@
             databaseURL: "https://airbnb-expense-tracker-7f531-default-rtdb.firebaseio.com"
         };
 
-        // ========== INITIALIZE FIREBASE ==========
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const currentUser = 'Davide';
         let syncInProgress = false;
         let firebaseConnected = false;
-        let currentCategoryFilter = 'All';
 
         // ========== TRANSLATIONS ==========
         const translations = {
@@ -1218,11 +1222,6 @@
                 settledMessage: '✅ Nessuno deve soldi oggi! Tutto è saldato.'
             }
         };
-
-        let currentLanguage = localStorage.getItem('language') || 'en';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let currentReceiptImage = null;
-        let currentCalendarDate = new Date();
 
         function t(key) {
             return translations[currentLanguage][key] || key;
@@ -1607,7 +1606,6 @@
         function displayExpenses() {
             let expenses = getExpenses();
             
-            // Filter by category
             if (currentCategoryFilter !== 'All') {
                 expenses = expenses.filter(exp => exp.category === currentCategoryFilter);
             }
@@ -1696,7 +1694,6 @@
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
             
-            // Display status banner
             const bannerDiv = document.getElementById('settlementStatusBanner');
             let banner = '';
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
@@ -1798,7 +1795,6 @@
             const calendar = getCalendarData();
             const shownReminders = JSON.parse(localStorage.getItem(REMINDERS_KEY) || '{}');
             
-            // Check cleaning
             if (calendar[today]?.status === 'cleaning' && !shownReminders[`cleaning_${today}`]) {
                 showReminder('cleaningReminder', `🧹 ${t('cleaningReminder')}`);
                 shownReminders[`cleaning_${today}`] = true;
@@ -1809,7 +1805,6 @@
                 shownReminders[`cleaning_${tomorrow}`] = true;
             }
             
-            // Check pending payments
             const expenses = getExpenses();
             const balances = { Davide: 0, Mattia: 0 };
             expenses.forEach(exp => {
@@ -2019,7 +2014,6 @@
             setTimeout(() => notification.remove(), 4000);
         }
 
-        // ========== REQUEST NOTIFICATION PERMISSION ==========
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
         }
@@ -2044,7 +2038,7 @@
             setupLockScreen();
         });
 
-        console.log('🚀 Chillinguito v9 - FIXED! All constants declared first!');
+        console.log('🚀 Chillinguito v10 - ALL CONSTANTS DECLARED FIRST! No errors!');
     </script>
 </body>
 </html>
