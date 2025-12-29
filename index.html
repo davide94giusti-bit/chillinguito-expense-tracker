@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chillinguito Lake Como - Expense Tracker</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
     <style>
         :root {
             --primary: #2196F3;
@@ -206,28 +204,6 @@
             animation: none;
         }
 
-        .sync-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: white;
-            background: rgba(255, 152, 0, 0.3);
-            padding: 6px 10px;
-            border-radius: 12px;
-        }
-
-        .sync-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #FF9800;
-        }
-
-        .sync-dot.synced {
-            background: #4CAF50;
-        }
-
         @keyframes blink {
             0%, 49%, 100% { opacity: 1; }
             50%, 99% { opacity: 0.3; }
@@ -386,36 +362,6 @@
             gap: 12px;
         }
 
-        .category-filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .category-filter-btn {
-            padding: 8px 14px;
-            border: 2px solid var(--border);
-            background: white;
-            color: var(--text);
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .category-filter-btn:hover {
-            border-color: var(--primary);
-        }
-
-        .category-filter-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
         .expense-item {
             display: flex;
             flex-direction: column;
@@ -517,19 +463,12 @@
             margin-bottom: 16px;
             font-weight: 500;
             text-align: center;
-            border-left: 4px solid;
-        }
-
-        .settlement-box.settled {
-            background: rgba(76, 175, 80, 0.1);
-            color: #2e7d32;
-            border-color: #4CAF50;
         }
 
         .settlement-box.owed {
             background: rgba(244, 67, 54, 0.1);
             color: #c62828;
-            border-color: #f44336;
+            border-left: 4px solid #f44336;
         }
 
         .settlement-summary {
@@ -592,6 +531,7 @@
             margin-right: 8px;
         }
 
+        /* CALENDAR STYLES */
         .calendar-container {
             background: white;
             padding: 12px;
@@ -807,6 +747,21 @@
             background: rgba(33, 150, 243, 0.1);
         }
 
+        .status-option.occupied.selected {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: var(--primary);
+        }
+
+        .status-option.available.selected {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: var(--success);
+        }
+
+        .status-option.cleaning.selected {
+            background: rgba(255, 152, 0, 0.2);
+            border-color: var(--warning);
+        }
+
         .export-section {
             background: white;
             padding: 24px;
@@ -882,11 +837,6 @@
             background: var(--primary);
         }
 
-        .notification-banner.reminder {
-            background: #9C27B0;
-            font-weight: 600;
-        }
-
         @keyframes slideIn {
             from {
                 transform: translateY(-20px);
@@ -917,6 +867,7 @@
             font-weight: 600;
         }
 
+        /* EXPORT REPORT STYLES */
         #exportReport {
             display: none;
             padding: 40px;
@@ -930,6 +881,7 @@
             margin: 0 auto;
         }
 
+        /* Light Mode Report */
         #exportReport.light-mode {
             background: white;
             color: #333;
@@ -970,6 +922,7 @@
             color: #c62828;
         }
 
+        /* Dark Mode Report */
         #exportReport.dark-mode {
             background: #1e1e1e;
             color: #e0e0e0;
@@ -1056,6 +1009,7 @@
             margin: 16px 0;
         }
 
+        /* DARK MODE */
         [data-theme="dark"] {
             --primary: #64B5F6;
             --primary-dark: #42A5F5;
@@ -1080,9 +1034,7 @@
             background: #1e1e1e;
         }
 
-        [data-theme="dark"] input,
-        [data-theme="dark"] select,
-        [data-theme="dark"] textarea {
+        [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
             background: #2a2a2a;
             color: var(--text);
             border-color: var(--border);
@@ -1131,12 +1083,8 @@
             border-left-color: #64B5F6;
         }
 
+        /* MOBILE OPTIMIZATION */
         @media (max-width: 600px) {
-            .header-top {
-                flex-direction: column;
-                width: 100%;
-            }
-
             .calendar-container {
                 padding: 8px;
             }
@@ -1196,8 +1144,7 @@
                 letter-spacing: 0px;
             }
 
-            input[type="date"],
-            input[type="month"] {
+            input[type="date"], input[type="month"] {
                 min-height: 44px;
                 font-size: 16px;
                 padding: 10px 8px;
@@ -1261,8 +1208,7 @@
                 line-height: 1;
             }
 
-            input[type="date"],
-            input[type="month"] {
+            input[type="date"], input[type="month"] {
                 min-height: 40px;
                 font-size: 14px;
                 padding: 8px 6px;
@@ -1312,11 +1258,6 @@
                         <span id="otherUserStatus">Mattia is online</span>
                     </div>
 
-                    <div class="sync-status" style="display: none;">
-                        <div class="sync-dot synced" id="syncDot"></div>
-                        <span id="syncStatus">Synced</span>
-                    </div>
-
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
                         <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
@@ -1329,87 +1270,87 @@
 
         <div class="container">
             <div id="notificationContainer"></div>
-            <div id="remindersContainer"></div>
 
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
-                <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
-                <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
-                <button class="tab-btn" onclick="switchTab('calendar')">Calendar</button>
-                <button class="tab-btn" onclick="switchTab('export')">Export & Summary</button>
+                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense">Add Expense</button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses">All Expenses</button>
+                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export">Export & Summary</button>
             </div>
 
             <!-- ADD EXPENSE TAB -->
             <div id="add-expense" class="tab-content active">
                 <div class="card">
-                    <h2 style="margin-bottom: 20px;">Add New Expense</h2>
+                    <h2 style="margin-bottom: 20px;" data-i18n="addNewExpense">Add New Expense</h2>
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description" data-i18n="description">Description</label>
                             <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="amount">Amount (EUR)</label>
+                                <label for="amount" data-i18n="amount">Amount (EUR)</label>
                                 <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
                             </div>
                             <div class="form-group">
-                                <label for="category">Category</label>
+                                <label for="category" data-i18n="category">Category</label>
                                 <select id="category" required>
-                                    <option value="">-- Select Category --</option>
-                                    <option value="Cleaning">Cleaning & Maintenance</option>
-                                    <option value="Utilities">Utilities (Water, Gas, Electric)</option>
-                                    <option value="Groceries">Groceries & Food</option>
-                                    <option value="Repairs">Repairs & Equipment</option>
-                                    <option value="Furnishing">Furnishing & Decoration</option>
-                                    <option value="Marketing">Marketing & Advertising</option>
-                                    <option value="Insurance">Insurance</option>
-                                    <option value="Supplies">Supplies & Materials</option>
-                                    <option value="Other">Other</option>
+                                    <option value="" data-i18n="selectCategory">-- Select Category --</option>
+                                    <option value="Cleaning" data-i18n="catCleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities" data-i18n="catUtilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries" data-i18n="catGroceries">Groceries & Food</option>
+                                    <option value="Repairs" data-i18n="catRepairs">Repairs & Equipment</option>
+                                    <option value="Furnishing" data-i18n="catFurnishing">Furnishing & Decoration</option>
+                                    <option value="Marketing" data-i18n="catMarketing">Marketing & Advertising</option>
+                                    <option value="Insurance" data-i18n="catInsurance">Insurance</option>
+                                    <option value="Supplies" data-i18n="catSupplies">Supplies & Materials</option>
+                                    <option value="Other" data-i18n="catOther">Other</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="paidBy">Paid By</label>
+                                <label for="paidBy" data-i18n="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value="">-- Select --</option>
+                                    <option value="" data-i18n="selectPerson">-- Select --</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="splitBetween">Split Between</label>
+                                <label for="splitBetween" data-i18n="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="Both">Both (50/50)</option>
-                                    <option value="Davide">Davide Only</option>
-                                    <option value="Mattia">Mattia Only</option>
+                                    <option value="" data-i18n="selectSplit">-- Select --</option>
+                                    <option value="Both" data-i18n="splitBoth">Both (50/50)</option>
+                                    <option value="Davide" data-i18n="splitDavide">Davide Only</option>
+                                    <option value="Mattia" data-i18n="splitMattia">Mattia Only</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="date">Date</label>
+                            <label for="date" data-i18n="date">Date</label>
                             <input type="date" id="date" required>
                         </div>
 
-                        <div class="receipt-section">
-                            <label>Receipt Photo (optional)</label>
-                            <div class="receipt-preview" id="receiptPreview" onclick="document.getElementById('receiptInput').click()">
+                        <!-- RECEIPT UPLOAD -->
+                        <div class="form-group receipt-section">
+                            <label data-i18n="receipt">Receipt Photo (optional)</label>
+                            <div class="receipt-preview" id="receiptPreview">
                                 <span class="receipt-icon">📷</span>
                             </div>
                             <input type="file" id="receiptInput" accept="image/*" style="display: none;">
                         </div>
 
                         <div class="form-group">
-                            <label for="notes">Notes (optional)</label>
-                            <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
+                            <label for="notes" data-i18n="notes">Notes (optional)</label>
+                            <textarea id="notes" placeholder="Add any additional notes..." rows="3" data-i18n-placeholder="notesPlaceholder"></textarea>
                         </div>
 
-                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Add Expense</button>
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn">Add Expense</button>
                     </form>
                 </div>
             </div>
@@ -1418,10 +1359,9 @@
             <div id="expenses-list" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2>All Expenses</h2>
-                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);">Clear All</button>
+                        <h2 data-i18n="allExpenses">All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll">Clear All</button>
                     </div>
-                    <div class="category-filters" id="categoryFilters"></div>
                     <div id="expensesList"></div>
                 </div>
             </div>
@@ -1429,36 +1369,37 @@
             <!-- SETTLEMENT TAB -->
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
-                    <div class="summary-title">Current Settlement Status</div>
-                    <div id="settlementStatusBanner"></div>
+                    <div class="summary-title" data-i18n="currentSettlement">Current Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-label">Total Expenses</div>
+                            <div class="stat-label" data-i18n="totalExpenses">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label">Davide Paid</div>
+                            <div class="stat-label" data-i18n="davidePaid">Davide Paid</div>
                             <div class="stat-value" id="davidePaid">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label">Mattia Paid</div>
+                            <div class="stat-label" data-i18n="mattiaPaid">Mattia Paid</div>
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
 
                     <div style="margin-top: 20px;">
-                        <h3 style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
+                        <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes">💸 Who Owes Whom</h3>
                         <div id="settlementDetails"></div>
                     </div>
                 </div>
 
+                <!-- MARK MONTH SETTLED SECTION -->
                 <div class="card" style="margin-top: 20px;">
                     <h3 style="margin-bottom: 12px; color: var(--primary);">✅ Settlement Actions</h3>
-                    <button class="btn-primary" style="width:100%;" onclick="markCurrentMonthSettled()">
+                    <button class="btn-primary" style="width:100%;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
                         ✅ Mark this month as settled
                     </button>
                 </div>
 
+                <!-- PARTIAL PAYMENT TRACKING SECTION -->
                 <div id="partialPaymentsSection"></div>
             </div>
 
@@ -1466,22 +1407,22 @@
             <div id="calendar" class="tab-content">
                 <div class="calendar-container">
                     <div class="calendar-header">
-                        <h2>Airbnb Calendar</h2>
+                        <h2 data-i18n="calendarTitle">Airbnb Calendar</h2>
                         <div class="calendar-nav">
-                            <button onclick="previousMonth()">Previous</button>
+                            <button onclick="previousMonth()" data-i18n="previousMonth">Previous</button>
                             <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
-                            <button onclick="nextMonth()">Next</button>
+                            <button onclick="nextMonth()" data-i18n="nextMonth">Next</button>
                         </div>
                     </div>
 
                     <div class="calendar-weekdays">
-                        <div class="weekday">Sun</div>
-                        <div class="weekday">Mon</div>
-                        <div class="weekday">Tue</div>
-                        <div class="weekday">Wed</div>
-                        <div class="weekday">Thu</div>
-                        <div class="weekday">Fri</div>
-                        <div class="weekday">Sat</div>
+                        <div class="weekday" data-i18n="weekdaySun">Sun</div>
+                        <div class="weekday" data-i18n="weekdayMon">Mon</div>
+                        <div class="weekday" data-i18n="weekdayTue">Tue</div>
+                        <div class="weekday" data-i18n="weekdayWed">Wed</div>
+                        <div class="weekday" data-i18n="weekdayThu">Thu</div>
+                        <div class="weekday" data-i18n="weekdayFri">Fri</div>
+                        <div class="weekday" data-i18n="weekdaySat">Sat</div>
                     </div>
 
                     <div id="calendarDays" class="calendar-days"></div>
@@ -1491,18 +1432,34 @@
             <!-- EXPORT TAB -->
             <div id="export" class="tab-content">
                 <div class="export-section">
-                    <h2 style="margin-bottom: 20px;">📊 Monthly Summary & Export</h2>
+                    <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
 
+                    <!-- EXPENSE SUMMARY OPTIONS -->
                     <div style="margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 12px;">Expense Summary</h3>
-                        <div class="button-group">
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')">Current Month</button>
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,3)">Last 3 Months</button>
-                            <button class="btn-secondary" onclick="selectExpensePeriod(event,6)">Last 6 Months</button>
+                        <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
+                        <div class="button-group" id="expensePeriodButtons">
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,3)" data-i18n="last3Months">Last 3 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,6)" data-i18n="last6Months">Last 6 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,9)" data-i18n="last9Months">Last 9 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,12)" data-i18n="last12Months">Last 12 Months</button>
                         </div>
                     </div>
 
-                    <button class="btn-primary" style="width: 100%;" onclick="generateAndDownloadReport()">📥 Download Report</button>
+                    <!-- CLEANING SUMMARY OPTIONS -->
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">Cleaning Schedule</h3>
+                        <div class="button-group" id="cleaningPeriodButtons">
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,3)" data-i18n="next3Months">Next 3 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,6)" data-i18n="next6Months">Next 6 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,9)" data-i18n="next9Months">Next 9 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,12)" data-i18n="next12Months">Next 12 Months</button>
+                        </div>
+                    </div>
+
+                    <!-- EXPORT BUTTON -->
+                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()" data-i18n="downloadReport">📊 Download Complete Report</button>
                 </div>
             </div>
         </div>
@@ -1517,40 +1474,133 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // ========== CONSTANTS & VARIABLES ==========
-        const STORAGE_KEY = 'chillinguito_expenses';
-        const CALENDAR_KEY = 'chillinguito_calendar';
-        const PAYMENTS_KEY = 'chillinguito_payments';
-        const REMINDERS_KEY = 'chillinguito_reminders_shown';
-        const UNLOCK_KEY = 'chillinguito_unlocked';
+        // ========== TOTP CONFIGURATION ==========
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
-        const SETTLEMENT_KEY = 'chillinguito_settlements';
+        const UNLOCK_KEY = 'chillinguito_unlocked';
 
-        let currentLanguage = localStorage.getItem('language') || 'en';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let currentReceiptImage = null;
-        let currentCalendarDate = new Date();
-        let currentCategoryFilter = 'All';
-        let cleaningNotificationShown = false;
-        let userOnlineStatus = { 'Davide': false, 'Mattia': true };
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCwF7bvS12h3AM14gmAEKV16BjH4Bq6TWU",
-            authDomain: "airbnb-expense-tracker-7f531.firebaseapp.com",
-            projectId: "airbnb-expense-tracker-7f531",
-            storageBucket: "airbnb-expense-tracker-7f531.appbasestorage.app",
-            messagingSenderId: "466998817774",
-            appId: "1:466998817774:web:f4b244ac7cfa1723dbd4ff",
-            databaseURL: "https://airbnb-expense-tracker-7f531-default-rtdb.firebaseio.com"
-        };
-
-        try {
-            firebase.initializeApp(firebaseConfig);
-        } catch (e) {
-            console.log('Firebase already initialized or not available');
+        // ========== TOTP IMPLEMENTATION ==========
+        function base32Decode(str) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            const bits = [];
+            for (let i = 0; i < str.length; i++) {
+                const val = alphabet.indexOf(str[i]);
+                if (val === -1) throw new Error('Invalid base32 character');
+                bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
+            }
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                bytes.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+            }
+            return new Uint8Array(bytes);
         }
 
-        const currentUser = 'Davide';
+        async function generateTOTPCode(secret, timeWindow = 0) {
+            try {
+                const decoded = base32Decode(secret);
+                const epoch = Math.floor(Date.now() / 30000) + timeWindow;
+                const msg = new ArrayBuffer(8);
+                const view = new DataView(msg);
+                view.setBigInt64(0, BigInt(epoch), false);
+                const key = await crypto.subtle.importKey('raw', decoded, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
+                const signature = await crypto.subtle.sign('HMAC', key, msg);
+                const sig = new Uint8Array(signature);
+                const offset = sig[sig.length - 1] & 0x0f;
+                const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
+                const code = String(p % 1000000).padStart(6, '0');
+                return code;
+            } catch (error) {
+                console.error('TOTP generation error:', error);
+                return null;
+            }
+        }
+
+        async function validateTOTPCode(inputCode) {
+            for (let timeWindow of [-1, 0, 1]) {
+                const code = await generateTOTPCode(TOTP_SECRET, timeWindow);
+                if (code === inputCode) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ========== LOCK SCREEN SETUP ==========
+        function setupLockScreen() {
+            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
+            if (!isUnlocked) {
+                document.getElementById('appBody').classList.add('locked');
+                document.getElementById('lockScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                setupTOTPInput();
+            } else {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                void document.getElementById('mainApp').offsetHeight;
+                initializeApp();
+            }
+        }
+
+        function setupTOTPInput() {
+            const inputs = document.querySelectorAll('.totp-digit');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keydown', (e) => {
+                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                        e.preventDefault();
+                    }
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        } else {
+                            validateTOTP();
+                        }
+                    }
+                });
+            });
+            inputs[0].focus();
+        }
+
+        async function validateTOTP() {
+            const inputs = document.querySelectorAll('.totp-digit');
+            const code = Array.from(inputs).map(input => input.value).join('');
+            const errorDiv = document.getElementById('errorMessage');
+            if (code.length !== 6) {
+                errorDiv.textContent = '❌ Please enter all 6 digits';
+                return;
+            }
+            const unlockBtn = document.querySelector('.unlock-btn');
+            unlockBtn.disabled = true;
+            unlockBtn.textContent = '⏳ Verifying...';
+            const isValid = await validateTOTPCode(code);
+            if (isValid) {
+                localStorage.setItem(UNLOCK_KEY, 'true');
+                errorDiv.textContent = '✅ Welcome!';
+                setTimeout(() => {
+                    document.getElementById('appBody').classList.remove('locked');
+                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    void document.getElementById('mainApp').offsetHeight;
+                    initializeApp();
+                }, 500);
+            } else {
+                errorDiv.textContent = '❌ Invalid code. Try again.';
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
+                unlockBtn.disabled = false;
+                unlockBtn.textContent = 'Unlock';
+            }
+        }
+
+        function logout() {
+            if (confirm('🔒 Lock the app? You will need to enter your 2FA code again.')) {
+                localStorage.removeItem(UNLOCK_KEY);
+                location.reload();
+            }
+        }
 
         // ========== TRANSLATIONS ==========
         const translations = {
@@ -1564,24 +1614,82 @@
                 description: 'Description',
                 amount: 'Amount (EUR)',
                 category: 'Category',
+                selectCategory: '-- Select Category --',
+                catCleaning: 'Cleaning & Maintenance',
+                catUtilities: 'Utilities (Water, Gas, Electric)',
+                catGroceries: 'Groceries & Food',
+                catRepairs: 'Repairs & Equipment',
+                catFurnishing: 'Furnishing & Decoration',
+                catMarketing: 'Marketing & Advertising',
+                catInsurance: 'Insurance',
+                catSupplies: 'Supplies & Materials',
+                catOther: 'Other',
                 paidBy: 'Paid By',
+                selectPerson: '-- Select --',
                 splitBetween: 'Split Between',
+                selectSplit: '-- Select --',
+                splitBoth: 'Both (50/50)',
+                splitDavide: 'Davide Only',
+                splitMattia: 'Mattia Only',
                 date: 'Date',
                 notes: 'Notes (optional)',
+                notesPlaceholder: 'Add any additional notes...',
                 receipt: 'Receipt Photo (optional)',
                 addExpenseBtn: 'Add Expense',
                 clearAll: 'Clear All',
+                expenseAdded: '✅ Expense added successfully!',
+                deleteConfirm: 'Delete this expense?',
+                clearAllConfirm: '⚠️ Delete ALL expenses? This cannot be undone.',
+                noExpenses: 'No expenses yet. Start by adding one!',
                 currentSettlement: 'Current Settlement Status',
                 totalExpenses: 'Total Expenses',
                 davidePaid: 'Davide Paid',
                 mattiaPaid: 'Mattia Paid',
+                whoOwes: '💸 Who Owes Whom',
+                allSettled: '✅ All settled! No payments needed.',
+                mattiaOwes: 'Mattia still owes Davide:',
+                davideOwes: 'Davide still owes Mattia:',
                 calendarTitle: 'Airbnb Calendar',
                 previousMonth: 'Previous',
                 nextMonth: 'Next',
-                cleaningReminder: '🧹 Cleaning scheduled for today!',
-                cleaningTomorrow: '🧹 Cleaning scheduled for tomorrow!',
-                pendingPayment: '💳 You have pending payment',
-                settledMessage: '✅ Nobody owes money today! Everything is settled.'
+                occupied: 'Not Available',
+                available: 'Available',
+                cleaning: 'Cleaning',
+                weekdaySun: 'Sun',
+                weekdayMon: 'Mon',
+                weekdayTue: 'Tue',
+                weekdayWed: 'Wed',
+                weekdayThu: 'Thu',
+                weekdayFri: 'Fri',
+                weekdaySat: 'Sat',
+                monthlySummary: 'Monthly Summary & Export',
+                expenseSummary: 'Expense Summary',
+                currentMonth: 'Current Month',
+                last3Months: 'Last 3 Months',
+                last6Months: 'Last 6 Months',
+                last9Months: 'Last 9 Months',
+                last12Months: 'Last 12 Months',
+                next3Months: 'Next 3 Months',
+                next6Months: 'Next 6 Months',
+                next9Months: 'Next 9 Months',
+                next12Months: 'Next 12 Months',
+                downloadReport: '📊 Download Complete Report',
+                cleaningSchedule: '🧹 Cleaning Schedule',
+                noCleaning: 'No cleaning scheduled',
+                cleaningDue: 'Cleaning scheduled:',
+                selectMonth: 'Select Month',
+                generateSummary: 'Generate Summary',
+                updateNotification: 'Updated!',
+                expenseUpdated: 'An expense was updated',
+                calendarUpdated: 'The calendar was updated',
+                reportGenerated: '✅ Report downloaded successfully!',
+                cleaningTomorrow: '🧹 Cleaning scheduled tomorrow!',
+                cleaningTodayReminder: '🧹 Cleaning is TODAY!',
+                markSettled: '✅ Mark this month as settled',
+                settlementMarked: '✅ This month is marked as settled.',
+                pendingSettlement: '💸 Last month\'s balance is still pending.',
+                mattiaOnline: 'Mattia is online',
+                mattiaOffline: 'Mattia is offline'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1593,141 +1701,455 @@
                 description: 'Descrizione',
                 amount: 'Importo (EUR)',
                 category: 'Categoria',
+                selectCategory: '-- Seleziona Categoria --',
+                catCleaning: 'Pulizia e Manutenzione',
+                catUtilities: 'Servizi (Acqua, Gas, Elettricità)',
+                catGroceries: 'Generi Alimentari e Cibo',
+                catRepairs: 'Riparazioni e Attrezzature',
+                catFurnishing: 'Arredamento e Decorazione',
+                catMarketing: 'Marketing e Pubblicità',
+                catInsurance: 'Assicurazione',
+                catSupplies: 'Forniture e Materiali',
+                catOther: 'Altro',
                 paidBy: 'Pagato da',
+                selectPerson: '-- Seleziona --',
                 splitBetween: 'Dividi tra',
+                selectSplit: '-- Seleziona --',
+                splitBoth: 'Entrambi (50/50)',
+                splitDavide: 'Solo Davide',
+                splitMattia: 'Solo Mattia',
                 date: 'Data',
                 notes: 'Note (facoltativo)',
-                receipt: 'Foto ricevuta (facoltativo)',
+                notesPlaceholder: 'Aggiungi altre note...',
+                receipt: 'Foto Ricevuta (facoltativo)',
                 addExpenseBtn: 'Aggiungi Spesa',
                 clearAll: 'Cancella Tutto',
+                expenseAdded: '✅ Spesa aggiunta con successo!',
+                deleteConfirm: 'Eliminare questa spesa?',
+                clearAllConfirm: '⚠️ Eliminare TUTTE le spese? Questa azione non può essere annullata.',
+                noExpenses: 'Nessuna spesa ancora. Inizia aggiungendone una!',
                 currentSettlement: 'Stato Regolamento Attuale',
                 totalExpenses: 'Spese Totali',
                 davidePaid: 'Davide Ha Pagato',
                 mattiaPaid: 'Mattia Ha Pagato',
+                whoOwes: '💸 Chi Deve a Chi',
+                allSettled: '✅ Tutto regolato! Nessun pagamento necessario.',
+                mattiaOwes: 'Mattia deve ancora a Davide:',
+                davideOwes: 'Davide deve ancora a Mattia:',
                 calendarTitle: 'Calendario Airbnb',
                 previousMonth: 'Precedente',
                 nextMonth: 'Successivo',
-                cleaningReminder: '🧹 Pulizie programmate per oggi!',
-                cleaningTomorrow: '🧹 Pulizie programmate per domani!',
-                pendingPayment: '💳 Hai un pagamento in sospeso',
-                settledMessage: '✅ Nessuno deve soldi oggi! Tutto è saldato.'
+                occupied: 'Non Disponibile',
+                available: 'Disponibile',
+                cleaning: 'Pulizia',
+                weekdaySun: 'Dom',
+                weekdayMon: 'Lun',
+                weekdayTue: 'Mar',
+                weekdayWed: 'Mer',
+                weekdayThu: 'Gio',
+                weekdayFri: 'Ven',
+                weekdaySat: 'Sab',
+                monthlySummary: 'Riepilogo Mensile ed Esportazione',
+                expenseSummary: 'Riepilogo Spese',
+                currentMonth: 'Mese Attuale',
+                last3Months: 'Ultimi 3 Mesi',
+                last6Months: 'Ultimi 6 Mesi',
+                last9Months: 'Ultimi 9 Mesi',
+                last12Months: 'Ultimi 12 Mesi',
+                next3Months: 'Prossimi 3 Mesi',
+                next6Months: 'Prossimi 6 Mesi',
+                next9Months: 'Prossimi 9 Mesi',
+                next12Months: 'Prossimi 12 Mesi',
+                downloadReport: '📊 Scarica Rapporto Completo',
+                cleaningSchedule: '🧹 Programma Pulizie',
+                noCleaning: 'Nessuna pulizia programmata',
+                cleaningDue: 'Pulizia programmata:',
+                selectMonth: 'Seleziona Mese',
+                generateSummary: 'Genera Riepilogo',
+                updateNotification: 'Aggiornato!',
+                expenseUpdated: 'Una spesa è stata aggiornata',
+                calendarUpdated: 'Il calendario è stato aggiornato',
+                reportGenerated: '✅ Rapporto scaricato con successo!',
+                cleaningTomorrow: '🧹 Pulizia programmata domani!',
+                cleaningTodayReminder: '🧹 La pulizia è OGGI!',
+                markSettled: '✅ Segna questo mese come saldato',
+                settlementMarked: '✅ Questo mese è stato segnato come saldato.',
+                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.',
+                mattiaOnline: 'Mattia è online',
+                mattiaOffline: 'Mattia è offline'
             }
         };
+
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentReceiptImage = null;
+        let currentCalendarDate = new Date();
+        let selectedExpensePeriod = 'current';
+        let selectedCleaningPeriod = 'current';
+        let cleaningNotificationShown = false;
+        let settlementNotificationShown = false;
+        let userOnlineStatus = {};
 
         function t(key) {
             return translations[currentLanguage][key] || key;
         }
 
-        // ========== TOTP VALIDATION ==========
-        async function validateTOTP() {
-            const inputs = document.querySelectorAll('.totp-digit');
-            const code = Array.from(inputs).map(inp => inp.value).join('');
+        // ========== LANGUAGE & THEME ==========
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updatePageText();
+            updateDropdownOptions();
+            updatePlaceholders();
+            renderCalendar();
+            updateOnlineIndicator();
+        }
 
-            if (code.length !== 6) {
-                document.getElementById('errorMessage').textContent = 'Please enter 6 digits';
-                return;
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function updatePageText() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.getAttribute('data-i18n'));
+            });
+            displayExpenses();
+            displaySettlement();
+        }
+
+        function updatePlaceholders() {
+            const notesTextarea = document.getElementById('notes');
+            if (notesTextarea) {
+                notesTextarea.placeholder = t('notesPlaceholder');
             }
+        }
 
-            const validCode = await generateTOTPCode(TOTP_SECRET);
-            if (code === validCode) {
-                localStorage.setItem(UNLOCK_KEY, 'true');
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initializeApp();
+        function updateDropdownOptions() {
+            const categoryOptions = document.querySelectorAll('#category option');
+            categoryOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) option.textContent = t(i18nKey);
+            });
+            const paidByOptions = document.querySelectorAll('#paidBy option');
+            paidByOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) option.textContent = t(i18nKey);
+            });
+            const splitOptions = document.querySelectorAll('#splitBetween option');
+            splitOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) option.textContent = t(i18nKey);
+            });
+        }
+
+        // ========== ONLINE STATUS ==========
+        function initializeOnlineStatus() {
+            userOnlineStatus = { 'Davide': false, 'Mattia': true };
+            updateOnlineIndicator();
+            setInterval(() => {
+                userOnlineStatus['Mattia'] = Math.random() > 0.3;
+                updateOnlineIndicator();
+            }, 8000);
+        }
+
+        function updateOnlineIndicator() {
+            const indicator = document.getElementById('onlineIndicator');
+            const dot = document.getElementById('otherUserOnline');
+            const status = document.getElementById('otherUserStatus');
+            
+            if (userOnlineStatus['Mattia']) {
+                dot.classList.remove('offline');
+                status.textContent = t('mattiaOnline');
+                indicator.style.display = 'flex';
             } else {
-                document.getElementById('errorMessage').textContent = 'Invalid code. Try again.';
-                inputs.forEach(inp => inp.value = '');
+                dot.classList.add('offline');
+                status.textContent = t('mattiaOffline');
+                indicator.style.display = 'none';
             }
         }
 
-        async function generateTOTPCode(secret, timeWindow = 0) {
-            try {
-                const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-                const bits = [];
-                for (let i = 0; i < secret.length; i++) {
-                    const val = alphabet.indexOf(secret[i]);
-                    if (val === -1) throw new Error('Invalid base32');
-                    bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
+        // ========== CLEANING REMINDER ==========
+        function checkCleaningReminder() {
+            const calendarData = getCalendarData();
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const today = now.toISOString().split('T')[0];
+            const tomorrowKey = tomorrow.toISOString().split('T')[0];
+            let hasTodayCleaning = false;
+            let hasTomorrowCleaning = false;
+            const todayData = calendarData[today];
+            if (todayData && todayData.status === 'cleaning') hasTodayCleaning = true;
+            const tomorrowData = calendarData[tomorrowKey];
+            if (tomorrowData && tomorrowData.status === 'cleaning') hasTomorrowCleaning = true;
+            if (!cleaningNotificationShown) {
+                if (hasTodayCleaning) {
+                    showNotification(t('cleaningTodayReminder'), 'alert');
+                    cleaningNotificationShown = true;
+                } else if (hasTomorrowCleaning) {
+                    showNotification(t('cleaningTomorrow'), 'warning');
+                    cleaningNotificationShown = true;
                 }
-                const bytes = [];
-                for (let i = 0; i + 8 <= bits.length; i += 8) {
-                    bytes.push(parseInt(bits.slice(i, i + 8).join(''), 2));
+            }
+        }
+
+        // ========== SETTLEMENT REMINDER ==========
+        const SETTLEMENT_KEY = 'chillinguito_settlements';
+
+        function getSettlementData() {
+            const data = localStorage.getItem(SETTLEMENT_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveSettlementData(data) {
+            localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
+        }
+
+        function getMonthKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        function getExpensesForMonth(date) {
+            const key = getMonthKey(date);
+            const expenses = getExpenses();
+            return expenses.filter(exp => {
+                const d = new Date(exp.date);
+                return getMonthKey(d) === key;
+            });
+        }
+
+        function computeMonthBalance(date) {
+            const expenses = getExpensesForMonth(date);
+            const balances = { Davide: 0, Mattia: 0 };
+            expenses.forEach(exp => {
+                const amt = exp.amount;
+                balances[exp.paidBy] += amt;
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= amt / 2;
+                    balances['Mattia'] -= amt / 2;
+                } else {
+                    balances[exp.splitBetween] -= amt;
                 }
-                const decoded = new Uint8Array(bytes);
-
-                const epoch = Math.floor(Date.now() / 30000) + timeWindow;
-                const msg = new ArrayBuffer(8);
-                const view = new DataView(msg);
-                view.setBigInt64(0, BigInt(epoch), false);
-
-                const key = await crypto.subtle.importKey('raw', decoded, { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']);
-                const signature = await crypto.subtle.sign('HMAC', key, msg);
-                const sig = new Uint8Array(signature);
-                const offset = sig[sig.length - 1] & 0x0f;
-                const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
-                return String(p % 1000000).padStart(6, '0');
-            } catch (error) {
-                console.error('TOTP error:', error);
-                return null;
-            }
+            });
+            return { balances, hasExpenses: expenses.length > 0 };
         }
 
-        // ========== LOCK SCREEN SETUP ==========
-        function setupLockScreen() {
-            const isUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true';
-            if (isUnlocked) {
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initializeApp();
-            } else {
-                document.getElementById('lockScreen').style.display = 'flex';
-                document.getElementById('mainApp').style.display = 'none';
-                document.body.classList.add('locked');
-
-                document.querySelectorAll('.totp-digit').forEach((input, index) => {
-                    input.addEventListener('input', (e) => {
-                        if (e.target.value.length === 1 && index < 5) {
-                            document.querySelectorAll('.totp-digit')[index + 1].focus();
-                        }
-                    });
-                    input.addEventListener('keyback', (e) => {
-                        if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                            document.querySelectorAll('.totp-digit')[index - 1].focus();
-                        }
-                    });
-                });
-            }
+        function markCurrentMonthSettled() {
+            const now = new Date();
+            const key = getMonthKey(now);
+            const data = getSettlementData();
+            data[key] = { settled: true, timestamp: new Date().toISOString() };
+            saveSettlementData(data);
+            showNotification(t('settlementMarked'), 'alert');
         }
 
-        // ========== STORAGE FUNCTIONS ==========
-        function getExpenses() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        function checkPendingSettlementReminder() {
+            if (settlementNotificationShown) return;
+            const now = new Date();
+            const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const key = getMonthKey(prev);
+            const settlementData = getSettlementData();
+            if (settlementData[key] && settlementData[key].settled) return;
+            const { balances, hasExpenses } = computeMonthBalance(prev);
+            if (!hasExpenses) return;
+            const diff = Math.abs(balances.Davide - (-balances.Mattia));
+            const outstanding = Math.max(Math.abs(balances.Davide), Math.abs(balances.Mattia));
+            if (outstanding < 0.01) return;
+            showNotification(t('pendingSettlement'), 'warning');
+            settlementNotificationShown = true;
         }
 
-        function saveExpenses(expenses) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-        }
-
-        function getCalendarData() {
-            return JSON.parse(localStorage.getItem(CALENDAR_KEY) || '{}');
-        }
-
-        function saveCalendarData(data) {
-            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
-        }
+        // ========== PARTIAL PAYMENTS ==========
+        const PAYMENTS_KEY = 'chillinguito_payments';
 
         function getPaymentsData() {
-            return JSON.parse(localStorage.getItem(PAYMENTS_KEY) || '[]');
+            const data = localStorage.getItem(PAYMENTS_KEY);
+            return data ? JSON.parse(data) : [];
         }
 
         function savePaymentsData(data) {
             localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
         }
 
-        // ========== EXPENSE MANAGEMENT ==========
-        function addExpense(event) {
-            event.preventDefault();
+        function displayPartialPayments(owedByUser, totalOwed) {
+            const section = document.getElementById('partialPaymentsSection');
+            if (!owedByUser) {
+                section.innerHTML = '';
+                return;
+            }
 
+            const payments = getPaymentsData();
+            let totalPaid = 0;
+            const relevantPayments = payments.filter(p => p.from === owedByUser);
+            relevantPayments.forEach(p => totalPaid += p.amount);
+            const remaining = Math.max(0, totalOwed - totalPaid);
+            const percentage = totalOwed > 0 ? (totalPaid / totalOwed) * 100 : 0;
+
+            let html = `
+                <div class="card" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 12px; color: var(--primary);">📊 Payment History</h3>
+                    <div style="background: var(--light); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #FFA94D;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <span>${owedByUser} → Davide</span>
+                            <span style="font-size: 18px; color: var(--primary); font-weight: 700;">EUR ${totalPaid.toFixed(2)} / ${totalOwed.toFixed(2)}</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                            Paid: EUR ${totalPaid.toFixed(2)} | Remaining: EUR ${remaining.toFixed(2)}
+                        </div>
+                        <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--success); transition: width 0.3s; width: ${percentage}%;"></div>
+                        </div>
+            `;
+
+            relevantPayments.forEach(payment => {
+                html += `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">✓ EUR ${payment.amount.toFixed(2)} on ${payment.date}</div>`;
+            });
+
+            html += `
+                    </div>
+                    <div style="background: rgba(33, 150, 243, 0.1); padding: 16px; border-radius: 8px; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 12px; color: var(--primary); font-size: 14px;">💳 Record a Partial Payment</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="partialPaymentAmount" placeholder="Amount (EUR)" step="0.01" min="0" max="${remaining}">
+                            <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})">Record</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            section.innerHTML = html;
+        }
+
+        function recordPartialPayment(from, totalOwed) {
+            const amountInput = document.getElementById('partialPaymentAmount');
+            const amount = parseFloat(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                alert('Enter valid amount');
+                return;
+            }
+
+            const payments = getPaymentsData();
+            let totalPaid = 0;
+            payments.filter(p => p.from === from).forEach(p => totalPaid += p.amount);
+
+            if (totalPaid + amount > totalOwed + 0.01) {
+                alert(`Cannot exceed EUR ${totalOwed.toFixed(2)}`);
+                return;
+            }
+
+            payments.push({
+                from: from,
+                amount: amount,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            savePaymentsData(payments);
+            amountInput.value = '';
+            displaySettlement();
+            showNotification('✅ Payment recorded!');
+        }
+
+        // ========== NOTIFICATIONS ==========
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification-banner ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // ========== STORAGE ==========
+        const STORAGE_KEY = 'chillinguito_expenses';
+        const CALENDAR_KEY = 'chillinguito_calendar';
+
+        function getExpenses() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveExpenses(expenses) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+            displayExpenses();
+            displaySettlement();
+            showNotification(t('updateNotification'));
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Chillinguito', { body: t('expenseUpdated') });
+            }
+        }
+
+        function getCalendarData() {
+            const data = localStorage.getItem(CALENDAR_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveCalendarData(data) {
+            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
+            renderCalendar();
+            showNotification(t('updateNotification'));
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Chillinguito', { body: t('calendarUpdated') });
+            }
+        }
+
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // ========== TAB SWITCHING ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            if (tabName === 'calendar') {
+                setTimeout(() => renderCalendar(), 50);
+            }
+        }
+
+        // ========== RECEIPT UPLOAD ==========
+        function setupReceiptUpload() {
+            const receiptPreview = document.getElementById('receiptPreview');
+            const receiptInput = document.getElementById('receiptInput');
+            receiptPreview.onclick = () => receiptInput.click();
+            receiptInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        currentReceiptImage = ev.target.result;
+                        receiptPreview.style.backgroundImage = `url(${ev.target.result})`;
+                        receiptPreview.classList.add('has-image');
+                        receiptPreview.innerHTML = '<button class="receipt-remove" onclick="removeReceipt(event)" type="button">✕</button>';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        }
+
+        function removeReceipt(e) {
+            if (e) e.stopPropagation();
+            currentReceiptImage = null;
+            const receiptPreview = document.getElementById('receiptPreview');
+            receiptPreview.style.backgroundImage = '';
+            receiptPreview.classList.remove('has-image');
+            receiptPreview.innerHTML = '<span class="receipt-icon">📷</span>';
+            document.getElementById('receiptInput').value = '';
+        }
+
+        // ========== ADD EXPENSE ==========
+        function addExpense(e) {
+            e.preventDefault();
             const expense = {
                 id: Date.now(),
                 description: document.getElementById('description').value,
@@ -1736,183 +2158,169 @@
                 paidBy: document.getElementById('paidBy').value,
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
-                receipt: currentReceiptImage,
                 notes: document.getElementById('notes').value,
-                createdAt: new Date().toISOString()
+                receipt: currentReceiptImage
             };
-
             const expenses = getExpenses();
             expenses.push(expense);
             saveExpenses(expenses);
-
-            event.target.reset();
-            currentReceiptImage = null;
-            document.getElementById('receiptPreview').classList.remove('has-image');
+            document.querySelector('form').reset();
+            removeReceipt();
             document.getElementById('date').valueAsDate = new Date();
-            displayExpenses();
-            displaySettlement();
-            showNotification('✅ Expense added successfully!');
+            alert(t('expenseAdded'));
         }
 
+        // ========== DISPLAY EXPENSES ==========
         function displayExpenses() {
             const expenses = getExpenses();
-            const container = document.getElementById('expensesList');
-            const filterContainer = document.getElementById('categoryFilters');
-
-            // Get unique categories
-            const categories = ['All', ...new Set(expenses.map(e => e.category))];
-
-            filterContainer.innerHTML = categories.map(cat =>
-                `<button class="category-filter-btn ${currentCategoryFilter === cat ? 'active' : ''}" 
-                    onclick="filterByCategory('${cat}')">${cat}</button>`
-            ).join('');
-
-            // Filter expenses
-            const filtered = currentCategoryFilter === 'All' 
-                ? expenses 
-                : expenses.filter(e => e.category === currentCategoryFilter);
-
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="no-data">No expenses yet</div>';
+            const listDiv = document.getElementById('expensesList');
+            if (expenses.length === 0) {
+                listDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
                 return;
             }
-
-            container.innerHTML = filtered.map(exp => `
+            expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+            listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
                     <div class="expense-info">
-                        <div class="expense-description">${exp.description}</div>
-                        <div class="expense-details">
+                        <div class="expense-description">
                             <span class="category-badge">${exp.category}</span>
-                            ${exp.paidBy} paid • Split: ${exp.splitBetween} • ${exp.date}
+                            ${exp.description}
                         </div>
-                        ${exp.notes ? `<div class="expense-details" style="margin-top: 8px;">📝 ${exp.notes}</div>` : ''}
+                        <div class="expense-details">
+                            ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
+                            ${exp.notes ? '<br><em>' + exp.notes + '</em>' : ''}
+                        </div>
+                        ${exp.receipt ? `<img src="${exp.receipt}" class="expense-receipt" alt="Receipt" onclick="viewReceipt('${exp.receipt}')">` : ''}
                     </div>
-                    <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
-                    ${exp.receipt ? `<img src="${exp.receipt}" class="expense-receipt" onclick="viewReceipt(this)">` : ''}
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                        <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
+                        <button class="btn-danger" onclick="deleteExpense(${exp.id})">Delete</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function filterByCategory(category) {
-            currentCategoryFilter = category;
-            displayExpenses();
+        function viewReceipt(src) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:2000;';
+            modal.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:8px;" onclick="this.parentElement.remove()">`;
+            document.body.appendChild(modal);
         }
 
-        function clearAllExpenses() {
-            if (confirm('Clear all expenses?')) {
-                localStorage.removeItem(STORAGE_KEY);
-                displayExpenses();
-                displaySettlement();
-                showNotification('✅ All expenses cleared');
+        function deleteExpense(id) {
+            if (confirm(t('deleteConfirm'))) {
+                let expenses = getExpenses();
+                expenses = expenses.filter(e => e.id !== id);
+                saveExpenses(expenses);
             }
         }
 
-        function viewReceipt(img) {
-            const modal = document.createElement('div');
-            modal.className = 'modal show';
-            modal.innerHTML = `<div style="max-width: 90%; max-height: 90%;"><img src="${img.src}" style="width: 100%; border-radius: 8px;"></div>`;
-            modal.onclick = () => modal.remove();
-            document.body.appendChild(modal);
+        function clearAllExpenses() {
+            if (confirm(t('clearAllConfirm'))) {
+                localStorage.removeItem(STORAGE_KEY);
+                displayExpenses();
+                displaySettlement();
+            }
         }
 
         // ========== SETTLEMENT ==========
         function displaySettlement() {
             const expenses = getExpenses();
-            let totalExpenses = 0;
-            let davideTotal = 0;
-            let mattiaTotal = 0;
-
+            const balances = { Davide: 0, Mattia: 0 };
+            let total = 0;
             expenses.forEach(exp => {
-                totalExpenses += exp.amount;
-                if (exp.paidBy === 'Davide') davideTotal += exp.amount;
-                else mattiaTotal += exp.amount;
+                total += exp.amount;
+                balances[exp.paidBy] += exp.amount;
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= exp.amount / 2;
+                    balances['Mattia'] -= exp.amount / 2;
+                } else {
+                    balances[exp.splitBetween] -= exp.amount;
+                }
             });
-
-            document.getElementById('totalExpenses').textContent = `EUR ${totalExpenses.toFixed(2)}`;
-            document.getElementById('davidePaid').textContent = `EUR ${davideTotal.toFixed(2)}`;
-            document.getElementById('mattiaPaid').textContent = `EUR ${mattiaTotal.toFixed(2)}`;
-
-            const perPerson = totalExpenses / 2;
-            const davideOwes = perPerson - davideTotal;
-            const mattiaOwes = perPerson - mattiaTotal;
-
-            let settleHTML = '';
-
-            if (Math.abs(davideOwes) < 0.01) {
-                settleHTML = '<div class="settlement-box settled">✅ All settled!</div>';
-            } else if (davideOwes > 0) {
-                settleHTML = `<div class="settlement-box owed">💳 Davide owes Mattia: EUR ${davideOwes.toFixed(2)}</div>`;
-            } else if (mattiaOwes > 0) {
-                settleHTML = `<div class="settlement-box owed">💳 Mattia owes Davide: EUR ${mattiaOwes.toFixed(2)}</div>`;
+            document.getElementById('totalExpenses').textContent = `EUR ${total.toFixed(2)}`;
+            let davidePaid = 0, mattiaPaid = 0;
+            expenses.forEach(exp => {
+                if (exp.paidBy === 'Davide') davidePaid += exp.amount;
+                if (exp.paidBy === 'Mattia') mattiaPaid += exp.amount;
+            });
+            document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
+            document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
+            const detailsDiv = document.getElementById('settlementDetails');
+            if (total === 0) {
+                detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                document.getElementById('partialPaymentsSection').innerHTML = '';
+                return;
             }
+            let html = '';
+            let owedByUser = null;
+            let owedAmount = 0;
 
-            document.getElementById('settlementStatusBanner').innerHTML = settleHTML;
-            document.getElementById('settlementDetails').innerHTML = settleHTML;
-        }
-
-        function markCurrentMonthSettled() {
-            const data = JSON.parse(localStorage.getItem(SETTLEMENT_KEY) || '{}');
-            const now = new Date();
-            const key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-            data[key] = { settled: true, date: new Date().toISOString() };
-            localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
-            showNotification('✅ Month marked as settled!');
+            if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
+                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
+            } else if (balances.Davide > 0.01) {
+                html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                owedByUser = 'Mattia';
+                owedAmount = balances.Davide;
+            } else if (balances.Mattia > 0.01) {
+                html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                owedByUser = 'Davide';
+                owedAmount = Math.abs(balances.Mattia);
+            }
+            detailsDiv.innerHTML = html;
+            displayPartialPayments(owedByUser, owedAmount);
         }
 
         // ========== CALENDAR ==========
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
+            const monthNames = currentLanguage === 'en'
+                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-            document.getElementById('currentMonth').textContent = 
-                currentCalendarDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-
+            const calendarDaysDiv = document.getElementById('calendarDays');
+            calendarDaysDiv.innerHTML = '';
             const calendarData = getCalendarData();
-            const daysContainer = document.getElementById('calendarDays');
-            daysContainer.innerHTML = '';
-
-            // Previous month days
             for (let i = firstDay - 1; i >= 0; i--) {
                 const day = daysInPrevMonth - i;
-                const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day other-month';
-                dayEl.textContent = day;
-                daysContainer.appendChild(dayEl);
+                const prevDate = new Date(year, month - 1, day);
+                calendarDaysDiv.appendChild(createDayElement(prevDate, true, calendarData));
             }
-
-            // Current month days
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month, day);
-                const dateKey = date.toISOString().split('T')[0];
-                const dayData = calendarData[dateKey] || { status: 'available', note: '' };
-
-                const dayEl = document.createElement('div');
-                dayEl.className = `calendar-day ${dayData.status || 'available'}`;
-                dayEl.innerHTML = `<div class="calendar-day-number">${day}</div>`;
-                if (dayData.status) {
-                    dayEl.innerHTML += `<div class="calendar-day-status">${dayData.status.substring(0, 3)}</div>`;
-                }
-                dayEl.onclick = () => openDayModal(date, dayData);
-                daysContainer.appendChild(dayEl);
+                calendarDaysDiv.appendChild(createDayElement(date, false, calendarData));
             }
-
-            // Next month days
-            const remaining = 42 - (firstDay + daysInMonth);
-            for (let day = 1; day <= remaining; day++) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day other-month';
-                dayEl.textContent = day;
-                daysContainer.appendChild(dayEl);
+            const totalCells = calendarDaysDiv.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                calendarDaysDiv.appendChild(createDayElement(nextDate, true, calendarData));
             }
+        }
+
+        function createDayElement(date, isOtherMonth, calendarData) {
+            const dayDiv = document.createElement('div');
+            const dateKey = date.toISOString().split('T')[0];
+            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
+            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
+            dayDiv.innerHTML = `
+                <div class="calendar-day-number">${date.getDate()}</div>
+                ${!isOtherMonth ? `<div class="calendar-day-status">${t(dayData.status)}</div>` : ''}
+            `;
+            if (!isOtherMonth) {
+                dayDiv.onclick = () => openDayModal(date, dayData);
+                dayDiv.style.cursor = 'pointer';
+            }
+            return dayDiv;
         }
 
         function openDayModal(date, dayData) {
             const dateKey = date.toISOString().split('T')[0];
             const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.id = 'dayModal';
@@ -1923,65 +2331,46 @@
                         <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
                     <div class="day-status-selector">
-                        <button style="background: #FF6B6B; color: white;" onclick="selectStatus(this,'occupied')">Occupied</button>
-                        <button style="background: #51CF66; color: white;" onclick="selectStatus(this,'available')">Available</button>
-                        <button style="background: #FFA94D; color: white;" onclick="selectStatus(this,'cleaning')">Cleaning</button>
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this,'occupied')">${t('occupied')}</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this,'available')">${t('available')}</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this,'cleaning')">${t('cleaning')}</button>
                     </div>
-                    <div style="margin-bottom: 12px;">
-                        <label>Notes</label>
-                        <textarea id="dayNote" placeholder="Add notes..." rows="3">${dayData.note || ''}</textarea>
+                    <div class="form-group">
+                        <label>${t('notes')}</label>
+                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
                     </div>
                     <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
                 </div>
             `;
-            
             const container = document.getElementById('modalContainer');
             container.innerHTML = '';
             container.appendChild(modal);
-
-            // Set current status
-            const buttons = modal.querySelectorAll('.day-status-selector button');
-            buttons.forEach(btn => {
-                if (btn.textContent.toLowerCase().includes(dayData.status || 'available')) {
-                    btn.style.opacity = '1';
-                    btn.dataset.selectedStatus = dayData.status || 'available';
-                } else {
-                    btn.style.opacity = '0.5';
-                }
-            });
-
             modal.onclick = (e) => {
                 if (e.target === modal) closeModal();
             };
         }
 
+        function closeModal() {
+            const modal = document.getElementById('dayModal');
+            if (modal) modal.remove();
+        }
+
         function selectStatus(button, status) {
             const parent = button.parentElement;
-            parent.querySelectorAll('button').forEach(btn => btn.style.opacity = '0.5');
-            button.style.opacity = '1';
+            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
             button.dataset.selectedStatus = status;
         }
 
         function saveDayData(dateKey) {
             const modal = document.getElementById('dayModal');
-            const buttons = modal.querySelectorAll('button');
-            let status = 'available';
-            buttons.forEach(btn => {
-                if (btn.style.opacity === '1' && btn.dataset.selectedStatus) {
-                    status = btn.dataset.selectedStatus;
-                }
-            });
+            const selectedStatus = modal.querySelector('.status-option.selected');
+            const status = selectedStatus ? (selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1]) : 'available';
             const note = modal.querySelector('#dayNote').value;
             const calendarData = getCalendarData();
-            calendarData[dateKey] = { status, note, updatedBy: currentUser, updatedAt: new Date().toISOString() };
+            calendarData[dateKey] = { status, note };
             saveCalendarData(calendarData);
             closeModal();
-            renderCalendar();
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('dayModal');
-            if (modal) modal.remove();
         }
 
         function previousMonth() {
@@ -1994,63 +2383,177 @@
             renderCalendar();
         }
 
-        // ========== EXPORT ==========
-        function selectExpensePeriod(event, months) {
+        // ========== EXPORT REPORT ==========
+        function selectExpensePeriod(ev, months) {
+            selectedExpensePeriod = months;
+            const buttons = document.querySelectorAll('#expensePeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
+            ev.target.style.background = 'var(--primary)';
+            ev.target.style.color = 'white';
+        }
+
+        function selectCleaningPeriod(ev, months) {
+            selectedCleaningPeriod = months;
+            const buttons = document.querySelectorAll('#cleaningPeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
+            ev.target.style.background = 'var(--primary)';
+            ev.target.style.color = 'white';
+        }
+
+        function getExpensesForPeriod(months) {
             const expenses = getExpenses();
             const now = new Date();
-            let startDate;
-
             if (months === 'current') {
-                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
             } else {
-                startDate = new Date();
-                startDate.setMonth(startDate.getMonth() - months);
+                const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
             }
+        }
 
-            const filtered = expenses.filter(e => new Date(e.date) >= startDate);
-            console.log(`Showing ${filtered.length} expenses from last ${months === 'current' ? 'month' : months + ' months'}`);
+        function getCleaningForPeriod(months) {
+            const calendarData = getCalendarData();
+            const cleaningDays = [];
+            const now = new Date();
+            const endDate = new Date(now);
+            if (months === 'current') {
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+                for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
+                }
+            } else {
+                endDate.setMonth(endDate.getMonth() + months);
+                for (let date = new Date(now); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
+                }
+            }
+            return cleaningDays;
         }
 
         async function generateAndDownloadReport() {
-            const expenses = getExpenses();
+            const expenses = getExpensesForPeriod(selectedExpensePeriod);
+            const cleaningDays = getCleaningForPeriod(selectedCleaningPeriod);
             const now = new Date();
-            const total = expenses.reduce((a, e) => a + e.amount, 0);
-            const davideTotal = expenses.filter(e => e.paidBy === 'Davide').reduce((a, e) => a + e.amount, 0);
-            const mattiaTotal = expenses.filter(e => e.paidBy === 'Mattia').reduce((a, e) => a + e.amount, 0);
+            const balances = { Davide: 0, Mattia: 0 };
+            let total = 0;
+            expenses.forEach(exp => {
+                total += exp.amount;
+                balances[exp.paidBy] += exp.amount;
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= exp.amount / 2;
+                    balances['Mattia'] -= exp.amount / 2;
+                } else {
+                    balances[exp.splitBetween] -= exp.amount;
+                }
+            });
+
+            const reportTitle = currentLanguage === 'en' ? 'Financial Report' : 'Rapporto Finanziario';
+            const expenseSummaryTitle = currentLanguage === 'en' ? 'Expense Summary' : 'Riepilogo Spese';
+            const settlementTitle = currentLanguage === 'en' ? 'Settlement Information' : 'Informazioni di Regolamento';
 
             let html = `
                 <div class="report-header">
                     <h1>Chillinguito Lake Como</h1>
-                    <p>Financial Report - ${now.toLocaleDateString()}</p>
+                    <p>${reportTitle} - ${now.toLocaleDateString()}</p>
                 </div>
                 <div class="report-section">
-                    <h2>📊 Expense Summary</h2>
-                    <div class="report-item"><strong>Total Expenses:</strong> <strong>EUR ${total.toFixed(2)}</strong></div>
-                    <div class="report-item"><strong>Davide Paid:</strong> <strong>EUR ${davideTotal.toFixed(2)}</strong></div>
-                    <div class="report-item"><strong>Mattia Paid:</strong> <strong>EUR ${mattiaTotal.toFixed(2)}</strong></div>
-                </div>
+                    <h2>📊 ${expenseSummaryTitle}</h2>
+                    <div class="report-item">
+                        <strong>${currentLanguage === 'en' ? 'Total Expenses:' : 'Spese Totali:'}</strong>
+                        <strong>EUR ${total.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${currentLanguage === 'en' ? 'Number of Expenses:' : 'Numero di Spese:'}</strong>
+                        <strong>${expenses.length}</strong>
+                    </div>
             `;
+            const byCategory = {};
+            expenses.forEach(exp => {
+                if (!byCategory[exp.category]) byCategory[exp.category] = 0;
+                byCategory[exp.category] += exp.amount;
+            });
+            html += `<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">${currentLanguage === 'en' ? 'Breakdown by Category:' : 'Ripartizione per Categoria:'}</h3>`;
+            Object.entries(byCategory).sort((a,b) => b[1]-a[1]).forEach(([category, amount]) => {
+                html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
+            });
+            html += `</div>`;
+            let davideSettlement = 0, mattiaSettlement = 0;
+            expenses.forEach(exp => {
+                if (exp.paidBy === 'Davide') davideSettlement += exp.amount;
+                if (exp.paidBy === 'Mattia') mattiaSettlement += exp.amount;
+            });
+            html += `
+                <div class="report-section">
+                    <h2>💳 ${settlementTitle}</h2>
+                    <div class="report-item">
+                        <strong>${currentLanguage === 'en' ? 'Davide Paid:' : 'Davide Ha Pagato:'}</strong>
+                        <strong>EUR ${davideSettlement.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${currentLanguage === 'en' ? 'Mattia Paid:' : 'Mattia Ha Pagato:'}</strong>
+                        <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
+                    </div>
+            `;
+            
+            // Settlement status with payments included
+            if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${currentLanguage === 'en' ? 'All Settled - No payments needed' : 'Tutto Regolato - Nessun pagamento necessario'}</div>`;
+            } else if (balances.Davide > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('mattiaOwes')} EUR ${balances.Davide.toFixed(2)}</div>`;
+            } else if (balances.Mattia > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('davideOwes')} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+            }
+            html += `</div>`;
 
-            const perPerson = total / 2;
-            const davideOwes = perPerson - davideTotal;
-
-            if (Math.abs(davideOwes) < 0.01) {
-                html += `<div class="report-section"><div class="report-settlement" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">✅ All settled!</div></div>`;
-            } else if (davideOwes > 0) {
-                html += `<div class="report-section"><div class="report-settlement owed">💳 Davide owes Mattia: EUR ${davideOwes.toFixed(2)}</div></div>`;
+            // Payment History
+            const payments = getPaymentsData();
+            if (payments.length > 0) {
+                html += `<div class="report-section"><h2>${currentLanguage === 'en' ? 'Payment History' : 'Storico Pagamenti'}</h2>`;
+                payments.forEach(p => {
+                    html += `<div class="report-item"><strong>${p.from} → Davide</strong> EUR ${p.amount.toFixed(2)} (${p.date})</div>`;
+                });
+                html += `</div>`;
             }
 
+            html += `<div class="report-section"><h2>🧹 ${currentLanguage === 'en' ? 'Cleaning Schedule' : 'Programma Pulizie'}</h2>`;
+            if (cleaningDays.length === 0) {
+                html += `<div class="report-item"><em>${t('noCleaning')}</em></div>`;
+            } else {
+                cleaningDays.forEach(day => {
+                    const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    html += `<div class="report-item"><strong>${dateStr}</strong> ${day.note ? day.note : 'Cleaning'}</div>`;
+                });
+            }
+            html += `</div>`;
             const reportDiv = document.getElementById('exportReport');
             reportDiv.innerHTML = html;
             reportDiv.classList.remove('light-mode', 'dark-mode');
             reportDiv.classList.add(`${currentTheme}-mode`);
             reportDiv.style.display = 'block';
-
             try {
                 const canvas = await html2canvas(reportDiv, {
                     backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e',
                     scale: 2,
-                    width: 900
+                    useCORS: true,
+                    width: 900,
+                    windowHeight: reportDiv.offsetHeight
                 });
                 canvas.toBlob(blob => {
                     const link = document.createElement('a');
@@ -2059,116 +2562,30 @@
                     link.click();
                     URL.revokeObjectURL(link.href);
                     reportDiv.style.display = 'none';
-                    showNotification('✅ Report downloaded!');
+                    showNotification(t('reportGenerated'));
                 });
             } catch (error) {
-                alert('Error creating report');
+                alert('Error creating report: ' + error.message);
                 reportDiv.style.display = 'none';
             }
-        }
-
-        // ========== UTILITIES ==========
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function setLanguage(lang) {
-            currentLanguage = lang;
-            localStorage.setItem('language', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('theme', currentTheme);
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        }
-
-        function logout() {
-            if (confirm('Logout?')) {
-                localStorage.removeItem(UNLOCK_KEY);
-                location.reload();
-            }
-        }
-
-        function showNotification(message) {
-            const container = document.getElementById('notificationContainer');
-            const notification = document.createElement('div');
-            notification.className = 'notification-banner';
-            notification.textContent = message;
-            container.appendChild(notification);
-            setTimeout(() => notification.remove(), 4000);
-        }
-
-        // ========== RECEIPT UPLOAD ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            const receiptInput = document.getElementById('receiptInput');
-            const receiptPreview = document.getElementById('receiptPreview');
-
-            if (receiptInput) {
-                receiptInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            currentReceiptImage = event.target.result;
-                            receiptPreview.style.backgroundImage = `url(${currentReceiptImage})`;
-                            receiptPreview.classList.add('has-image');
-                            receiptPreview.innerHTML = '<button class="receipt-remove" onclick="clearReceipt(event)">×</button>';
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-        });
-
-        function clearReceipt(event) {
-            event.stopPropagation();
-            currentReceiptImage = null;
-            document.getElementById('receiptInput').value = '';
-            document.getElementById('receiptPreview').classList.remove('has-image');
-            document.getElementById('receiptPreview').style.backgroundImage = '';
-            document.getElementById('receiptPreview').innerHTML = '<span class="receipt-icon">📷</span>';
         }
 
         // ========== INITIALIZE APP ==========
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
+            setupReceiptUpload();
+            initializeOnlineStatus();
             displayExpenses();
             displaySettlement();
-            renderCalendar();
-            initializeOnlineStatus();
-            document.body.classList.remove('locked');
-        }
-
-        function initializeOnlineStatus() {
-            updateOnlineIndicator();
-            setInterval(() => {
-                userOnlineStatus['Mattia'] = Math.random() > 0.3;
-                updateOnlineIndicator();
-            }, 8000);
-        }
-
-        function updateOnlineIndicator() {
-            const indicator = document.getElementById('onlineIndicator');
-            const dot = document.getElementById('otherUserOnline');
-            const status = document.getElementById('otherUserStatus');
-
-            if (userOnlineStatus['Mattia']) {
-                dot.classList.remove('offline');
-                status.textContent = 'Mattia is online';
-                indicator.style.display = 'flex';
-            } else {
-                dot.classList.add('offline');
-                status.textContent = 'Mattia is offline';
-                indicator.style.display = 'none';
-            }
+            updatePageText();
+            updateDropdownOptions();
+            updatePlaceholders();
+            setTimeout(() => renderCalendar(), 150);
+            requestNotificationPermission();
+            setTimeout(() => {
+                checkCleaningReminder();
+                checkPendingSettlementReminder();
+            }, 500);
         }
 
         // ========== PAGE LOAD ==========
@@ -2178,7 +2595,8 @@
             setupLockScreen();
         });
 
-        console.log('🚀 Chillinguito Merged v1.0 - Ready!');
+        const APP_VERSION = '4.0.0-with-partial-payments';
+        console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
 </html>
