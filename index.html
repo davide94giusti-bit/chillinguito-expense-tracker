@@ -548,6 +548,7 @@
             border-radius: 3px;
             font-size: 10px;
             font-weight: 600;
+            margin-left: 6px;
         }
 
         .calendar-container {
@@ -853,8 +854,6 @@
         @media (max-width: 600px) {
             .calendar-container { padding: 8px; }
             .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; }
-            .button-group { flex-direction: column; }
-            .button-group button { width: 100%; }
         }
     </style>
 </head>
@@ -1242,7 +1241,7 @@
             }
         }
 
-        // SYNC FUNCTIONS - SHARED DATA FOR BOTH USERS
+        // SYNC FUNCTIONS - ALL DATA IS SHARED
         function updateSyncStatus(status) {
             const indicator = document.getElementById('syncStatusIndicator');
             const dot = document.getElementById('syncDot');
@@ -1266,8 +1265,7 @@
             if (!firebaseInitialized) return;
             try {
                 updateSyncStatus('syncing');
-                // Use SHARED path for calendar, per-user for expenses
-                const fullPath = path.includes('calendar') ? path : `users/${currentUser}/${path}`;
+                const fullPath = `shared/${path}`;
                 await firebaseDatabase.ref(fullPath).set(data);
                 updateSyncStatus('synced');
             } catch (error) {
@@ -1278,7 +1276,19 @@
         function listenToFirebaseChanges() {
             if (!firebaseInitialized) return;
 
-            // Listen to shared CALENDAR - BOTH USERS SEE UPDATES
+            // Listen to SHARED expenses - BOTH USERS SEE ALL EXPENSES
+            firebaseDatabase.ref('shared/expenses').on('value', (snapshot) => {
+                const remoteExpenses = snapshot.val() || [];
+                const localExpenses = getExpenses();
+                if (JSON.stringify(localExpenses) !== JSON.stringify(remoteExpenses)) {
+                    localStorage.setItem('expenses_shared', JSON.stringify(remoteExpenses));
+                    displayExpenses();
+                    displaySettlement();
+                    showNotification('📊 Expense updated by other user');
+                }
+            });
+
+            // Listen to SHARED calendar - BOTH USERS SEE CALENDAR
             firebaseDatabase.ref('shared/calendar').on('value', (snapshot) => {
                 const remoteCalendar = snapshot.val() || {};
                 const localCalendar = getCalendarData();
@@ -1288,28 +1298,16 @@
                     showNotification('📅 Calendar updated by other user');
                 }
             });
-
-            // Listen to user's OWN expenses
-            firebaseDatabase.ref(`users/${currentUser}/expenses`).on('value', (snapshot) => {
-                const remoteExpenses = snapshot.val() || [];
-                const localExpenses = getExpenses();
-                if (JSON.stringify(localExpenses) !== JSON.stringify(remoteExpenses)) {
-                    localStorage.setItem('expenses_' + currentUser, JSON.stringify(remoteExpenses));
-                    displayExpenses();
-                    displaySettlement();
-                    showNotification('📊 Expenses synced');
-                }
-            });
         }
 
         // DATA FUNCTIONS
         function getExpenses() {
-            const data = localStorage.getItem('expenses_' + currentUser);
+            const data = localStorage.getItem('expenses_shared');
             return data ? JSON.parse(data) : [];
         }
 
         function saveExpenses(expenses) {
-            localStorage.setItem('expenses_' + currentUser, JSON.stringify(expenses));
+            localStorage.setItem('expenses_shared', JSON.stringify(expenses));
             syncToFirebase('expenses', expenses);
             displayExpenses();
             displaySettlement();
@@ -1323,8 +1321,7 @@
 
         function saveCalendarData(data) {
             localStorage.setItem('calendar_shared', JSON.stringify(data));
-            // SHARED path - both users sync here
-            syncToFirebase('shared/calendar', data);
+            syncToFirebase('calendar', data);
             renderCalendar();
             showNotification('✅ Calendar updated');
         }
@@ -1421,7 +1418,7 @@
 
         function clearAllExpenses() {
             if (confirm('⚠️ Delete ALL expenses?')) {
-                localStorage.removeItem('expenses_' + currentUser);
+                localStorage.removeItem('expenses_shared');
                 syncToFirebase('expenses', []);
                 displayExpenses();
                 displaySettlement();
@@ -1652,7 +1649,7 @@
             document.documentElement.setAttribute('data-theme', currentTheme);
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
             setupAuthScreen();
-            console.log('🚀 Chillinguito loaded');
+            console.log('🚀 Chillinguito loaded with FULL LIVE SYNC');
         });
     </script>
 </body>
