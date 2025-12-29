@@ -636,9 +636,14 @@
             background-color: rgba(0, 0, 0, 0.5);
         }
 
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .modal-content {
             background-color: white;
-            margin: 20% auto;
             padding: 24px;
             border-radius: 16px;
             width: 90%;
@@ -805,7 +810,7 @@
             color: #b0b0b0;
         }
 
-        /* MOBILE OPTIMIZATION - CRITICAL FIX FOR IPHONE */
+        /* MOBILE OPTIMIZATION */
         @media (max-width: 600px) {
             .calendar-container {
                 padding: 8px;
@@ -1137,9 +1142,12 @@
         </div>
     </div>
 
+    <!-- MODAL CONTAINER -->
+    <div id="modalContainer"></div>
+
     <script>
         // ========== 2FA CONFIGURATION ==========
-        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP'; // Shared secret for both users
+        const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         const UNLOCK_KEY = 'chillinguito_unlocked';
 
         // ========== TOTP IMPLEMENTATION ==========
@@ -1678,13 +1686,13 @@
             const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.style.display = 'block';
+            modal.className = 'modal show';
+            modal.id = 'dayModal';
             modal.innerHTML = `
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3>${dateStr}</h3>
-                        <button class="modal-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                        <button class="modal-close" onclick="closeModal()">×</button>
                     </div>
 
                     <div class="day-status-selector">
@@ -1698,14 +1706,24 @@
                         <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
                     </div>
 
-                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}', this.parentElement.parentElement)">Save</button>
+                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
                 </div>
             `;
 
-            document.body.appendChild(modal);
+            const container = document.getElementById('modalContainer');
+            container.innerHTML = '';
+            container.appendChild(modal);
+
             modal.onclick = (e) => {
-                if (e.target === modal) modal.remove();
+                if (e.target === modal) closeModal();
             };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('dayModal');
+            if (modal) {
+                modal.remove();
+            }
         }
 
         function selectStatus(button, status) {
@@ -1715,15 +1733,16 @@
             button.dataset.selectedStatus = status;
         }
 
-        function saveDayData(dateKey, modalContent) {
-            const selectedStatus = modalContent.querySelector('.status-option.selected');
+        function saveDayData(dateKey) {
+            const modal = document.getElementById('dayModal');
+            const selectedStatus = modal.querySelector('.status-option.selected');
             const status = selectedStatus ? selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1] : 'available';
-            const note = modalContent.querySelector('#dayNote').value;
+            const note = modal.querySelector('#dayNote').value;
 
             const calendarData = getCalendarData();
             calendarData[dateKey] = { status, note };
             saveCalendarData(calendarData);
-            modalContent.remove();
+            closeModal();
         }
 
         function previousMonth() {
@@ -1836,8 +1855,8 @@
             setupLockScreen();
         });
 
-        // ========== VERSION CHECK ==========
-        const APP_VERSION = '2.0.3-iphone-calendar-fix';
+        // ========== VERSION ==========
+        const APP_VERSION = '2.0.4-modal-fix';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
