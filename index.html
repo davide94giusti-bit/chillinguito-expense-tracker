@@ -185,9 +185,11 @@
             gap: 8px;
             margin-bottom: 16px;
             border-bottom: 2px solid var(--border);
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             overflow-x: auto;
+            overflow-y: hidden;
             padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
@@ -493,6 +495,8 @@
             padding: 12px;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-height: 500px;
+            width: 100%;
         }
 
         .calendar-header {
@@ -554,6 +558,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 6px;
+            min-height: 320px;
         }
 
         .calendar-day {
@@ -929,11 +934,11 @@
 
         <div class="container">
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense"></button>
-                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses"></button>
-                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement"></button>
-                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar"></button>
-                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export"></button>
+                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense">Add Expense</button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses">All Expenses</button>
+                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export">Export & Summary</button>
             </div>
 
             <!-- ADD EXPENSE TAB -->
@@ -1016,8 +1021,8 @@
             <div id="expenses-list" class="tab-content">
                 <div class="card">
                     <div class="card-header">
-                        <h2 data-i18n="allExpenses"></h2>
-                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll"></button>
+                        <h2 data-i18n="allExpenses">All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll">Clear All</button>
                     </div>
                     <div id="expensesList"></div>
                 </div>
@@ -1029,15 +1034,15 @@
                     <div class="summary-title" data-i18n="currentSettlement"></div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="totalExpenses"></div>
+                            <div class="stat-label" data-i18n="totalExpenses">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="davidePaid"></div>
+                            <div class="stat-label" data-i18n="davidePaid">Davide Paid</div>
                             <div class="stat-value" id="davidePaid">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label" data-i18n="mattiaPaid"></div>
+                            <div class="stat-label" data-i18n="mattiaPaid">Mattia Paid</div>
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
@@ -1222,6 +1227,8 @@
                     document.getElementById('appBody').classList.remove('locked');
                     document.getElementById('lockScreen').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
+                    // Force layout recalculation before initializing
+                    void document.getElementById('mainApp').offsetHeight;
                     initializeApp();
                 }, 500);
             } else {
@@ -1408,6 +1415,11 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            
+            // Render calendar when Calendar tab is clicked
+            if (tabName === 'calendar') {
+                setTimeout(() => renderCalendar(), 50);
+            }
         }
 
         // ========== RECEIPT UPLOAD ==========
@@ -1779,7 +1791,6 @@
             document.getElementById('date').valueAsDate = new Date();
             document.getElementById('summaryMonth').valueAsDate = new Date();
             setupReceiptUpload();
-            renderCalendar();
             displayExpenses();
             displaySettlement();
             updatePageText();
@@ -1793,8 +1804,10 @@
         });
 
         // ========== VERSION CHECK ==========
-        const APP_VERSION = '2.0.0-calendar-refined';
+        const APP_VERSION = '2.0.1-calendar-mobile-fix';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
+        console.log('📱 Calendar rendering enabled for all devices');
+        
         document.addEventListener('DOMContentLoaded', () => {
             const versionBanner = document.createElement('div');
             versionBanner.id = 'versionBanner';
