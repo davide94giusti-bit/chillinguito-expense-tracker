@@ -240,6 +240,8 @@
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -870,6 +872,12 @@
                 font-size: 7px;
                 letter-spacing: 0px;
             }
+
+            input[type="date"], input[type="month"] {
+                min-height: 44px;
+                font-size: 16px;
+                padding: 10px 8px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -919,6 +927,12 @@
             .calendar-day-status {
                 font-size: 6px;
                 line-height: 1;
+            }
+
+            input[type="date"], input[type="month"] {
+                min-height: 40px;
+                font-size: 14px;
+                padding: 8px 6px;
             }
         }
     </style>
@@ -1046,7 +1060,7 @@
 
                         <div class="form-group">
                             <label for="notes" data-i18n="notes">Notes (optional)</label>
-                            <textarea id="notes" placeholder="Add any additional notes..." rows="3"></textarea>
+                            <textarea id="notes" placeholder="Add any additional notes..." rows="3" data-i18n-placeholder="notesPlaceholder"></textarea>
                         </div>
 
                         <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn">Add Expense</button>
@@ -1319,6 +1333,7 @@
                 splitMattia: 'Mattia Only',
                 date: 'Date',
                 notes: 'Notes (optional)',
+                notesPlaceholder: 'Add any additional notes...',
                 receipt: 'Receipt Photo (optional)',
                 addExpenseBtn: 'Add Expense',
                 clearAll: 'Clear All',
@@ -1384,6 +1399,7 @@
                 splitMattia: 'Solo Mattia',
                 date: 'Data',
                 notes: 'Note (facoltativo)',
+                notesPlaceholder: 'Aggiungi altre note...',
                 receipt: 'Foto Ricevuta (facoltativo)',
                 addExpenseBtn: 'Aggiungi Spesa',
                 clearAll: 'Cancella Tutto',
@@ -1439,6 +1455,7 @@
             event.target.classList.add('active');
             updatePageText();
             updateDropdownOptions();
+            updatePlaceholders();
             renderCalendar();
         }
 
@@ -1455,6 +1472,14 @@
             });
             displayExpenses();
             displaySettlement();
+        }
+
+        // ========== UPDATE PLACEHOLDERS ==========
+        function updatePlaceholders() {
+            const notesTextarea = document.getElementById('notes');
+            if (notesTextarea) {
+                notesTextarea.placeholder = t('notesPlaceholder');
+            }
         }
 
         // ========== UPDATE DROPDOWN OPTIONS ==========
@@ -1911,6 +1936,7 @@
             displaySettlement();
             updatePageText();
             updateDropdownOptions();
+            updatePlaceholders();
             setTimeout(() => renderCalendar(), 150);
         }
 
@@ -1922,7 +1948,7 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.0.5-full-translation';
+        const APP_VERSION = '2.0.6-all-fixes';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
