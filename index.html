@@ -83,7 +83,6 @@
             font-size: 24px;
             font-weight: 600;
             color: var(--primary);
-            input-type: text;
         }
 
         .totp-digit:focus {
@@ -813,6 +812,90 @@
             min-height: 40px;
         }
 
+        /* EXPORT REPORT STYLES */
+        #exportReport {
+            display: none;
+            background: white;
+            padding: 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .report-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .report-section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        .report-section h2 {
+            color: var(--primary);
+            font-size: 20px;
+            border-left: 4px solid var(--primary);
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .report-item strong {
+            font-weight: 600;
+        }
+
+        .report-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            background: var(--light);
+            padding: 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+
+        .report-settlement {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+            font-weight: 600;
+            margin: 16px 0;
+        }
+
+        .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: var(--danger);
+        }
+
         /* DARK MODE */
         [data-theme="dark"] {
             --primary: #64B5F6;
@@ -870,12 +953,6 @@
         [data-theme="dark"] .status-option {
             background: #2a2a2a;
             color: var(--text);
-            border-color: var(--border);
-        }
-
-        [data-theme="dark"] .totp-digit {
-            background: #2a2a2a;
-            color: #64B5F6;
             border-color: var(--border);
         }
 
@@ -1227,35 +1304,27 @@
                 <div class="export-section">
                     <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
 
-                    <!-- EXPENSE SUMMARY -->
+                    <!-- EXPENSE SUMMARY OPTIONS -->
                     <div style="margin-bottom: 20px;">
                         <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
                         <div class="button-group">
-                            <button class="btn-secondary" onclick="generateExpenseSummary(3)" data-i18n="last3Months">Last 3 Months</button>
-                            <button class="btn-secondary" onclick="generateExpenseSummary(6)" data-i18n="last6Months">Last 6 Months</button>
-                            <button class="btn-secondary" onclick="generateExpenseSummary(9)" data-i18n="last9Months">Last 9 Months</button>
-                            <button class="btn-secondary" onclick="generateExpenseSummary(12)" data-i18n="last12Months">Last 12 Months</button>
+                            <button class="btn-secondary" onclick="selectPeriod('current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectPeriod(3)" data-i18n="last3Months">Last 3 Months</button>
+                            <button class="btn-secondary" onclick="selectPeriod(6)" data-i18n="last6Months">Last 6 Months</button>
+                            <button class="btn-secondary" onclick="selectPeriod(9)" data-i18n="last9Months">Last 9 Months</button>
+                            <button class="btn-secondary" onclick="selectPeriod(12)" data-i18n="last12Months">Last 12 Months</button>
                         </div>
                     </div>
 
-                    <div id="expenseSummaryResult"></div>
-
-                    <!-- CLEANING SCHEDULE -->
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
-                        <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">🧹 Cleaning Schedule (Next 31 Days)</h3>
-                        <button class="btn-primary" style="width: 100%; margin-bottom: 16px;" onclick="generateCleaningSchedule()" data-i18n="generateSchedule">Generate Schedule</button>
-                        <div id="cleaningScheduleResult"></div>
-                    </div>
-
-                    <!-- SCREENSHOT EXPORT -->
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
-                        <h3 style="margin-bottom: 12px;" data-i18n="exportSummary">Export Summary</h3>
-                        <button class="btn-primary" style="width: 100%;" onclick="screenshotSummary()" data-i18n="screenshotToGallery">📸 Screenshot to Camera Roll</button>
-                    </div>
+                    <!-- EXPORT BUTTON -->
+                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()" data-i18n="downloadReport">📊 Download Complete Report</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- HIDDEN EXPORT REPORT -->
+    <div id="exportReport"></div>
 
     <!-- MODAL CONTAINER -->
     <div id="modalContainer"></div>
@@ -1263,7 +1332,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-        // ========== 2FA CONFIGURATION ==========
+        // ========== TOTP CONFIGURATION ==========
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         const UNLOCK_KEY = 'chillinguito_unlocked';
 
@@ -1467,21 +1536,20 @@
                 weekdaySat: 'Sat',
                 monthlySummary: 'Monthly Summary & Export',
                 expenseSummary: 'Expense Summary',
+                currentMonth: 'Current Month',
                 last3Months: 'Last 3 Months',
                 last6Months: 'Last 6 Months',
                 last9Months: 'Last 9 Months',
                 last12Months: 'Last 12 Months',
-                cleaningSchedule: '🧹 Cleaning Schedule (Next 31 Days)',
-                generateSchedule: 'Generate Schedule',
-                exportSummary: 'Export Summary',
-                screenshotToGallery: '📸 Screenshot to Camera Roll',
+                downloadReport: '📊 Download Complete Report',
                 noCleaning: 'No cleaning scheduled in the next 31 days',
                 cleaningDue: 'Cleaning scheduled:',
                 selectMonth: 'Select Month',
                 generateSummary: 'Generate Summary',
                 updateNotification: 'Updated!',
                 expenseUpdated: 'An expense was updated',
-                calendarUpdated: 'The calendar was updated'
+                calendarUpdated: 'The calendar was updated',
+                reportGenerated: '✅ Report downloaded successfully!'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1543,21 +1611,20 @@
                 weekdaySat: 'Sab',
                 monthlySummary: 'Riepilogo Mensile ed Esportazione',
                 expenseSummary: 'Riepilogo Spese',
+                currentMonth: 'Mese Attuale',
                 last3Months: 'Ultimi 3 Mesi',
                 last6Months: 'Ultimi 6 Mesi',
                 last9Months: 'Ultimi 9 Mesi',
                 last12Months: 'Ultimi 12 Mesi',
-                cleaningSchedule: '🧹 Programma Pulizie (Prossimi 31 Giorni)',
-                generateSchedule: 'Genera Programma',
-                exportSummary: 'Esporta Riepilogo',
-                screenshotToGallery: '📸 Screenshot su Rullino Fotografico',
+                downloadReport: '📊 Scarica Rapporto Completo',
                 noCleaning: 'Nessuna pulizia programmata nei prossimi 31 giorni',
                 cleaningDue: 'Pulizia programmata:',
                 selectMonth: 'Seleziona Mese',
                 generateSummary: 'Genera Riepilogo',
                 updateNotification: 'Aggiornato!',
                 expenseUpdated: 'Una spesa è stata aggiornata',
-                calendarUpdated: 'Il calendario è stato aggiornato'
+                calendarUpdated: 'Il calendario è stato aggiornato',
+                reportGenerated: '✅ Rapporto scaricato con successo!'
             }
         };
 
@@ -1565,6 +1632,7 @@
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentReceiptImage = null;
         let currentCalendarDate = new Date();
+        let selectedPeriod = 'current';
 
         function t(key) {
             return translations[currentLanguage][key] || key;
@@ -1993,53 +2061,39 @@
             renderCalendar();
         }
 
-        // ========== EXPENSE SUMMARY ==========
-        function generateExpenseSummary(months) {
-            const expenses = getExpenses();
-            const now = new Date();
-            const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
-
-            const filteredExpenses = expenses.filter(exp => {
-                const expDate = new Date(exp.date);
-                return expDate >= startDate && expDate <= now;
-            });
-
-            if (filteredExpenses.length === 0) {
-                document.getElementById('expenseSummaryResult').innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
-                return;
-            }
-
-            let total = 0;
-            const byCategory = {};
-
-            filteredExpenses.forEach(exp => {
-                total += exp.amount;
-                if (!byCategory[exp.category]) {
-                    byCategory[exp.category] = 0;
+        // ========== EXPORT REPORT GENERATION ==========
+        function selectPeriod(months) {
+            selectedPeriod = months;
+            event.target.style.background = 'var(--primary)';
+            event.target.style.color = 'white';
+            // Reset sibling buttons
+            event.target.parentElement.querySelectorAll('button').forEach(btn => {
+                if (btn !== event.target) {
+                    btn.style.background = '';
+                    btn.style.color = '';
                 }
-                byCategory[exp.category] += exp.amount;
             });
-
-            let html = `
-                <div class="summary-card">
-                    <h3>${t('expenseSummary')} - ${months} ${months === 3 ? 'months' : 'months'}</h3>
-                    <p><strong>Total:</strong> EUR ${total.toFixed(2)}</p>
-                    <p><strong>Period:</strong> ${startDate.toLocaleDateString()} - ${now.toLocaleDateString()}</p>
-                    <p><strong>Expenses:</strong> ${filteredExpenses.length}</p>
-                    <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border);">
-                    <h4 style="margin: 12px 0; color: var(--primary);">By Category:</h4>
-            `;
-
-            Object.entries(byCategory).sort((a, b) => b[1] - a[1]).forEach(([category, amount]) => {
-                html += `<p style="margin: 8px 0; display: flex; justify-content: space-between;"><strong>${category}</strong> EUR ${amount.toFixed(2)}</p>`;
-            });
-
-            html += `</div>`;
-
-            document.getElementById('expenseSummaryResult').innerHTML = html;
         }
 
-        // ========== CLEANING SCHEDULE ==========
+        function getExpensesForPeriod(months) {
+            const expenses = getExpenses();
+            const now = new Date();
+            
+            if (months === 'current') {
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
+            } else {
+                const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
+            }
+        }
+
         function generateCleaningSchedule() {
             const calendarData = getCalendarData();
             const cleaningDays = [];
@@ -2060,53 +2114,137 @@
                 }
             }
 
-            const resultDiv = document.getElementById('cleaningScheduleResult');
-
-            if (cleaningDays.length === 0) {
-                resultDiv.innerHTML = `<div class="no-data">${t('noCleaning')}</div>`;
-                return;
-            }
-
-            let html = '';
-            cleaningDays.forEach(day => {
-                const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                html += `
-                    <div class="cleaning-item">
-                        <div class="cleaning-date">📅 ${dateStr}</div>
-                        ${day.note ? `<div class="cleaning-status">📝 ${day.note}</div>` : ''}
-                    </div>
-                `;
-            });
-
-            resultDiv.innerHTML = html;
+            return cleaningDays;
         }
 
-        // ========== SCREENSHOT EXPORT ==========
-        async function screenshotSummary() {
-            const summaryDiv = document.getElementById('expenseSummaryResult');
-            
-            if (!summaryDiv.innerHTML.trim()) {
-                alert('Please generate a summary first!');
-                return;
+        async function generateAndDownloadReport() {
+            const expenses = getExpensesForPeriod(selectedPeriod);
+            const cleaningDays = generateCleaningSchedule();
+            const now = new Date();
+
+            // Calculate settlement
+            const balances = { Davide: 0, Mattia: 0 };
+            let total = 0;
+
+            expenses.forEach(exp => {
+                total += exp.amount;
+                balances[exp.paidBy] += exp.amount;
+
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= exp.amount / 2;
+                    balances['Mattia'] -= exp.amount / 2;
+                } else {
+                    balances[exp.splitBetween] -= exp.amount;
+                }
+            });
+
+            // Build HTML Report
+            let html = `
+                <div class="report-header">
+                    <h1>Chillinguito Lake Como</h1>
+                    <p>Financial Report - ${now.toLocaleDateString()}</p>
+                </div>
+
+                <!-- EXPENSE SUMMARY -->
+                <div class="report-section">
+                    <h2>📊 Expense Summary</h2>
+                    <div class="report-item">
+                        <strong>Total Expenses:</strong>
+                        <strong>EUR ${total.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>Number of Expenses:</strong>
+                        <strong>${expenses.length}</strong>
+                    </div>
+            `;
+
+            // Group by category
+            const byCategory = {};
+            expenses.forEach(exp => {
+                if (!byCategory[exp.category]) {
+                    byCategory[exp.category] = 0;
+                }
+                byCategory[exp.category] += exp.amount;
+            });
+
+            html += '<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">Breakdown by Category:</h3>';
+            Object.entries(byCategory).sort((a, b) => b[1] - a[1]).forEach(([category, amount]) => {
+                html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
+            });
+
+            html += `</div>`;
+
+            // SETTLEMENT
+            let davideSettlement = 0, mattiaSettlement = 0;
+            expenses.forEach(exp => {
+                if (exp.paidBy === 'Davide') davideSettlement += exp.amount;
+                if (exp.paidBy === 'Mattia') mattiaSettlement += exp.amount;
+            });
+
+            html += `
+                <div class="report-section">
+                    <h2>💳 Settlement Information</h2>
+                    <div class="report-item">
+                        <strong>Davide Paid:</strong>
+                        <strong>EUR ${davideSettlement.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>Mattia Paid:</strong>
+                        <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
+                    </div>
+            `;
+
+            if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ All Settled - No payments needed</div>`;
+            } else if (balances.Davide > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Mattia owes Davide: EUR ${balances.Davide.toFixed(2)}</div>`;
+            } else if (balances.Mattia > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Davide owes Mattia: EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
             }
 
+            html += `</div>`;
+
+            // CLEANING SCHEDULE
+            html += `<div class="report-section"><h2>🧹 Cleaning Schedule (Next 31 Days)</h2>`;
+            
+            if (cleaningDays.length === 0) {
+                html += `<div class="report-item"><em>No cleaning scheduled</em></div>`;
+            } else {
+                cleaningDays.forEach(day => {
+                    const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    html += `<div class="report-item"><strong>${dateStr}</strong> ${day.note ? day.note : 'Cleaning'}</div>`;
+                });
+            }
+
+            html += `</div>`;
+
+            // Render to canvas
+            const reportDiv = document.getElementById('exportReport');
+            reportDiv.innerHTML = html;
+            reportDiv.style.display = 'block';
+
             try {
-                const canvas = await html2canvas(summaryDiv, {
+                const canvas = await html2canvas(reportDiv, {
                     backgroundColor: '#ffffff',
                     scale: 2,
-                    useCORS: true
+                    useCORS: true,
+                    width: 900,
+                    windowHeight: reportDiv.offsetHeight
                 });
 
                 canvas.toBlob(blob => {
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
-                    link.download = `Chillinguito-Summary-${new Date().toISOString().split('T')[0]}.png`;
+                    link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
                     link.click();
                     URL.revokeObjectURL(link.href);
-                    alert('Screenshot saved to downloads!');
+                    
+                    reportDiv.style.display = 'none';
+                    showNotification(t('reportGenerated'));
                 });
             } catch (error) {
-                alert('Error creating screenshot: ' + error.message);
+                alert('Error creating report: ' + error.message);
+                reportDiv.style.display = 'none';
             }
         }
 
@@ -2131,27 +2269,8 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.1.0-complete';
+        const APP_VERSION = '2.2.0-complete-export';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const versionBanner = document.createElement('div');
-            versionBanner.id = 'versionBanner';
-            versionBanner.style.cssText = `
-                position: fixed;
-                bottom: 10px;
-                right: 10px;
-                background: rgba(33, 150, 243, 0.9);
-                color: white;
-                padding: 8px 12px;
-                border-radius: 6px;
-                font-size: 11px;
-                z-index: 9999;
-                font-weight: 600;
-            `;
-            versionBanner.textContent = `v${APP_VERSION}`;
-            document.body.appendChild(versionBanner);
-        });
     </script>
 </body>
 </html>
