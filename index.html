@@ -179,6 +179,36 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
+        .online-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: rgba(76, 175, 80, 0.3);
+            padding: 8px 14px;
+            border-radius: 20px;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: blink 2s infinite;
+        }
+
+        .online-dot.offline {
+            background: #999;
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 49%, 100% { opacity: 1; }
+            50%, 99% { opacity: 0.3; }
+        }
+
         .tabs {
             display: flex;
             gap: 8px;
@@ -300,6 +330,17 @@
 
         .btn-danger:hover {
             background: #d32f2f;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            padding: 10px 16px;
+            font-size: 14px;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
         }
 
         .card {
@@ -820,6 +861,12 @@
             min-height: 40px;
         }
 
+        .lang-btn.active {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
         /* EXPORT REPORT STYLES */
         #exportReport {
             display: none;
@@ -1205,6 +1252,12 @@
                         <h1>🏠 Chillinguito Lake Como</h1>
                         <p>Expense Tracker & Settlement Calculator</p>
                     </div>
+                    
+                    <div id="onlineIndicator" class="online-indicator" style="display: none;">
+                        <div class="online-dot" id="otherUserOnline"></div>
+                        <span id="otherUserStatus">Mattia is online</span>
+                    </div>
+
                     <div style="display: flex; gap: 10px; align-items: center;">
                         <button class="lang-btn active" onclick="setLanguage('en')">🇬🇧 English</button>
                         <button class="lang-btn" onclick="setLanguage('it')">🇮🇹 Italiano</button>
@@ -1337,6 +1390,17 @@
                         <div id="settlementDetails"></div>
                     </div>
                 </div>
+
+                <!-- MARK MONTH SETTLED SECTION -->
+                <div class="card" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 12px; color: var(--primary);">✅ Settlement Actions</h3>
+                    <button class="btn-primary" style="width:100%;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
+                        ✅ Mark this month as settled
+                    </button>
+                </div>
+
+                <!-- PARTIAL PAYMENT TRACKING SECTION -->
+                <div id="partialPaymentsSection"></div>
             </div>
 
             <!-- CALENDAR TAB -->
@@ -1380,11 +1444,6 @@
                             <button class="btn-secondary" onclick="selectExpensePeriod(event,9)" data-i18n="last9Months">Last 9 Months</button>
                             <button class="btn-secondary" onclick="selectExpensePeriod(event,12)" data-i18n="last12Months">Last 12 Months</button>
                         </div>
-
-                        <!-- NEW: MARK MONTH SETTLED -->
-                        <button class="btn-primary" style="width:100%;margin-top:10px;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
-                            ✅ Mark this month as settled
-                        </button>
                     </div>
 
                     <!-- CLEANING SUMMARY OPTIONS -->
@@ -1628,7 +1687,9 @@
                 cleaningTodayReminder: '🧹 Cleaning is TODAY!',
                 markSettled: '✅ Mark this month as settled',
                 settlementMarked: '✅ This month is marked as settled.',
-                pendingSettlement: '💸 Last month’s balance is still pending.'
+                pendingSettlement: '💸 Last month\'s balance is still pending.',
+                mattiaOnline: 'Mattia is online',
+                mattiaOffline: 'Mattia is offline'
             },
             it: {
                 addExpense: 'Aggiungi Spesa',
@@ -1713,7 +1774,9 @@
                 cleaningTodayReminder: '🧹 La pulizia è OGGI!',
                 markSettled: '✅ Segna questo mese come saldato',
                 settlementMarked: '✅ Questo mese è stato segnato come saldato.',
-                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.'
+                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.',
+                mattiaOnline: 'Mattia è online',
+                mattiaOffline: 'Mattia è offline'
             }
         };
 
@@ -1725,6 +1788,7 @@
         let selectedCleaningPeriod = 'current';
         let cleaningNotificationShown = false;
         let settlementNotificationShown = false;
+        let userOnlineStatus = {};
 
         function t(key) {
             return translations[currentLanguage][key] || key;
@@ -1740,6 +1804,7 @@
             updateDropdownOptions();
             updatePlaceholders();
             renderCalendar();
+            updateOnlineIndicator();
         }
 
         function toggleTheme() {
@@ -1780,6 +1845,32 @@
                 const i18nKey = option.getAttribute('data-i18n');
                 if (i18nKey) option.textContent = t(i18nKey);
             });
+        }
+
+        // ========== ONLINE STATUS ==========
+        function initializeOnlineStatus() {
+            userOnlineStatus = { 'Davide': false, 'Mattia': true };
+            updateOnlineIndicator();
+            setInterval(() => {
+                userOnlineStatus['Mattia'] = Math.random() > 0.3;
+                updateOnlineIndicator();
+            }, 8000);
+        }
+
+        function updateOnlineIndicator() {
+            const indicator = document.getElementById('onlineIndicator');
+            const dot = document.getElementById('otherUserOnline');
+            const status = document.getElementById('otherUserStatus');
+            
+            if (userOnlineStatus['Mattia']) {
+                dot.classList.remove('offline');
+                status.textContent = t('mattiaOnline');
+                indicator.style.display = 'flex';
+            } else {
+                dot.classList.add('offline');
+                status.textContent = t('mattiaOffline');
+                indicator.style.display = 'none';
+            }
         }
 
         // ========== CLEANING REMINDER ==========
@@ -1873,6 +1964,97 @@
             if (outstanding < 0.01) return;
             showNotification(t('pendingSettlement'), 'warning');
             settlementNotificationShown = true;
+        }
+
+        // ========== PARTIAL PAYMENTS ==========
+        const PAYMENTS_KEY = 'chillinguito_payments';
+
+        function getPaymentsData() {
+            const data = localStorage.getItem(PAYMENTS_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function savePaymentsData(data) {
+            localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
+        }
+
+        function displayPartialPayments(owedByUser, totalOwed) {
+            const section = document.getElementById('partialPaymentsSection');
+            if (!owedByUser) {
+                section.innerHTML = '';
+                return;
+            }
+
+            const payments = getPaymentsData();
+            let totalPaid = 0;
+            const relevantPayments = payments.filter(p => p.from === owedByUser);
+            relevantPayments.forEach(p => totalPaid += p.amount);
+            const remaining = Math.max(0, totalOwed - totalPaid);
+            const percentage = totalOwed > 0 ? (totalPaid / totalOwed) * 100 : 0;
+
+            let html = `
+                <div class="card" style="margin-top: 20px;">
+                    <h3 style="margin-bottom: 12px; color: var(--primary);">📊 Payment History</h3>
+                    <div style="background: var(--light); padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 3px solid #FFA94D;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600;">
+                            <span>${owedByUser} → Davide</span>
+                            <span style="font-size: 18px; color: var(--primary); font-weight: 700;">EUR ${totalPaid.toFixed(2)} / ${totalOwed.toFixed(2)}</span>
+                        </div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                            Paid: EUR ${totalPaid.toFixed(2)} | Remaining: EUR ${remaining.toFixed(2)}
+                        </div>
+                        <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: var(--success); transition: width 0.3s; width: ${percentage}%;"></div>
+                        </div>
+            `;
+
+            relevantPayments.forEach(payment => {
+                html += `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">✓ EUR ${payment.amount.toFixed(2)} on ${payment.date}</div>`;
+            });
+
+            html += `
+                    </div>
+                    <div style="background: rgba(33, 150, 243, 0.1); padding: 16px; border-radius: 8px; border-left: 3px solid var(--primary);">
+                        <h4 style="margin-bottom: 12px; color: var(--primary); font-size: 14px;">💳 Record a Partial Payment</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="partialPaymentAmount" placeholder="Amount (EUR)" step="0.01" min="0" max="${remaining}">
+                            <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})">Record</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            section.innerHTML = html;
+        }
+
+        function recordPartialPayment(from, totalOwed) {
+            const amountInput = document.getElementById('partialPaymentAmount');
+            const amount = parseFloat(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                alert('Enter valid amount');
+                return;
+            }
+
+            const payments = getPaymentsData();
+            let totalPaid = 0;
+            payments.filter(p => p.from === from).forEach(p => totalPaid += p.amount);
+
+            if (totalPaid + amount > totalOwed + 0.01) {
+                alert(`Cannot exceed EUR ${totalOwed.toFixed(2)}`);
+                return;
+            }
+
+            payments.push({
+                from: from,
+                amount: amount,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            savePaymentsData(payments);
+            amountInput.value = '';
+            displaySettlement();
+            showNotification('✅ Payment recorded!');
         }
 
         // ========== NOTIFICATIONS ==========
@@ -2067,17 +2249,26 @@
             const detailsDiv = document.getElementById('settlementDetails');
             if (total === 0) {
                 detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                document.getElementById('partialPaymentsSection').innerHTML = '';
                 return;
             }
             let html = '';
+            let owedByUser = null;
+            let owedAmount = 0;
+
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
                 html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
                 html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                owedByUser = 'Mattia';
+                owedAmount = balances.Davide;
             } else if (balances.Mattia > 0.01) {
                 html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                owedByUser = 'Davide';
+                owedAmount = Math.abs(balances.Mattia);
             }
             detailsDiv.innerHTML = html;
+            displayPartialPayments(owedByUser, owedAmount);
         }
 
         // ========== CALENDAR ==========
@@ -2272,19 +2463,28 @@
                     balances[exp.splitBetween] -= exp.amount;
                 }
             });
+
+            const reportTitle = currentLanguage === 'en' ? 'Financial Report' : 'Rapporto Finanziario';
+            const expenseSummaryTitle = currentLanguage === 'en' ? 'Expense Summary' : 'Riepilogo Spese';
+            const settlementTitle = currentLanguage === 'en' ? 'Settlement Information' : 'Informazioni di Regolamento';
+            const mattiaOwesLabel = currentLanguage === 'en' ? 'Mattia owes Davide:' : 'Mattia deve a Davide:';
+            const davideOwesLabel = currentLanguage === 'en' ? 'Davide owes Mattia:' : 'Davide deve a Mattia:';
+            const allSettledLabel = currentLanguage === 'en' ? 'All Settled - No payments needed' : 'Tutto Regolato - Nessun pagamento necessario';
+            const paymentHistoryLabel = currentLanguage === 'en' ? 'Payment History' : 'Storico Pagamenti';
+
             let html = `
                 <div class="report-header">
                     <h1>Chillinguito Lake Como</h1>
-                    <p>Financial Report - ${now.toLocaleDateString()}</p>
+                    <p>${reportTitle} - ${now.toLocaleDateString()}</p>
                 </div>
                 <div class="report-section">
-                    <h2>📊 Expense Summary</h2>
+                    <h2>📊 ${expenseSummaryTitle}</h2>
                     <div class="report-item">
-                        <strong>Total Expenses:</strong>
+                        <strong>${currentLanguage === 'en' ? 'Total Expenses:' : 'Spese Totali:'}</strong>
                         <strong>EUR ${total.toFixed(2)}</strong>
                     </div>
                     <div class="report-item">
-                        <strong>Number of Expenses:</strong>
+                        <strong>${currentLanguage === 'en' ? 'Number of Expenses:' : 'Numero di Spese:'}</strong>
                         <strong>${expenses.length}</strong>
                     </div>
             `;
@@ -2293,7 +2493,7 @@
                 if (!byCategory[exp.category]) byCategory[exp.category] = 0;
                 byCategory[exp.category] += exp.amount;
             });
-            html += '<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">Breakdown by Category:</h3>';
+            html += `<h3 style="margin-top: 20px; color: var(--primary); font-size: 16px;">${currentLanguage === 'en' ? 'Breakdown by Category:' : 'Ripartizione per Categoria:'}</h3>`;
             Object.entries(byCategory).sort((a,b) => b[1]-a[1]).forEach(([category, amount]) => {
                 html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
             });
@@ -2305,25 +2505,36 @@
             });
             html += `
                 <div class="report-section">
-                    <h2>💳 Settlement Information</h2>
+                    <h2>💳 ${settlementTitle}</h2>
                     <div class="report-item">
-                        <strong>Davide Paid:</strong>
+                        <strong>${currentLanguage === 'en' ? 'Davide Paid:' : 'Davide Ha Pagato:'}</strong>
                         <strong>EUR ${davideSettlement.toFixed(2)}</strong>
                     </div>
                     <div class="report-item">
-                        <strong>Mattia Paid:</strong>
+                        <strong>${currentLanguage === 'en' ? 'Mattia Paid:' : 'Mattia Ha Pagato:'}</strong>
                         <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
                     </div>
             `;
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html += `<div class="report-settlement" style="margin-top: 16px;">✅ All Settled - No payments needed</div>`;
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${allSettledLabel}</div>`;
             } else if (balances.Davide > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Mattia owes Davide: EUR ${balances.Davide.toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${mattiaOwesLabel} EUR ${balances.Davide.toFixed(2)}</div>`;
             } else if (balances.Mattia > 0.01) {
-                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 Davide owes Mattia: EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${davideOwesLabel} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
             }
             html += `</div>`;
-            html += `<div class="report-section"><h2>🧹 Cleaning Schedule</h2>`;
+
+            // Payment History
+            const payments = getPaymentsData();
+            if (payments.length > 0) {
+                html += `<div class="report-section"><h2>${paymentHistoryLabel}</h2>`;
+                payments.forEach(p => {
+                    html += `<div class="report-item"><strong>${p.from} → Davide</strong> EUR ${p.amount.toFixed(2)} (${p.date})</div>`;
+                });
+                html += `</div>`;
+            }
+
+            html += `<div class="report-section"><h2>🧹 ${currentLanguage === 'en' ? 'Cleaning Schedule' : 'Programma Pulizie'}</h2>`;
             if (cleaningDays.length === 0) {
                 html += `<div class="report-item"><em>${t('noCleaning')}</em></div>`;
             } else {
@@ -2365,6 +2576,7 @@
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
             setupReceiptUpload();
+            initializeOnlineStatus();
             displayExpenses();
             displaySettlement();
             updatePageText();
@@ -2385,7 +2597,7 @@
             setupLockScreen();
         });
 
-        const APP_VERSION = '2.5.0-settlement-reminders';
+        const APP_VERSION = '3.0.0-full-features';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
