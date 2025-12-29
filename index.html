@@ -268,6 +268,8 @@
             border-radius: 8px;
             font-size: 16px;
             font-family: inherit;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -348,9 +350,15 @@
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
-        .card h2 {
-            color: var(--primary);
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .expense-item {
@@ -363,15 +371,103 @@
             margin-bottom: 12px;
         }
 
-        .category-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            background: var(--primary);
-            color: white;
-            border-radius: 4px;
-            font-size: 11px;
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-description {
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .expense-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .expense-amount {
             font-weight: 600;
-            margin-right: 8px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .expense-receipt {
+            margin-top: 12px;
+            border-radius: 8px;
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .receipt-section {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .receipt-preview {
+            width: 100%;
+            height: 120px;
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            background: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .receipt-preview:hover {
+            border-color: var(--primary);
+        }
+
+        .receipt-preview.has-image {
+            border-color: var(--success);
+            background-size: cover;
+        }
+
+        .receipt-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+        }
+
+        .receipt-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 0;
+            min-height: 36px;
+        }
+
+        .settlement-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .settlement-box.owed {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border-left: 4px solid #f44336;
         }
 
         .settlement-summary {
@@ -412,7 +508,7 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--primary);
         }
@@ -423,68 +519,273 @@
             color: var(--text-secondary);
         }
 
-        .settlement-box {
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-weight: 500;
-            text-align: center;
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
         }
 
-        .settlement-box.owed {
-            background: rgba(244, 67, 54, 0.1);
-            color: #c62828;
-            border-left: 4px solid #f44336;
+        /* CALENDAR STYLES */
+        .calendar-container {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-height: 500px;
+            width: 100%;
         }
 
-        .settlement-payment {
-            background: var(--light);
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border-left: 3px solid #FFA94D;
-        }
-
-        .settlement-payment-header {
+        .calendar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .settlement-payment-amount {
+        .calendar-header h2 {
+            color: var(--primary);
             font-size: 18px;
-            color: var(--primary);
-            font-weight: 700;
+            margin: 0;
+            flex: 1;
+            text-align: center;
         }
 
-        .payment-progress {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 8px;
+        .calendar-nav {
+            display: flex;
+            gap: 6px;
         }
 
-        .payment-bar {
-            height: 100%;
-            background: var(--success);
-            transition: width 0.3s;
-        }
-
-        .partial-payment-form {
-            background: rgba(33, 150, 243, 0.1);
-            padding: 16px;
+        .calendar-nav button {
+            padding: 8px 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
             border-radius: 8px;
-            margin-top: 20px;
-            border-left: 3px solid var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            min-height: 40px;
+            flex-shrink: 0;
         }
 
-        .partial-payment-form h4 {
-            margin-bottom: 12px;
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+
+        .weekday {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 8px 0px;
+            font-size: 11px;
+            text-transform: uppercase;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            min-height: 320px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1.2 / 1;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            position: relative;
+            min-height: 50px;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        .calendar-day:active:not(.other-month) {
+            transform: scale(0.95);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .calendar-day.other-month {
+            background: var(--light);
+            color: var(--text-secondary);
+            opacity: 0.3;
+            cursor: default;
+            border-color: transparent;
+        }
+
+        .calendar-day-number {
+            font-weight: 700;
+            font-size: 11px;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+
+        .calendar-day-status {
+            font-size: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0.2px;
+        }
+
+        .calendar-day.occupied {
+            background: #FF6B6B;
+            border-color: #D32F2F;
+            color: white;
+        }
+
+        .calendar-day.available {
+            background: #51CF66;
+            border-color: #2F9E44;
+            color: white;
+        }
+
+        .calendar-day.cleaning {
+            background: #FFA94D;
+            border-color: #F76707;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
             color: var(--primary);
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .day-status-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .status-option {
+            padding: 16px 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            min-height: 60px;
+            transition: all 0.2s;
+        }
+
+        .status-option.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+        }
+
+        .status-option.occupied.selected {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: var(--primary);
+        }
+
+        .status-option.available.selected {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: var(--success);
+        }
+
+        .status-option.cleaning.selected {
+            background: rgba(255, 152, 0, 0.2);
+            border-color: var(--warning);
+        }
+
+        .export-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .summary-card h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .summary-card p {
+            margin-bottom: 8px;
+            font-size: 14px;
         }
 
         .button-group {
@@ -540,38 +841,206 @@
             min-height: 40px;
         }
 
-        .lang-btn.active {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .receipt-preview {
-            width: 100%;
-            height: 120px;
-            border: 2px dashed var(--border);
-            border-radius: 12px;
+        /* SETTLEMENT PAYMENT TRACKING */
+        .settlement-payment {
             background: var(--light);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid #FFA94D;
+        }
+
+        .settlement-payment-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background-size: cover;
-            background-position: center;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .receipt-preview:hover {
-            border-color: var(--primary);
+        .settlement-payment-amount {
+            font-size: 18px;
+            color: var(--primary);
+            font-weight: 700;
         }
 
-        .receipt-preview.has-image {
-            border-color: var(--success);
-        }
-
-        .receipt-icon {
-            font-size: 48px;
+        .settlement-payment-from {
+            font-size: 13px;
             color: var(--text-secondary);
+            margin-bottom: 8px;
         }
 
+        .payment-progress {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .payment-bar {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s;
+        }
+
+        .payment-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .partial-payment-form {
+            background: rgba(33, 150, 243, 0.1);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 3px solid var(--primary);
+        }
+
+        /* EXPORT REPORT STYLES */
+        #exportReport {
+            display: none;
+            padding: 40px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            width: 900px;
+            margin: 0 auto;
+        }
+
+        #exportReport.light-mode {
+            background: white;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header {
+            border-bottom: 3px solid #2196F3;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-header h1 {
+            color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-header p {
+            color: #666;
+        }
+
+        #exportReport.light-mode .report-section h2 {
+            color: #2196F3;
+            border-left-color: #2196F3;
+        }
+
+        #exportReport.light-mode .report-item {
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        #exportReport.light-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: var(--success);
+            color: #2e7d32;
+        }
+
+        #exportReport.light-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: var(--danger);
+            color: #c62828;
+        }
+
+        #exportReport.dark-mode {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header {
+            border-bottom: 3px solid #64B5F6;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-header h1 {
+            color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-header p {
+            color: #b0b0b0;
+        }
+
+        #exportReport.dark-mode .report-section h2 {
+            color: #64B5F6;
+            border-left-color: #64B5F6;
+        }
+
+        #exportReport.dark-mode .report-item {
+            border-bottom: 1px solid #404040;
+            color: #e0e0e0;
+        }
+
+        #exportReport.dark-mode .report-settlement {
+            background: rgba(76, 175, 80, 0.15);
+            border-left-color: var(--success);
+            color: #81c784;
+        }
+
+        #exportReport.dark-mode .report-settlement.owed {
+            background: rgba(244, 67, 54, 0.15);
+            border-left-color: var(--danger);
+            color: #ef5350;
+        }
+
+        .report-header {
+            text-align: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .report-header p {
+            font-size: 14px;
+        }
+
+        .report-section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        .report-section h2 {
+            font-size: 20px;
+            border-left: 4px solid;
+            padding-left: 12px;
+            margin-bottom: 16px;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 14px;
+        }
+
+        .report-item strong {
+            font-weight: 600;
+        }
+
+        .report-settlement {
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            font-weight: 600;
+            margin: 16px 0;
+        }
+
+        /* DARK MODE */
         [data-theme="dark"] {
             --primary: #64B5F6;
             --primary-dark: #42A5F5;
@@ -588,41 +1057,81 @@
 
         [data-theme="dark"] .card,
         [data-theme="dark"] .settlement-summary,
+        [data-theme="dark"] .calendar-container,
+        [data-theme="dark"] .modal-content,
+        [data-theme="dark"] .export-section,
+        [data-theme="dark"] .lock-screen,
+        [data-theme="dark"] .summary-card,
         [data-theme="dark"] .partial-payment-form {
             background: #1e1e1e;
         }
 
-        [data-theme="dark"] input,
-        [data-theme="dark"] select,
-        [data-theme="dark"] textarea {
+        [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
             background: #2a2a2a;
             color: var(--text);
             border-color: var(--border);
         }
 
-        [data-theme="dark"] .expense-item,
+        [data-theme="dark"] .calendar-day {
+            background: #2a2a2a;
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .calendar-day.occupied {
+            background: #FF6B6B !important;
+            border-color: #D32F2F !important;
+            color: white !important;
+        }
+
+        [data-theme="dark"] .calendar-day.available {
+            background: #51CF66 !important;
+            border-color: #2F9E44 !important;
+            color: white !important;
+        }
+
+        [data-theme="dark"] .calendar-day.cleaning {
+            background: #FFA94D !important;
+            border-color: #F76707 !important;
+            color: white !important;
+        }
+
+        [data-theme="dark"] .status-option {
+            background: #2a2a2a;
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .lock-screen-info {
+            background: rgba(100, 181, 246, 0.1);
+            color: #b0b0b0;
+        }
+
         [data-theme="dark"] .settlement-payment {
             background: #2a2a2a;
         }
 
+        [data-theme="dark"] .summary-card {
+            border-left-color: #64B5F6;
+        }
+
+        [data-theme="dark"] .expense-item {
+            background: #2a2a2a;
+        }
+
         @media (max-width: 600px) {
-            .button-group {
-                flex-direction: column;
-            }
-
-            .button-group button {
-                width: 100%;
-            }
-
-            header h1 {
-                font-size: 16px;
-            }
+            .calendar-container { padding: 8px; }
+            .calendar-header { flex-direction: column; gap: 12px; }
+            .calendar-header h2 { font-size: 14px; width: 100%; }
+            .calendar-nav { width: 100%; justify-content: space-between; }
+            .calendar-nav button { flex: 1; padding: 6px 8px; font-size: 11px; min-height: 36px; }
+            .button-group { flex-direction: column; }
+            .button-group button { width: 100%; }
         }
     </style>
 </head>
 <body id="appBody">
     <!-- LOCK SCREEN -->
-    <div id="lockScreen" style="display: none;">
+    <div id="lockScreen" class="lock-screen" style="display: none;">
         <div class="lock-screen">
             <div class="icon">🔐</div>
             <h1>Chillinguito</h1>
@@ -638,8 +1147,12 @@
             </div>
 
             <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
+
             <div class="error-message" id="errorMessage"></div>
-            <div class="lock-screen-info">💡 Both use same 6-digit code from Microsoft Authenticator</div>
+
+            <div class="lock-screen-info">
+                💡 Both Davide & Mattia use the same 6-digit code from Microsoft Authenticator
+            </div>
         </div>
     </div>
 
@@ -670,71 +1183,84 @@
             <div id="notificationContainer"></div>
 
             <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('add-expense')">Add Expense</button>
-                <button class="tab-btn" onclick="switchTab('expenses-list')">All Expenses</button>
-                <button class="tab-btn" onclick="switchTab('settlement')">Settlement</button>
-                <button class="tab-btn" onclick="switchTab('export')">Export</button>
+                <button class="tab-btn active" onclick="switchTab('add-expense')" data-i18n="addExpense">Add Expense</button>
+                <button class="tab-btn" onclick="switchTab('expenses-list')" data-i18n="allExpenses">All Expenses</button>
+                <button class="tab-btn" onclick="switchTab('settlement')" data-i18n="settlement">Settlement</button>
+                <button class="tab-btn" onclick="switchTab('calendar')" data-i18n="calendar">Calendar</button>
+                <button class="tab-btn" onclick="switchTab('export')" data-i18n="export">Export & Summary</button>
             </div>
 
             <!-- ADD EXPENSE TAB -->
             <div id="add-expense" class="tab-content active">
                 <div class="card">
-                    <h2>Add New Expense</h2>
+                    <h2 style="margin-bottom: 20px;" data-i18n="addNewExpense">Add New Expense</h2>
                     <form onsubmit="addExpense(event)">
                         <div class="form-group">
-                            <label>Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning supplies" required>
+                            <label for="description" data-i18n="description">Description</label>
+                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries, Maintenance" required>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Amount (EUR)</label>
+                                <label for="amount" data-i18n="amount">Amount (EUR)</label>
                                 <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
                             </div>
                             <div class="form-group">
-                                <label>Category</label>
+                                <label for="category" data-i18n="category">Category</label>
                                 <select id="category" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="Cleaning">Cleaning</option>
-                                    <option value="Utilities">Utilities</option>
-                                    <option value="Groceries">Groceries</option>
-                                    <option value="Repairs">Repairs</option>
-                                    <option value="Other">Other</option>
+                                    <option value="" data-i18n="selectCategory">-- Select Category --</option>
+                                    <option value="Cleaning" data-i18n="catCleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities" data-i18n="catUtilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries" data-i18n="catGroceries">Groceries & Food</option>
+                                    <option value="Repairs" data-i18n="catRepairs">Repairs & Equipment</option>
+                                    <option value="Furnishing" data-i18n="catFurnishing">Furnishing & Decoration</option>
+                                    <option value="Marketing" data-i18n="catMarketing">Marketing & Advertising</option>
+                                    <option value="Insurance" data-i18n="catInsurance">Insurance</option>
+                                    <option value="Supplies" data-i18n="catSupplies">Supplies & Materials</option>
+                                    <option value="Other" data-i18n="catOther">Other</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Paid By</label>
+                                <label for="paidBy" data-i18n="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value="">-- Select --</option>
+                                    <option value="" data-i18n="selectPerson">-- Select --</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Split Between</label>
+                                <label for="splitBetween" data-i18n="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="Both">Both (50/50)</option>
-                                    <option value="Davide">Davide Only</option>
-                                    <option value="Mattia">Mattia Only</option>
+                                    <option value="" data-i18n="selectSplit">-- Select --</option>
+                                    <option value="Both" data-i18n="splitBoth">Both (50/50)</option>
+                                    <option value="Davide" data-i18n="splitDavide">Davide Only</option>
+                                    <option value="Mattia" data-i18n="splitMattia">Mattia Only</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Date</label>
+                            <label for="date" data-i18n="date">Date</label>
                             <input type="date" id="date" required>
                         </div>
 
-                        <div class="form-group">
-                            <label>Notes (optional)</label>
-                            <textarea id="notes" placeholder="Add notes..." rows="3"></textarea>
+                        <div class="form-group receipt-section">
+                            <label data-i18n="receipt">Receipt Photo (optional)</label>
+                            <div class="receipt-preview" id="receiptPreview">
+                                <span class="receipt-icon">📷</span>
+                            </div>
+                            <input type="file" id="receiptInput" accept="image/*" style="display: none;">
                         </div>
 
-                        <button type="submit" class="btn-primary" style="width: 100%;">Add Expense</button>
+                        <div class="form-group">
+                            <label for="notes" data-i18n="notes">Notes (optional)</label>
+                            <textarea id="notes" placeholder="Add any additional notes..." rows="3" data-i18n-placeholder="notesPlaceholder"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;" data-i18n="addExpenseBtn">Add Expense</button>
                     </form>
                 </div>
             </div>
@@ -742,7 +1268,10 @@
             <!-- EXPENSES LIST TAB -->
             <div id="expenses-list" class="tab-content">
                 <div class="card">
-                    <h2>All Expenses</h2>
+                    <div class="card-header">
+                        <h2 data-i18n="allExpenses">All Expenses</h2>
+                        <button class="btn-secondary" onclick="clearAllExpenses()" style="color: var(--danger);" data-i18n="clearAll">Clear All</button>
+                    </div>
                     <div id="expensesList"></div>
                 </div>
             </div>
@@ -750,72 +1279,116 @@
             <!-- SETTLEMENT TAB -->
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
-                    <div class="summary-title">Current Settlement Status</div>
+                    <div class="summary-title" data-i18n="currentSettlement">Current Settlement Status</div>
                     <div class="stats">
                         <div class="stat-box">
-                            <div class="stat-label">Total</div>
+                            <div class="stat-label" data-i18n="totalExpenses">Total Expenses</div>
                             <div class="stat-value" id="totalExpenses">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label">Davide Paid</div>
+                            <div class="stat-label" data-i18n="davidePaid">Davide Paid</div>
                             <div class="stat-value" id="davidePaid">EUR 0.00</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label">Mattia Paid</div>
+                            <div class="stat-label" data-i18n="mattiaPaid">Mattia Paid</div>
                             <div class="stat-value" id="mattiaPaid">EUR 0.00</div>
                         </div>
                     </div>
 
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">💸 Who Owes Whom</h3>
-                    <div id="settlementDetails"></div>
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="whoOwes">💸 Who Owes Whom</h3>
+                        <div id="settlementDetails"></div>
+                    </div>
 
-                    <button class="btn-primary" style="width:100%;margin-top:20px;" onclick="markCurrentMonthSettled()">
+                    <!-- MARK MONTH AS SETTLED BUTTON -->
+                    <button class="btn-primary" style="width:100%;margin-top:20px;" onclick="markCurrentMonthSettled()" data-i18n="markSettled">
                         ✅ Mark this month as settled
                     </button>
                 </div>
 
+                <!-- PARTIAL PAYMENT TRACKING -->
                 <div id="partialPaymentsSection"></div>
+            </div>
+
+            <!-- CALENDAR TAB -->
+            <div id="calendar" class="tab-content">
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <h2 data-i18n="calendarTitle">Airbnb Calendar</h2>
+                        <div class="calendar-nav">
+                            <button onclick="previousMonth()" data-i18n="previousMonth">Previous</button>
+                            <span id="currentMonth" style="padding: 0 20px; font-weight: 600; min-width: 150px; text-align: center;"></span>
+                            <button onclick="nextMonth()" data-i18n="nextMonth">Next</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-weekdays">
+                        <div class="weekday" data-i18n="weekdaySun">Sun</div>
+                        <div class="weekday" data-i18n="weekdayMon">Mon</div>
+                        <div class="weekday" data-i18n="weekdayTue">Tue</div>
+                        <div class="weekday" data-i18n="weekdayWed">Wed</div>
+                        <div class="weekday" data-i18n="weekdayThu">Thu</div>
+                        <div class="weekday" data-i18n="weekdayFri">Fri</div>
+                        <div class="weekday" data-i18n="weekdaySat">Sat</div>
+                    </div>
+
+                    <div id="calendarDays" class="calendar-days"></div>
+                </div>
             </div>
 
             <!-- EXPORT TAB -->
             <div id="export" class="tab-content">
-                <div class="card">
-                    <h2>Export & Summary</h2>
-                    <div class="button-group">
-                        <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')">Current Month</button>
-                        <button class="btn-secondary" onclick="selectExpensePeriod(event,3)">Last 3 Months</button>
-                        <button class="btn-secondary" onclick="selectExpensePeriod(event,6)">Last 6 Months</button>
-                        <button class="btn-secondary" onclick="selectExpensePeriod(event,12)">Last 12 Months</button>
+                <div class="export-section">
+                    <h2 style="margin-bottom: 20px;" data-i18n="monthlySummary">Monthly Summary & Export</h2>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px;" data-i18n="expenseSummary">Expense Summary</h3>
+                        <div class="button-group" id="expensePeriodButtons">
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,3)" data-i18n="last3Months">Last 3 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,6)" data-i18n="last6Months">Last 6 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,9)" data-i18n="last9Months">Last 9 Months</button>
+                            <button class="btn-secondary" onclick="selectExpensePeriod(event,12)" data-i18n="last12Months">Last 12 Months</button>
+                        </div>
                     </div>
-                    <button class="btn-primary" style="width: 100%;" onclick="generateAndDownloadReport()">📊 Download Report</button>
+
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px;" data-i18n="cleaningSchedule">Cleaning Schedule</h3>
+                        <div class="button-group" id="cleaningPeriodButtons">
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,'current')" data-i18n="currentMonth">Current Month</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,3)" data-i18n="next3Months">Next 3 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,6)" data-i18n="next6Months">Next 6 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,9)" data-i18n="next9Months">Next 9 Months</button>
+                            <button class="btn-secondary" onclick="selectCleaningPeriod(event,12)" data-i18n="next12Months">Next 12 Months</button>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" style="width: 100%; margin-top: 20px; font-size: 18px;" onclick="generateAndDownloadReport()" data-i18n="downloadReport">📊 Download Complete Report</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- HIDDEN EXPORT REPORT -->
     <div id="exportReport"></div>
+
+    <!-- MODAL CONTAINER -->
+    <div id="modalContainer"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
+        // ========== TOTP CONFIGURATION ==========
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         const UNLOCK_KEY = 'chillinguito_unlocked';
-        const STORAGE_KEY = 'chillinguito_expenses';
-        const SETTLEMENT_KEY = 'chillinguito_settlements';
-        const PAYMENTS_KEY = 'chillinguito_payments';
 
-        let currentLanguage = localStorage.getItem('language') || 'en';
-        let currentTheme = localStorage.getItem('theme') || 'light';
-        let selectedExpensePeriod = 'current';
-        let userOnlineStatus = { 'Davide': false, 'Mattia': true };
-
-        // ========== TOTP ==========
-        async function base32Decode(str) {
+        // ========== TOTP IMPLEMENTATION ==========
+        function base32Decode(str) {
             const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             const bits = [];
             for (let i = 0; i < str.length; i++) {
                 const val = alphabet.indexOf(str[i]);
-                if (val === -1) throw new Error('Invalid base32');
+                if (val === -1) throw new Error('Invalid base32 character');
                 bits.push(...val.toString(2).padStart(5, '0').split('').map(Number));
             }
             const bytes = [];
@@ -827,7 +1400,7 @@
 
         async function generateTOTPCode(secret, timeWindow = 0) {
             try {
-                const decoded = await base32Decode(secret);
+                const decoded = base32Decode(secret);
                 const epoch = Math.floor(Date.now() / 30000) + timeWindow;
                 const msg = new ArrayBuffer(8);
                 const view = new DataView(msg);
@@ -837,8 +1410,10 @@
                 const sig = new Uint8Array(signature);
                 const offset = sig[sig.length - 1] & 0x0f;
                 const p = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
-                return String(p % 1000000).padStart(6, '0');
+                const code = String(p % 1000000).padStart(6, '0');
+                return code;
             } catch (error) {
+                console.error('TOTP generation error:', error);
                 return null;
             }
         }
@@ -851,9 +1426,10 @@
             return false;
         }
 
-        // ========== LOCK SCREEN ==========
         function setupLockScreen() {
-            if (!localStorage.getItem(UNLOCK_KEY)) {
+            const isUnlocked = localStorage.getItem(UNLOCK_KEY);
+            if (!isUnlocked) {
+                document.getElementById('appBody').classList.add('locked');
                 document.getElementById('lockScreen').style.display = 'flex';
                 document.getElementById('mainApp').style.display = 'none';
                 setupTOTPInput();
@@ -868,13 +1444,20 @@
             const inputs = document.querySelectorAll('.totp-digit');
             inputs.forEach((input, index) => {
                 input.addEventListener('keydown', (e) => {
-                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace') e.preventDefault();
-                    if (e.key === 'Backspace' && input.value === '' && index > 0) inputs[index - 1].focus();
+                    if (!/[0-9]/.test(e.key) && e.key !== 'Backspace' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                        e.preventDefault();
+                    }
+                    if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
                 });
                 input.addEventListener('input', (e) => {
                     if (e.target.value.length === 1) {
-                        if (index < inputs.length - 1) inputs[index + 1].focus();
-                        else validateTOTP();
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        } else {
+                            validateTOTP();
+                        }
                     }
                 });
             });
@@ -895,11 +1478,15 @@
             const isValid = await validateTOTPCode(code);
             if (isValid) {
                 localStorage.setItem(UNLOCK_KEY, 'true');
-                document.getElementById('lockScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
-                initializeApp();
+                errorDiv.textContent = '✅ Welcome!';
+                setTimeout(() => {
+                    document.getElementById('appBody').classList.remove('locked');
+                    document.getElementById('lockScreen').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    initializeApp();
+                }, 500);
             } else {
-                errorDiv.textContent = '❌ Invalid code';
+                errorDiv.textContent = '❌ Invalid code. Try again.';
                 inputs.forEach(input => input.value = '');
                 inputs[0].focus();
                 unlockBtn.disabled = false;
@@ -908,29 +1495,238 @@
         }
 
         function logout() {
-            if (confirm('🔒 Lock the app?')) {
+            if (confirm('🔒 Lock the app? You will need to enter your 2FA code again.')) {
                 localStorage.removeItem(UNLOCK_KEY);
                 location.reload();
             }
         }
 
-        // ========== STORAGE ==========
-        function getExpenses() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        // ========== TRANSLATIONS ==========
+        const translations = {
+            en: {
+                addExpense: 'Add Expense',
+                allExpenses: 'All Expenses',
+                settlement: 'Settlement',
+                calendar: 'Calendar',
+                export: 'Export & Summary',
+                addNewExpense: 'Add New Expense',
+                description: 'Description',
+                amount: 'Amount (EUR)',
+                category: 'Category',
+                selectCategory: '-- Select Category --',
+                catCleaning: 'Cleaning & Maintenance',
+                catUtilities: 'Utilities (Water, Gas, Electric)',
+                catGroceries: 'Groceries & Food',
+                catRepairs: 'Repairs & Equipment',
+                catFurnishing: 'Furnishing & Decoration',
+                catMarketing: 'Marketing & Advertising',
+                catInsurance: 'Insurance',
+                catSupplies: 'Supplies & Materials',
+                catOther: 'Other',
+                paidBy: 'Paid By',
+                selectPerson: '-- Select --',
+                splitBetween: 'Split Between',
+                selectSplit: '-- Select --',
+                splitBoth: 'Both (50/50)',
+                splitDavide: 'Davide Only',
+                splitMattia: 'Mattia Only',
+                date: 'Date',
+                notes: 'Notes (optional)',
+                notesPlaceholder: 'Add any additional notes...',
+                receipt: 'Receipt Photo (optional)',
+                addExpenseBtn: 'Add Expense',
+                clearAll: 'Clear All',
+                expenseAdded: '✅ Expense added successfully!',
+                deleteConfirm: 'Delete this expense?',
+                clearAllConfirm: '⚠️ Delete ALL expenses? This cannot be undone.',
+                noExpenses: 'No expenses yet. Start by adding one!',
+                currentSettlement: 'Current Settlement Status',
+                totalExpenses: 'Total Expenses',
+                davidePaid: 'Davide Paid',
+                mattiaPaid: 'Mattia Paid',
+                whoOwes: '💸 Who Owes Whom',
+                allSettled: '✅ All settled! No payments needed.',
+                mattiaOwes: 'Mattia owes Davide:',
+                davideOwes: 'Davide owes Mattia:',
+                calendarTitle: 'Airbnb Calendar',
+                previousMonth: 'Previous',
+                nextMonth: 'Next',
+                occupied: 'Not Available',
+                available: 'Available',
+                cleaning: 'Cleaning',
+                weekdaySun: 'Sun',
+                weekdayMon: 'Mon',
+                weekdayTue: 'Tue',
+                weekdayWed: 'Wed',
+                weekdayThu: 'Thu',
+                weekdayFri: 'Fri',
+                weekdaySat: 'Sat',
+                monthlySummary: 'Monthly Summary & Export',
+                expenseSummary: 'Expense Summary',
+                currentMonth: 'Current Month',
+                last3Months: 'Last 3 Months',
+                last6Months: 'Last 6 Months',
+                last9Months: 'Last 9 Months',
+                last12Months: 'Last 12 Months',
+                next3Months: 'Next 3 Months',
+                next6Months: 'Next 6 Months',
+                next9Months: 'Next 9 Months',
+                next12Months: 'Next 12 Months',
+                downloadReport: '📊 Download Complete Report',
+                cleaningSchedule: '🧹 Cleaning Schedule',
+                noCleaning: 'No cleaning scheduled',
+                selectMonth: 'Select Month',
+                generateSummary: 'Generate Summary',
+                updateNotification: 'Updated!',
+                expenseUpdated: 'An expense was updated',
+                calendarUpdated: 'The calendar was updated',
+                reportGenerated: '✅ Report downloaded successfully!',
+                cleaningTomorrow: '🧹 Cleaning scheduled tomorrow!',
+                cleaningTodayReminder: '🧹 Cleaning is TODAY!',
+                markSettled: '✅ Mark this month as settled',
+                settlementMarked: '✅ This month is marked as settled.',
+                pendingSettlement: '💸 Last month's balance is still pending.',
+                recordPayment: '💳 Record a Payment',
+                paymentAmount: 'Payment Amount (EUR)',
+                recordPaymentBtn: 'Record Payment',
+                paymentRecorded: '✅ Payment recorded!',
+                paymentProgress: 'Paid',
+                paymentRemaining: 'Remaining',
+                partialPayments: '📊 Payment History'
+            },
+            it: {
+                addExpense: 'Aggiungi Spesa',
+                allExpenses: 'Tutte le Spese',
+                settlement: 'Regolamento',
+                calendar: 'Calendario',
+                export: 'Esporta e Riepilogo',
+                addNewExpense: 'Aggiungi Nuova Spesa',
+                description: 'Descrizione',
+                amount: 'Importo (EUR)',
+                category: 'Categoria',
+                selectCategory: '-- Seleziona Categoria --',
+                catCleaning: 'Pulizia e Manutenzione',
+                catUtilities: 'Servizi (Acqua, Gas, Elettricità)',
+                catGroceries: 'Generi Alimentari e Cibo',
+                catRepairs: 'Riparazioni e Attrezzature',
+                catFurnishing: 'Arredamento e Decorazione',
+                catMarketing: 'Marketing e Pubblicità',
+                catInsurance: 'Assicurazione',
+                catSupplies: 'Forniture e Materiali',
+                catOther: 'Altro',
+                paidBy: 'Pagato da',
+                selectPerson: '-- Seleziona --',
+                splitBetween: 'Dividi tra',
+                selectSplit: '-- Seleziona --',
+                splitBoth: 'Entrambi (50/50)',
+                splitDavide: 'Solo Davide',
+                splitMattia: 'Solo Mattia',
+                date: 'Data',
+                notes: 'Note (facoltativo)',
+                notesPlaceholder: 'Aggiungi altre note...',
+                receipt: 'Foto Ricevuta (facoltativo)',
+                addExpenseBtn: 'Aggiungi Spesa',
+                clearAll: 'Cancella Tutto',
+                expenseAdded: '✅ Spesa aggiunta con successo!',
+                deleteConfirm: 'Eliminare questa spesa?',
+                clearAllConfirm: '⚠️ Eliminare TUTTE le spese? Questa azione non può essere annullata.',
+                noExpenses: 'Nessuna spesa ancora. Inizia aggiungendone una!',
+                currentSettlement: 'Stato Regolamento Attuale',
+                totalExpenses: 'Spese Totali',
+                davidePaid: 'Davide Ha Pagato',
+                mattiaPaid: 'Mattia Ha Pagato',
+                whoOwes: '💸 Chi Deve a Chi',
+                allSettled: '✅ Tutto regolato! Nessun pagamento necessario.',
+                mattiaOwes: 'Mattia deve a Davide:',
+                davideOwes: 'Davide deve a Mattia:',
+                calendarTitle: 'Calendario Airbnb',
+                previousMonth: 'Precedente',
+                nextMonth: 'Successivo',
+                occupied: 'Non Disponibile',
+                available: 'Disponibile',
+                cleaning: 'Pulizia',
+                weekdaySun: 'Dom',
+                weekdayMon: 'Lun',
+                weekdayTue: 'Mar',
+                weekdayWed: 'Mer',
+                weekdayThu: 'Gio',
+                weekdayFri: 'Ven',
+                weekdaySat: 'Sab',
+                monthlySummary: 'Riepilogo Mensile ed Esportazione',
+                expenseSummary: 'Riepilogo Spese',
+                currentMonth: 'Mese Attuale',
+                last3Months: 'Ultimi 3 Mesi',
+                last6Months: 'Ultimi 6 Mesi',
+                last9Months: 'Ultimi 9 Mesi',
+                last12Months: 'Ultimi 12 Mesi',
+                next3Months: 'Prossimi 3 Mesi',
+                next6Months: 'Prossimi 6 Mesi',
+                next9Months: 'Prossimi 9 Mesi',
+                next12Months: 'Prossimi 12 Mesi',
+                downloadReport: '📊 Scarica Rapporto Completo',
+                cleaningSchedule: '🧹 Programma Pulizie',
+                noCleaning: 'Nessuna pulizia programmata',
+                selectMonth: 'Seleziona Mese',
+                generateSummary: 'Genera Riepilogo',
+                updateNotification: 'Aggiornato!',
+                expenseUpdated: 'Una spesa è stata aggiornata',
+                calendarUpdated: 'Il calendario è stato aggiornato',
+                reportGenerated: '✅ Rapporto scaricato con successo!',
+                cleaningTomorrow: '🧹 Pulizia programmata domani!',
+                cleaningTodayReminder: '🧹 La pulizia è OGGI!',
+                markSettled: '✅ Segna questo mese come saldato',
+                settlementMarked: '✅ Questo mese è stato segnato come saldato.',
+                pendingSettlement: '💸 Il saldo del mese scorso è ancora in sospeso.',
+                recordPayment: '💳 Registra un Pagamento',
+                paymentAmount: 'Importo Pagamento (EUR)',
+                recordPaymentBtn: 'Registra Pagamento',
+                paymentRecorded: '✅ Pagamento registrato!',
+                paymentProgress: 'Pagato',
+                paymentRemaining: 'Rimanente',
+                partialPayments: '📊 Storico Pagamenti'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'en';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentReceiptImage = null;
+        let currentCalendarDate = new Date();
+        let selectedExpensePeriod = 'current';
+        let selectedCleaningPeriod = 'current';
+        let cleaningNotificationShown = false;
+        let settlementNotificationShown = false;
+        let currentUser = 'Davide'; // Who is using this instance
+        let otherUser = 'Mattia';
+        let userOnlineStatus = { 'Davide': false, 'Mattia': false };
+
+        function t(key) {
+            return translations[currentLanguage][key] || key;
         }
 
-        function saveExpenses(expenses) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
-            displayExpenses();
-            displaySettlement();
+        // ========== ONLINE STATUS SIMULATION ==========
+        function initializeOnlineStatus() {
+            // Simulate online status - in real implementation, use WebSocket/Firebase
+            userOnlineStatus[otherUser] = true;
+            updateOnlineIndicator();
+            
+            // Simulate occasional online/offline changes
+            setInterval(() => {
+                userOnlineStatus[otherUser] = Math.random() > 0.3;
+                updateOnlineIndicator();
+            }, 8000);
         }
 
-        function getPaymentsData() {
-            return JSON.parse(localStorage.getItem(PAYMENTS_KEY) || '[]');
-        }
-
-        function savePaymentsData(data) {
-            localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
+        function updateOnlineIndicator() {
+            const dot = document.getElementById('otherUserOnline');
+            const status = document.getElementById('otherUserStatus');
+            
+            if (userOnlineStatus[otherUser]) {
+                dot.classList.remove('offline');
+                status.textContent = `${otherUser} is online`;
+            } else {
+                dot.classList.add('offline');
+                status.textContent = `${otherUser} is offline`;
+            }
         }
 
         // ========== LANGUAGE & THEME ==========
@@ -939,6 +1735,10 @@
             localStorage.setItem('language', lang);
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            updatePageText();
+            updateDropdownOptions();
+            updatePlaceholders();
+            renderCalendar();
         }
 
         function toggleTheme() {
@@ -948,37 +1748,215 @@
             event.target.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
         }
 
-        // ========== ONLINE STATUS ==========
-        function initializeOnlineStatus() {
-            userOnlineStatus['Mattia'] = true;
-            updateOnlineIndicator();
-            setInterval(() => {
-                userOnlineStatus['Mattia'] = Math.random() > 0.3;
-                updateOnlineIndicator();
-            }, 8000);
+        function updatePageText() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.getAttribute('data-i18n'));
+            });
+            displayExpenses();
+            displaySettlement();
         }
 
-        function updateOnlineIndicator() {
-            const dot = document.getElementById('otherUserOnline');
-            const status = document.getElementById('otherUserStatus');
-            if (userOnlineStatus['Mattia']) {
-                dot.classList.remove('offline');
-                status.textContent = 'Mattia is online';
-            } else {
-                dot.classList.add('offline');
-                status.textContent = 'Mattia is offline';
+        function updatePlaceholders() {
+            const notesTextarea = document.getElementById('notes');
+            if (notesTextarea) notesTextarea.placeholder = t('notesPlaceholder');
+        }
+
+        function updateDropdownOptions() {
+            const categoryOptions = document.querySelectorAll('#category option');
+            categoryOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) option.textContent = t(i18nKey);
+            });
+        }
+
+        // ========== CLEANING REMINDER ==========
+        function checkCleaningReminder() {
+            const calendarData = getCalendarData();
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const today = now.toISOString().split('T')[0];
+            const tomorrowKey = tomorrow.toISOString().split('T')[0];
+            let hasTodayCleaning = false;
+            let hasTomorrowCleaning = false;
+            const todayData = calendarData[today];
+            if (todayData && todayData.status === 'cleaning') hasTodayCleaning = true;
+            const tomorrowData = calendarData[tomorrowKey];
+            if (tomorrowData && tomorrowData.status === 'cleaning') hasTomorrowCleaning = true;
+            if (!cleaningNotificationShown) {
+                if (hasTodayCleaning) {
+                    showNotification(t('cleaningTodayReminder'), 'alert');
+                    cleaningNotificationShown = true;
+                } else if (hasTomorrowCleaning) {
+                    showNotification(t('cleaningTomorrow'), 'warning');
+                    cleaningNotificationShown = true;
+                }
             }
         }
 
-        // ========== TABS ==========
+        // ========== SETTLEMENT REMINDER ==========
+        const SETTLEMENT_KEY = 'chillinguito_settlements';
+        const PAYMENTS_KEY = 'chillinguito_payments';
+
+        function getSettlementData() {
+            const data = localStorage.getItem(SETTLEMENT_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveSettlementData(data) {
+            localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
+        }
+
+        function getPaymentsData() {
+            const data = localStorage.getItem(PAYMENTS_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function savePaymentsData(data) {
+            localStorage.setItem(PAYMENTS_KEY, JSON.stringify(data));
+        }
+
+        function getMonthKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            return `${y}-${m}`;
+        }
+
+        function getExpensesForMonth(date) {
+            const key = getMonthKey(date);
+            const expenses = getExpenses();
+            return expenses.filter(exp => {
+                const d = new Date(exp.date);
+                return getMonthKey(d) === key;
+            });
+        }
+
+        function computeMonthBalance(date) {
+            const expenses = getExpensesForMonth(date);
+            const balances = { Davide: 0, Mattia: 0 };
+            expenses.forEach(exp => {
+                const amt = exp.amount;
+                balances[exp.paidBy] += amt;
+                if (exp.splitBetween === 'Both') {
+                    balances['Davide'] -= amt / 2;
+                    balances['Mattia'] -= amt / 2;
+                } else {
+                    balances[exp.splitBetween] -= amt;
+                }
+            });
+            return { balances, hasExpenses: expenses.length > 0 };
+        }
+
+        function markCurrentMonthSettled() {
+            const now = new Date();
+            const key = getMonthKey(now);
+            const data = getSettlementData();
+            data[key] = { settled: true, timestamp: new Date().toISOString() };
+            saveSettlementData(data);
+            showNotification(t('settlementMarked'), 'alert');
+            displaySettlement();
+        }
+
+        function checkPendingSettlementReminder() {
+            if (settlementNotificationShown) return;
+            const now = new Date();
+            const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const key = getMonthKey(prev);
+            const settlementData = getSettlementData();
+            if (settlementData[key] && settlementData[key].settled) return;
+            const { balances, hasExpenses } = computeMonthBalance(prev);
+            if (!hasExpenses) return;
+            const outstanding = Math.max(Math.abs(balances.Davide), Math.abs(balances.Mattia));
+            if (outstanding < 0.01) return;
+            showNotification(t('pendingSettlement'), 'warning');
+            settlementNotificationShown = true;
+        }
+
+        // ========== NOTIFICATIONS ==========
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification-banner ${type}`;
+            notification.textContent = message;
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // ========== STORAGE ==========
+        const STORAGE_KEY = 'chillinguito_expenses';
+        const CALENDAR_KEY = 'chillinguito_calendar';
+
+        function getExpenses() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveExpenses(expenses) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(expenses));
+            displayExpenses();
+            displaySettlement();
+            showNotification(t('updateNotification'));
+        }
+
+        function getCalendarData() {
+            const data = localStorage.getItem(CALENDAR_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveCalendarData(data) {
+            localStorage.setItem(CALENDAR_KEY, JSON.stringify(data));
+            renderCalendar();
+            showNotification(t('updateNotification'));
+        }
+
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // ========== TAB SWITCHING ==========
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            if (tabName === 'calendar') {
+                setTimeout(() => renderCalendar(), 50);
+            }
         }
 
-        // ========== EXPENSES ==========
+        // ========== RECEIPT UPLOAD ==========
+        function setupReceiptUpload() {
+            const receiptPreview = document.getElementById('receiptPreview');
+            const receiptInput = document.getElementById('receiptInput');
+            receiptPreview.onclick = () => receiptInput.click();
+            receiptInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        currentReceiptImage = ev.target.result;
+                        receiptPreview.style.backgroundImage = `url(${ev.target.result})`;
+                        receiptPreview.classList.add('has-image');
+                        receiptPreview.innerHTML = '<button class="receipt-remove" onclick="removeReceipt(event)" type="button">✕</button>';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        }
+
+        function removeReceipt(e) {
+            if (e) e.stopPropagation();
+            currentReceiptImage = null;
+            const receiptPreview = document.getElementById('receiptPreview');
+            receiptPreview.style.backgroundImage = '';
+            receiptPreview.classList.remove('has-image');
+            receiptPreview.innerHTML = '<span class="receipt-icon">📷</span>';
+            document.getElementById('receiptInput').value = '';
+        }
+
+        // ========== ADD EXPENSE ==========
         function addExpense(e) {
             e.preventDefault();
             const expense = {
@@ -989,44 +1967,68 @@
                 paidBy: document.getElementById('paidBy').value,
                 splitBetween: document.getElementById('splitBetween').value,
                 date: document.getElementById('date').value,
-                notes: document.getElementById('notes').value
+                notes: document.getElementById('notes').value,
+                receipt: currentReceiptImage
             };
             const expenses = getExpenses();
             expenses.push(expense);
             saveExpenses(expenses);
-            e.target.reset();
+            document.querySelector('form').reset();
+            removeReceipt();
             document.getElementById('date').valueAsDate = new Date();
-            alert('✅ Expense added!');
+            alert(t('expenseAdded'));
         }
 
+        // ========== DISPLAY EXPENSES ==========
         function displayExpenses() {
             const expenses = getExpenses();
             const listDiv = document.getElementById('expensesList');
             if (expenses.length === 0) {
-                listDiv.innerHTML = '<div class="no-data">No expenses yet</div>';
+                listDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
                 return;
             }
             expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
             listDiv.innerHTML = expenses.map(exp => `
                 <div class="expense-item">
-                    <div>
-                        <strong><span class="category-badge">${exp.category}</span>${exp.description}</strong><br>
-                        <span style="font-size: 13px; color: var(--text-secondary);">${exp.date} • ${exp.paidBy} • ${exp.splitBetween}</span>
-                        ${exp.notes ? '<br><em>' + exp.notes + '</em>' : ''}
+                    <div class="expense-info">
+                        <div class="expense-description">
+                            <span class="category-badge">${exp.category}</span>
+                            ${exp.description}
+                        </div>
+                        <div class="expense-details">
+                            ${exp.date} • ${exp.paidBy} • ${exp.splitBetween}
+                            ${exp.notes ? '<br><em>' + exp.notes + '</em>' : ''}
+                        </div>
+                        ${exp.receipt ? `<img src="${exp.receipt}" class="expense-receipt" alt="Receipt" onclick="viewReceipt('${exp.receipt}')">` : ''}
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <strong style="color: var(--primary); font-size: 18px;">EUR ${exp.amount.toFixed(2)}</strong>
+                    <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                        <div class="expense-amount">EUR ${exp.amount.toFixed(2)}</div>
                         <button class="btn-danger" onclick="deleteExpense(${exp.id})">Delete</button>
                     </div>
                 </div>
             `).join('');
         }
 
+        function viewReceipt(src) {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:2000;';
+            modal.innerHTML = `<img src="${src}" style="max-width:90%;max-height:90%;border-radius:8px;" onclick="this.parentElement.remove()">`;
+            document.body.appendChild(modal);
+        }
+
         function deleteExpense(id) {
-            if (confirm('Delete this expense?')) {
+            if (confirm(t('deleteConfirm'))) {
                 let expenses = getExpenses();
                 expenses = expenses.filter(e => e.id !== id);
                 saveExpenses(expenses);
+            }
+        }
+
+        function clearAllExpenses() {
+            if (confirm(t('clearAllConfirm'))) {
+                localStorage.removeItem(STORAGE_KEY);
+                displayExpenses();
+                displaySettlement();
             }
         }
 
@@ -1053,58 +2055,57 @@
             });
             document.getElementById('davidePaid').textContent = `EUR ${davidePaid.toFixed(2)}`;
             document.getElementById('mattiaPaid').textContent = `EUR ${mattiaPaid.toFixed(2)}`;
-
             const detailsDiv = document.getElementById('settlementDetails');
             if (total === 0) {
-                detailsDiv.innerHTML = '<div class="no-data">No expenses</div>';
-                document.getElementById('partialPaymentsSection').innerHTML = '';
+                detailsDiv.innerHTML = `<div class="no-data">${t('noExpenses')}</div>`;
+                displayPartialPayments(null);
                 return;
             }
-
             let html = '';
             let owedByUser = null;
             let owedAmount = 0;
-
             if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
-                html = '<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">✅ All settled!</div>';
+                html = `<div class="settlement-box" style="background:rgba(76,175,80,0.1);color:#2e7d32;border:none;">${t('allSettled')}</div>`;
             } else if (balances.Davide > 0.01) {
-                html = `<div class="settlement-box owed">💳 Mattia owes Davide: <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 ${t('mattiaOwes')} <strong>EUR ${balances.Davide.toFixed(2)}</strong></div>`;
                 owedByUser = 'Mattia';
                 owedAmount = balances.Davide;
             } else if (balances.Mattia > 0.01) {
-                html = `<div class="settlement-box owed">💳 Davide owes Mattia: <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
+                html = `<div class="settlement-box owed">💳 ${t('davideOwes')} <strong>EUR ${Math.abs(balances.Mattia).toFixed(2)}</strong></div>`;
                 owedByUser = 'Davide';
                 owedAmount = Math.abs(balances.Mattia);
             }
-
             detailsDiv.innerHTML = html;
             displayPartialPayments(owedByUser, owedAmount);
         }
 
         function displayPartialPayments(owedByUser, totalOwed) {
             const section = document.getElementById('partialPaymentsSection');
+            const payments = getPaymentsData();
+            
             if (!owedByUser) {
                 section.innerHTML = '';
                 return;
             }
 
-            const payments = getPaymentsData();
             let totalPaid = 0;
             const relevantPayments = payments.filter(p => p.from === owedByUser);
             relevantPayments.forEach(p => totalPaid += p.amount);
+            
             const remaining = Math.max(0, totalOwed - totalPaid);
             const percentage = totalOwed > 0 ? (totalPaid / totalOwed) * 100 : 0;
 
             let html = `
                 <div class="card">
-                    <h3 style="margin-bottom: 12px; color: var(--primary);">📊 Payment History</h3>
+                    <h3 style="margin-bottom: 20px; color: var(--primary);" data-i18n="partialPayments">${t('partialPayments')}</h3>
                     <div class="settlement-payment">
                         <div class="settlement-payment-header">
                             <span>${owedByUser} → Davide</span>
                             <span class="settlement-payment-amount">EUR ${totalPaid.toFixed(2)} / ${totalOwed.toFixed(2)}</span>
                         </div>
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
-                            Paid: EUR ${totalPaid.toFixed(2)} | Remaining: EUR ${remaining.toFixed(2)}
+                        <div class="settlement-payment-from">
+                            <span data-i18n="paymentProgress">${t('paymentProgress')}</span>: EUR ${totalPaid.toFixed(2)} | 
+                            <span data-i18n="paymentRemaining">${t('paymentRemaining')}</span>: EUR ${remaining.toFixed(2)}
                         </div>
                         <div class="payment-progress">
                             <div class="payment-bar" style="width: ${percentage}%;"></div>
@@ -1112,17 +2113,22 @@
             `;
 
             relevantPayments.forEach(payment => {
-                html += `<div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">✓ EUR ${payment.amount.toFixed(2)} on ${payment.date}</div>`;
+                html += `
+                    <div class="payment-text" style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                        <span>✓ EUR ${payment.amount.toFixed(2)} on ${payment.date}</span>
+                    </div>
+                `;
             });
 
+            html += `</div>`;
+
+            // Add partial payment form
             html += `
-                    </div>
-                    <div class="partial-payment-form">
-                        <h4>💳 Record a Payment</h4>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="number" id="partialPaymentAmount" placeholder="Amount (EUR)" step="0.01" min="0" max="${remaining}">
-                            <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})">Record</button>
-                        </div>
+                <div class="partial-payment-form">
+                    <h4 style="margin-bottom: 12px; color: var(--primary);" data-i18n="recordPayment">${t('recordPayment')}</h4>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="partialPaymentAmount" placeholder="${t('paymentAmount')}" step="0.01" min="0" max="${remaining}" style="flex: 1;">
+                        <button class="btn-success" onclick="recordPartialPayment('${owedByUser}', ${totalOwed})" data-i18n="recordPaymentBtn">${t('recordPaymentBtn')}</button>
                     </div>
                 </div>
             `;
@@ -1135,7 +2141,7 @@
             const amount = parseFloat(amountInput.value);
 
             if (!amount || amount <= 0) {
-                alert('Enter valid amount');
+                alert('Please enter a valid amount');
                 return;
             }
 
@@ -1144,7 +2150,7 @@
             payments.filter(p => p.from === from).forEach(p => totalPaid += p.amount);
 
             if (totalPaid + amount > totalOwed + 0.01) {
-                alert(`Cannot exceed EUR ${totalOwed.toFixed(2)}`);
+                alert(`Cannot exceed total owed of EUR ${totalOwed.toFixed(2)}`);
                 return;
             }
 
@@ -1157,41 +2163,193 @@
             savePaymentsData(payments);
             amountInput.value = '';
             displaySettlement();
-            alert('✅ Payment recorded!');
+            showNotification(t('paymentRecorded'), 'alert');
         }
 
-        function markCurrentMonthSettled() {
-            const data = JSON.parse(localStorage.getItem(SETTLEMENT_KEY) || '{}');
-            const key = new Date().toISOString().slice(0, 7);
-            data[key] = { settled: true, timestamp: new Date().toISOString() };
-            localStorage.setItem(SETTLEMENT_KEY, JSON.stringify(data));
-            alert('✅ Month marked as settled');
+        // ========== CALENDAR ==========
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthNames = currentLanguage === 'en'
+                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            const calendarDaysDiv = document.getElementById('calendarDays');
+            calendarDaysDiv.innerHTML = '';
+            const calendarData = getCalendarData();
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const prevDate = new Date(year, month - 1, day);
+                calendarDaysDiv.appendChild(createDayElement(prevDate, true, calendarData));
+            }
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                calendarDaysDiv.appendChild(createDayElement(date, false, calendarData));
+            }
+            const totalCells = calendarDaysDiv.children.length;
+            const remainingCells = 42 - totalCells;
+            for (let day = 1; day <= remainingCells; day++) {
+                const nextDate = new Date(year, month + 1, day);
+                calendarDaysDiv.appendChild(createDayElement(nextDate, true, calendarData));
+            }
         }
 
-        // ========== EXPORT ==========
+        function createDayElement(date, isOtherMonth, calendarData) {
+            const dayDiv = document.createElement('div');
+            const dateKey = date.toISOString().split('T')[0];
+            const dayData = calendarData[dateKey] || { status: 'available', note: '' };
+            dayDiv.className = `calendar-day ${isOtherMonth ? 'other-month' : ''} ${dayData.status}`;
+            dayDiv.innerHTML = `
+                <div class="calendar-day-number">${date.getDate()}</div>
+                ${!isOtherMonth ? `<div class="calendar-day-status">${t(dayData.status)}</div>` : ''}
+            `;
+            if (!isOtherMonth) {
+                dayDiv.onclick = () => openDayModal(date, dayData);
+                dayDiv.style.cursor = 'pointer';
+            }
+            return dayDiv;
+        }
+
+        function openDayModal(date, dayData) {
+            const dateKey = date.toISOString().split('T')[0];
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.id = 'dayModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>${dateStr}</h3>
+                        <button class="modal-close" onclick="closeModal()">×</button>
+                    </div>
+                    <div class="day-status-selector">
+                        <button class="status-option occupied ${dayData.status === 'occupied' ? 'selected' : ''}" onclick="selectStatus(this,'occupied')">${t('occupied')}</button>
+                        <button class="status-option available ${dayData.status === 'available' ? 'selected' : ''}" onclick="selectStatus(this,'available')">${t('available')}</button>
+                        <button class="status-option cleaning ${dayData.status === 'cleaning' ? 'selected' : ''}" onclick="selectStatus(this,'cleaning')">${t('cleaning')}</button>
+                    </div>
+                    <div class="form-group">
+                        <label>${t('notes')}</label>
+                        <textarea id="dayNote" placeholder="Add notes for this day..." rows="4">${dayData.note || ''}</textarea>
+                    </div>
+                    <button class="btn-primary" style="width: 100%;" onclick="saveDayData('${dateKey}')">Save</button>
+                </div>
+            `;
+            const container = document.getElementById('modalContainer');
+            container.innerHTML = '';
+            container.appendChild(modal);
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('dayModal');
+            if (modal) modal.remove();
+        }
+
+        function selectStatus(button, status) {
+            const parent = button.parentElement;
+            parent.querySelectorAll('.status-option').forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            button.dataset.selectedStatus = status;
+        }
+
+        function saveDayData(dateKey) {
+            const modal = document.getElementById('dayModal');
+            const selectedStatus = modal.querySelector('.status-option.selected');
+            const status = selectedStatus ? (selectedStatus.dataset.selectedStatus || selectedStatus.className.split(' ')[1]) : 'available';
+            const note = modal.querySelector('#dayNote').value;
+            const calendarData = getCalendarData();
+            calendarData[dateKey] = { status, note };
+            saveCalendarData(calendarData);
+            closeModal();
+        }
+
+        function previousMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // ========== EXPORT REPORT ==========
         function selectExpensePeriod(ev, months) {
             selectedExpensePeriod = months;
-            document.querySelectorAll('#export .btn-secondary').forEach(btn => {
-                btn.style.background = '';
-                btn.style.color = '';
-            });
+            const buttons = document.querySelectorAll('#expensePeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
             ev.target.style.background = 'var(--primary)';
             ev.target.style.color = 'white';
         }
 
-        async function generateAndDownloadReport() {
+        function selectCleaningPeriod(ev, months) {
+            selectedCleaningPeriod = months;
+            const buttons = document.querySelectorAll('#cleaningPeriodButtons button');
+            buttons.forEach(btn => { btn.style.background = ''; btn.style.color = ''; });
+            ev.target.style.background = 'var(--primary)';
+            ev.target.style.color = 'white';
+        }
+
+        function getExpensesForPeriod(months) {
             const expenses = getExpenses();
             const now = new Date();
-            let filtered = expenses;
-
-            if (selectedExpensePeriod !== 'current') {
-                const startDate = new Date(now.getFullYear(), now.getMonth() - selectedExpensePeriod, now.getDate());
-                filtered = expenses.filter(exp => new Date(exp.date) >= startDate);
+            if (months === 'current') {
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
+            } else {
+                const startDate = new Date(now.getFullYear(), now.getMonth() - months, now.getDate());
+                return expenses.filter(exp => {
+                    const expDate = new Date(exp.date);
+                    return expDate >= startDate && expDate <= now;
+                });
             }
+        }
 
+        function getCleaningForPeriod(months) {
+            const calendarData = getCalendarData();
+            const cleaningDays = [];
+            const now = new Date();
+            const endDate = new Date(now);
+            if (months === 'current') {
+                const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                endDate.setMonth(endDate.getMonth() + 1);
+                endDate.setDate(0);
+                for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
+                }
+            } else {
+                endDate.setMonth(endDate.getMonth() + months);
+                for (let date = new Date(now); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    const dateKey = date.toISOString().split('T')[0];
+                    const dayData = calendarData[dateKey];
+                    if (dayData && dayData.status === 'cleaning') {
+                        cleaningDays.push({ date: new Date(date), dateKey, note: dayData.note });
+                    }
+                }
+            }
+            return cleaningDays;
+        }
+
+        async function generateAndDownloadReport() {
+            const expenses = getExpensesForPeriod(selectedExpensePeriod);
+            const cleaningDays = getCleaningForPeriod(selectedCleaningPeriod);
+            const payments = getPaymentsData();
+            const now = new Date();
             const balances = { Davide: 0, Mattia: 0 };
             let total = 0;
-            filtered.forEach(exp => {
+            expenses.forEach(exp => {
                 total += exp.amount;
                 balances[exp.paidBy] += exp.amount;
                 if (exp.splitBetween === 'Both') {
@@ -1203,53 +2361,132 @@
             });
 
             let html = `
-                <div style="padding: 40px; background: ${currentTheme === 'light' ? 'white' : '#1e1e1e'}; color: ${currentTheme === 'light' ? '#333' : '#e0e0e0'};">
-                    <h1 style="text-align: center; margin-bottom: 10px; color: #2196F3;">Chillinguito Lake Como</h1>
-                    <p style="text-align: center; font-size: 14px; margin-bottom: 30px; color: #666;">Report - ${now.toLocaleDateString()}</p>
-                    
-                    <h2 style="color: #2196F3; margin-bottom: 16px;">📊 Expense Summary</h2>
-                    <p><strong>Total: EUR ${total.toFixed(2)}</strong></p>
-                    <p><strong>Count: ${filtered.length}</strong></p>
-                    <p style="margin-top: 16px;"><strong>Davide Paid: EUR ${filtered.filter(e => e.paidBy === 'Davide').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong></p>
-                    <p><strong>Mattia Paid: EUR ${filtered.filter(e => e.paidBy === 'Mattia').reduce((s, e) => s + e.amount, 0).toFixed(2)}</strong></p>
-                    
-                    <h2 style="color: #2196F3; margin-top: 30px; margin-bottom: 16px;">💳 Settlement</h2>
-                    <p><strong>Status: ${Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01 ? '✅ All Settled' : (balances.Davide > 0 ? `Mattia owes EUR ${balances.Davide.toFixed(2)}` : `Davide owes EUR ${Math.abs(balances.Mattia).toFixed(2)}`)}</strong></p>
+                <div class="report-header">
+                    <h1>Chillinguito Lake Como</h1>
+                    <p>${t('monthlySummary')} - ${now.toLocaleDateString()}</p>
                 </div>
+                <div class="report-section">
+                    <h2>📊 ${t('expenseSummary')}</h2>
+                    <div class="report-item">
+                        <strong>${t('totalExpenses')}:</strong>
+                        <strong>EUR ${total.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${t('noExpenses')}:</strong>
+                        <strong>${expenses.length}</strong>
+                    </div>
             `;
+            const byCategory = {};
+            expenses.forEach(exp => {
+                if (!byCategory[exp.category]) byCategory[exp.category] = 0;
+                byCategory[exp.category] += exp.amount;
+            });
+            Object.entries(byCategory).sort((a,b) => b[1]-a[1]).forEach(([category, amount]) => {
+                html += `<div class="report-item"><strong>${category}</strong> EUR ${amount.toFixed(2)}</div>`;
+            });
+            html += `</div>`;
 
-            const div = document.getElementById('exportReport');
-            div.innerHTML = html;
-            div.style.display = 'block';
+            let davideSettlement = 0, mattiaSettlement = 0;
+            expenses.forEach(exp => {
+                if (exp.paidBy === 'Davide') davideSettlement += exp.amount;
+                if (exp.paidBy === 'Mattia') mattiaSettlement += exp.amount;
+            });
+            html += `
+                <div class="report-section">
+                    <h2>💳 ${t('settlement')}</h2>
+                    <div class="report-item">
+                        <strong>${t('davidePaid')}:</strong>
+                        <strong>EUR ${davideSettlement.toFixed(2)}</strong>
+                    </div>
+                    <div class="report-item">
+                        <strong>${t('mattiaPaid')}:</strong>
+                        <strong>EUR ${mattiaSettlement.toFixed(2)}</strong>
+                    </div>
+            `;
+            if (Math.abs(balances.Davide) < 0.01 && Math.abs(balances.Mattia) < 0.01) {
+                html += `<div class="report-settlement" style="margin-top: 16px;">✅ ${t('allSettled')}</div>`;
+            } else if (balances.Davide > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('mattiaOwes')} EUR ${balances.Davide.toFixed(2)}</div>`;
+            } else if (balances.Mattia > 0.01) {
+                html += `<div class="report-settlement owed" style="margin-top: 16px;">💳 ${t('davideOwes')} EUR ${Math.abs(balances.Mattia).toFixed(2)}</div>`;
+            }
+            html += `</div>`;
 
-            try {
-                const canvas = await html2canvas(div, {
-                    backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e'
+            // Add payment history
+            if (payments.length > 0) {
+                html += `<div class="report-section"><h2>📊 ${t('partialPayments')}</h2>`;
+                payments.forEach(p => {
+                    html += `<div class="report-item"><strong>${p.from} → Davide</strong> EUR ${p.amount.toFixed(2)} (${p.date})</div>`;
                 });
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = `Report-${now.toISOString().split('T')[0]}.png`;
-                link.click();
-                div.style.display = 'none';
-                alert('✅ Report downloaded!');
+                html += `</div>`;
+            }
+
+            html += `<div class="report-section"><h2>🧹 ${t('cleaningSchedule')}</h2>`;
+            if (cleaningDays.length === 0) {
+                html += `<div class="report-item"><em>${t('noCleaning')}</em></div>`;
+            } else {
+                cleaningDays.forEach(day => {
+                    const dateStr = day.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    html += `<div class="report-item"><strong>${dateStr}</strong> ${day.note ? day.note : 'Cleaning'}</div>`;
+                });
+            }
+            html += `</div>`;
+
+            const reportDiv = document.getElementById('exportReport');
+            reportDiv.innerHTML = html;
+            reportDiv.classList.remove('light-mode', 'dark-mode');
+            reportDiv.classList.add(`${currentTheme}-mode`);
+            reportDiv.style.display = 'block';
+            try {
+                const canvas = await html2canvas(reportDiv, {
+                    backgroundColor: currentTheme === 'light' ? '#ffffff' : '#1e1e1e',
+                    scale: 2,
+                    useCORS: true,
+                    width: 900,
+                    windowHeight: reportDiv.offsetHeight
+                });
+                canvas.toBlob(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `Chillinguito-Report-${now.toISOString().split('T')[0]}.png`;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    reportDiv.style.display = 'none';
+                    showNotification(t('reportGenerated'));
+                });
             } catch (error) {
-                alert('Error: ' + error.message);
+                alert('Error creating report: ' + error.message);
+                reportDiv.style.display = 'none';
             }
         }
 
-        // ========== INITIALIZE ==========
+        // ========== INITIALIZE APP ==========
         function initializeApp() {
             document.getElementById('date').valueAsDate = new Date();
+            setupReceiptUpload();
             displayExpenses();
             displaySettlement();
+            updatePageText();
+            updateDropdownOptions();
+            updatePlaceholders();
+            setTimeout(() => renderCalendar(), 150);
+            requestNotificationPermission();
             initializeOnlineStatus();
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            setTimeout(() => {
+                checkCleaningReminder();
+                checkPendingSettlementReminder();
+            }, 500);
         }
 
+        // ========== PAGE LOAD ==========
         window.addEventListener('load', () => {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
             setupLockScreen();
         });
+
+        const APP_VERSION = '2.6.0-full-features';
+        console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
     </script>
 </body>
 </html>
