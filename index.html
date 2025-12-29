@@ -996,16 +996,16 @@
                             <div class="form-group">
                                 <label for="category" data-i18n="category">Category</label>
                                 <select id="category" required>
-                                    <option value="">-- Select Category --</option>
-                                    <option value="Cleaning">Cleaning & Maintenance</option>
-                                    <option value="Utilities">Utilities (Water, Gas, Electric)</option>
-                                    <option value="Groceries">Groceries & Food</option>
-                                    <option value="Repairs">Repairs & Equipment</option>
-                                    <option value="Furnishing">Furnishing & Decoration</option>
-                                    <option value="Marketing">Marketing & Advertising</option>
-                                    <option value="Insurance">Insurance</option>
-                                    <option value="Supplies">Supplies & Materials</option>
-                                    <option value="Other">Other</option>
+                                    <option value="" data-i18n="selectCategory">-- Select Category --</option>
+                                    <option value="Cleaning" data-i18n="catCleaning">Cleaning & Maintenance</option>
+                                    <option value="Utilities" data-i18n="catUtilities">Utilities (Water, Gas, Electric)</option>
+                                    <option value="Groceries" data-i18n="catGroceries">Groceries & Food</option>
+                                    <option value="Repairs" data-i18n="catRepairs">Repairs & Equipment</option>
+                                    <option value="Furnishing" data-i18n="catFurnishing">Furnishing & Decoration</option>
+                                    <option value="Marketing" data-i18n="catMarketing">Marketing & Advertising</option>
+                                    <option value="Insurance" data-i18n="catInsurance">Insurance</option>
+                                    <option value="Supplies" data-i18n="catSupplies">Supplies & Materials</option>
+                                    <option value="Other" data-i18n="catOther">Other</option>
                                 </select>
                             </div>
                         </div>
@@ -1014,7 +1014,7 @@
                             <div class="form-group">
                                 <label for="paidBy" data-i18n="paidBy">Paid By</label>
                                 <select id="paidBy" required>
-                                    <option value="">-- Select --</option>
+                                    <option value="" data-i18n="selectPerson">-- Select --</option>
                                     <option value="Davide">Davide</option>
                                     <option value="Mattia">Mattia</option>
                                 </select>
@@ -1022,10 +1022,10 @@
                             <div class="form-group">
                                 <label for="splitBetween" data-i18n="splitBetween">Split Between</label>
                                 <select id="splitBetween" required>
-                                    <option value="">-- Select --</option>
-                                    <option value="Both">Both (50/50)</option>
-                                    <option value="Davide">Davide Only</option>
-                                    <option value="Mattia">Mattia Only</option>
+                                    <option value="" data-i18n="selectSplit">-- Select --</option>
+                                    <option value="Both" data-i18n="splitBoth">Both (50/50)</option>
+                                    <option value="Davide" data-i18n="splitDavide">Davide Only</option>
+                                    <option value="Mattia" data-i18n="splitMattia">Mattia Only</option>
                                 </select>
                             </div>
                         </div>
@@ -1300,8 +1300,23 @@
                 description: 'Description',
                 amount: 'Amount (EUR)',
                 category: 'Category',
+                selectCategory: '-- Select Category --',
+                catCleaning: 'Cleaning & Maintenance',
+                catUtilities: 'Utilities (Water, Gas, Electric)',
+                catGroceries: 'Groceries & Food',
+                catRepairs: 'Repairs & Equipment',
+                catFurnishing: 'Furnishing & Decoration',
+                catMarketing: 'Marketing & Advertising',
+                catInsurance: 'Insurance',
+                catSupplies: 'Supplies & Materials',
+                catOther: 'Other',
                 paidBy: 'Paid By',
+                selectPerson: '-- Select --',
                 splitBetween: 'Split Between',
+                selectSplit: '-- Select --',
+                splitBoth: 'Both (50/50)',
+                splitDavide: 'Davide Only',
+                splitMattia: 'Mattia Only',
                 date: 'Date',
                 notes: 'Notes (optional)',
                 receipt: 'Receipt Photo (optional)',
@@ -1350,8 +1365,23 @@
                 description: 'Descrizione',
                 amount: 'Importo (EUR)',
                 category: 'Categoria',
+                selectCategory: '-- Seleziona Categoria --',
+                catCleaning: 'Pulizia e Manutenzione',
+                catUtilities: 'Servizi (Acqua, Gas, Elettricità)',
+                catGroceries: 'Generi Alimentari e Cibo',
+                catRepairs: 'Riparazioni e Attrezzature',
+                catFurnishing: 'Arredamento e Decorazione',
+                catMarketing: 'Marketing e Pubblicità',
+                catInsurance: 'Assicurazione',
+                catSupplies: 'Forniture e Materiali',
+                catOther: 'Altro',
                 paidBy: 'Pagato da',
+                selectPerson: '-- Seleziona --',
                 splitBetween: 'Dividi tra',
+                selectSplit: '-- Seleziona --',
+                splitBoth: 'Entrambi (50/50)',
+                splitDavide: 'Solo Davide',
+                splitMattia: 'Solo Mattia',
                 date: 'Data',
                 notes: 'Note (facoltativo)',
                 receipt: 'Foto Ricevuta (facoltativo)',
@@ -1408,6 +1438,8 @@
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             updatePageText();
+            updateDropdownOptions();
+            renderCalendar();
         }
 
         function toggleTheme() {
@@ -1423,6 +1455,36 @@
             });
             displayExpenses();
             displaySettlement();
+        }
+
+        // ========== UPDATE DROPDOWN OPTIONS ==========
+        function updateDropdownOptions() {
+            // Category options
+            const categoryOptions = document.querySelectorAll('#category option');
+            categoryOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) {
+                    option.textContent = t(i18nKey);
+                }
+            });
+
+            // Paid By options
+            const paidByOptions = document.querySelectorAll('#paidBy option');
+            paidByOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) {
+                    option.textContent = t(i18nKey);
+                }
+            });
+
+            // Split Between options
+            const splitOptions = document.querySelectorAll('#splitBetween option');
+            splitOptions.forEach(option => {
+                const i18nKey = option.getAttribute('data-i18n');
+                if (i18nKey) {
+                    option.textContent = t(i18nKey);
+                }
+            });
         }
 
         // ========== STORAGE ==========
@@ -1631,7 +1693,10 @@
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
 
-            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthNames = currentLanguage === 'en' 
+                ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                : ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+            
             document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
 
             const firstDay = new Date(year, month, 1).getDay();
@@ -1845,6 +1910,7 @@
             displayExpenses();
             displaySettlement();
             updatePageText();
+            updateDropdownOptions();
             setTimeout(() => renderCalendar(), 150);
         }
 
@@ -1856,7 +1922,7 @@
         });
 
         // ========== VERSION ==========
-        const APP_VERSION = '2.0.4-modal-fix';
+        const APP_VERSION = '2.0.5-full-translation';
         console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
         
         document.addEventListener('DOMContentLoaded', () => {
