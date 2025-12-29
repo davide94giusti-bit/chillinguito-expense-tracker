@@ -1773,6 +1773,28 @@
             document.querySelector('.theme-btn').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
             setupLockScreen();
         });
+
+        // ========== VERSION CHECK ==========
+        const APP_VERSION = '2.0.0-calendar-refined';
+        console.log(`🚀 Chillinguito Lake Como v${APP_VERSION} loaded`);
+        document.addEventListener('DOMContentLoaded', () => {
+            const versionBanner = document.createElement('div');
+            versionBanner.id = 'versionBanner';
+            versionBanner.style.cssText = `
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                background: rgba(33, 150, 243, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 11px;
+                z-index: 9999;
+                font-weight: 600;
+            `;
+            versionBanner.textContent = `v${APP_VERSION}`;
+            document.body.appendChild(versionBanner);
+        });
     </script>
 </body>
 </html>
