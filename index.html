@@ -1356,11 +1356,11 @@
             <p id="authSubtitle">Select your account & enter 2FA code</p>
 
             <div class="user-selector">
-                <button class="user-btn" onclick="selectUser('davide')">
+                <button class="user-btn" onclick="selectUser('Davide', event)">
                     <span class="user-icon">👨</span>
                     <span>Davide</span>
                 </button>
-                <button class="user-btn" onclick="selectUser('mattia')">
+                <button class="user-btn" onclick="selectUser('Mattia', event)">
                     <span class="user-icon">👨‍🦱</span>
                     <span>Mattia</span>
                 </button>
@@ -3126,9 +3126,58 @@
         }
 
         // ============ AUTH & UI FUNCTIONS ============
-        function selectUser(user) {
+        let selectedUsername = null; // add this near your other state variables
+
+        function validateTOTP() {
+            const inputs = document.querySelectorAll('.totp-digit');
+            const code = Array.from(inputs).map(i => i.value).join('');
+            const errorEl = document.getElementById('errorMessage');
+        
+            if (!selectedUsername) {
+                if (errorEl) errorEl.textContent = '❌ Select a user first';
+                return;
+            }
+        
+            if (code.length !== 6) {
+                if (errorEl) errorEl.textContent = '❌ Enter all 6 digits';
+                return;
+            }
+        
+            const username = selectedUsername; // 'davide' or 'mattia'
+            const ok = verifyTOTP(code, username);
+        
+            if (!ok) {
+                if (errorEl) errorEl.textContent = '❌ Invalid code – try again';
+                return;
+            }
+        
+            // SUCCESS: unlock app
+            currentUser = username === 'davide' ? 'Davide' : 'Mattia';
+        
+            const authScreen = document.getElementById('authScreen');
+            const mainApp = document.getElementById('mainApp');
+            if (authScreen) authScreen.style.display = 'none';
+            if (mainApp) mainApp.style.display = 'block';
+            document.body.classList.remove('locked');
+        
+            // header user badge
+            const userIconEl = document.getElementById('userIcon');
+            const userNameEl = document.getElementById('userName');
+            if (userIconEl) userIconEl.textContent = username === 'davide' ? '👨' : '👨‍🦱';
+            if (userNameEl) userNameEl.textContent = currentUser;
+        
+            if (errorEl) errorEl.textContent = '';
+        }
+
+        function selectUser(username, ev) {
+            const e = ev || window.event;
             document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('selected'));
-            event.target.closest('.user-btn').classList.add('selected');
+            if (e && e.currentTarget) {
+                e.currentTarget.classList.add('selected');
+            }
+            selectedUsername = username;
+            const errorEl = document.getElementById('errorMessage');
+            if (errorEl) errorEl.textContent = '';
         }
 
         function verifyTOTP(token, username) {
@@ -3176,14 +3225,6 @@
         console.error('❌ TOTP verification error:', e.message);
         return false;
     }
-}
-
-function bytesToHex(bytes) {
-    let hex = '';
-    for (let i = 0; i < bytes.length; i++) {
-        hex += ('0' + bytes[i].toString(16)).slice(-2);
-    }
-    return hex;
 }
 
 function bytesToHex(bytes) {
@@ -3244,6 +3285,31 @@ if (document.readyState === 'loading') {
 }
 
 // TOTP Verification Function
+        function base32Decode(str) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            let bits = 0, value = 0;
+            const result = [];
+            for (let i = 0; i < str.length; i++) {
+                const index = alphabet.indexOf(str[i].toUpperCase());
+                if (index === -1) throw new Error('Invalid base32 character: ' + str[i]);
+                value = (value << 5) | index;
+                bits += 5;
+                if (bits >= 8) {
+                    bits -= 8;
+                    result.push((value >> bits) & 0xff);
+                }
+            }
+            return result;
+        }
+        
+        function hexToBytes(hex) {
+            const bytes = [];
+            for (let i = 0; i < hex.length; i += 2) {
+                bytes.push(parseInt(hex.substr(i, 2), 16));
+            }
+            return bytes;
+        }
+        
         function verifyTOTP(token, username) {
             const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
             const TOTP_SECRET_MATTIA = 'JBSWY3DPEHPK3PXP';
