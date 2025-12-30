@@ -1562,46 +1562,43 @@
 </head>
 <body id="appBody">
     <!-- AUTH SCREEN -->
-    <div id="authScreen" class="auth-screen">
-        <div class="auth-container">
-            <div class="auth-icon">🏠</div>
-            <h1 id="authTitle">Chillinguito</h1>
-            <p id="authSubtitle">Select your account & enter 2FA code</p>
-            
-            <div class="auth-step">
-                <div class="user-grid">
-                    <button class="user-choice" data-user="davide">
-                        <span>👨</span>
-                        <span>Davide</span>
-                    </button>
-                    <button class="user-choice" data-user="mattia">
-                        <span>👨</span>
-                        <span>Mattia</span>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="auth-step">
-                <label id="authCodeLabel">Enter 6-digit code:</label>
-                <div class="code-input">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
-                </div>
-            </div>
-            
-            <button id="unlockBtn" class="unlock-btn">Unlock</button>
-            <div id="errorMsg" class="error-message"></div>
-            
-            <div id="authInfo" class="auth-info">
-                💡 Both users use the same code from Microsoft Authenticator
+<div id="authScreen" class="auth-screen">
+    <div class="auth-container">
+        <div class="auth-icon">🏠</div>
+        <h1 id="authTitle">Chillinguito</h1>
+        <p id="authSubtitle">Select your account & enter 2FA code</p>
+        
+        <div class="auth-step">
+            <div class="user-grid">
+                <button class="user-choice" data-user="davide">
+                    <span>👨</span>
+                    <span>Davide</span>
+                </button>
+                <button class="user-choice" data-user="mattia">
+                    <span>👨</span>
+                    <span>Mattia</span>
+                </button>
             </div>
         </div>
+
+        <div class="auth-step">
+            <label id="authCodeLabel">Enter 6-digit code:</label>
+            <div class="code-input">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+            </div>
+        </div>
+
+        <button id="unlockBtn" class="unlock-btn">Unlock</button>
+        <div id="errorMsg" class="error-message"></div>
+        <div id="authInfo" class="auth-info">💡 Both users use the same code from Microsoft Authenticator</div>
     </div>
-    
+</div>
+
     <!-- MAIN APP -->
     <div id="mainApp">
         <header>
