@@ -3109,22 +3109,39 @@ function validateTOTP() {
         return;
     }
 
-    // SUCCESS: unlock app
-    currentUser = selectedUsername === 'Davide' ? 'Davide' : 'Mattia';
+// SUCCESS: unlock app - SHOW APP INSTANTLY
+currentUser = selectedUsername === 'Davide' ? 'Davide' : 'Mattia';
 
-    const authScreen = document.getElementById('authScreen');
-    const mainApp = document.getElementById('mainApp');
-    if (authScreen) authScreen.style.display = 'none';
-    if (mainApp) mainApp.style.display = 'block';
-    document.body.classList.remove('locked');
+const authScreen = document.getElementById('authScreen');
+const mainApp = document.getElementById('mainApp');
+if (authScreen) authScreen.style.display = 'none';
+if (mainApp) {
+  mainApp.style.display = 'block';
+  mainApp.style.zIndex = '10';
+}
+document.body.classList.remove('locked');
 
-    // Update header user badge
-    const userIconEl = document.getElementById('userIcon');
-    const userNameEl = document.getElementById('userName');
-    if (userIconEl) userIconEl.textContent = selectedUsername === 'Davide' ? '👨' : '👨‍🦱';
-    if (userNameEl) userNameEl.textContent = currentUser;
+// Update header user badge
+const userIconEl = document.getElementById('userIcon');
+const userNameEl = document.getElementById('userName');
+if (userIconEl) userIconEl.textContent = selectedUsername === 'Davide' ? '👨' : '👨‍🦱';
+if (userNameEl) userNameEl.textContent = currentUser;
 
-    if (errorEl) errorEl.textContent = '';
+if (errorEl) errorEl.textContent = '';
+
+console.log('✅ App loaded from localStorage');
+
+// Load data from localStorage INSTANTLY
+displayExpenses()
+displaySettlement()
+displayGuests()
+
+// Start Firebase sync in BACKGROUND (don't wait)
+console.log('🔄 Starting Firebase sync...')
+if (isFirebaseReady) {
+  setTimeout(() => setupFirebaseListeners(), 100)
+}
+
     
     // Load data
     displayExpenses();
