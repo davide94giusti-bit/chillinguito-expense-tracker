@@ -1700,6 +1700,7 @@
         // ============ STATE ============
         const TOTP_SECRET = 'JBSWY3DPEHPK3PXP';
         let currentUser = null;
+        let selectedUsername = null;
         let listenersSetup = false;
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentLanguage = localStorage.getItem('language') || 'en';
@@ -3179,7 +3180,7 @@
             const errorEl = document.getElementById('errorMessage');
             if (errorEl) errorEl.textContent = '';
         }
-
+        
         function verifyTOTP(token, username) {
     const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
     const TOTP_SECRET_MATTIA = 'JBSWY3DPEHPK3PXP';
@@ -3309,7 +3310,75 @@ if (document.readyState === 'loading') {
             }
             return bytes;
         }
-        
+
+        // ============ TOTP SETUP ============
+function setupTOTPInput() {
+    const inputs = document.querySelectorAll('.totp-digit');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+            if (e.key === 'Enter') {
+                validateTOTP();
+            }
+        });
+    });
+}
+
+function validateTOTP() {
+    const inputs = document.querySelectorAll('.totp-digit');
+    const code = Array.from(inputs).map(i => i.value).join('');
+    const errorEl = document.getElementById('errorMessage');
+
+    if (!selectedUsername) {
+        if (errorEl) errorEl.textContent = '❌ Select a user first';
+        return;
+    }
+
+    if (code.length !== 6) {
+        if (errorEl) errorEl.textContent = '❌ Enter all 6 digits';
+        return;
+    }
+
+    const ok = verifyTOTP(code, selectedUsername);
+
+    if (!ok) {
+        if (errorEl) errorEl.textContent = '❌ Invalid code – try again';
+        // Clear inputs
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+        return;
+    }
+
+    // SUCCESS: unlock app
+    currentUser = selectedUsername === 'Davide' ? 'Davide' : 'Mattia';
+
+    const authScreen = document.getElementById('authScreen');
+    const mainApp = document.getElementById('mainApp');
+    if (authScreen) authScreen.style.display = 'none';
+    if (mainApp) mainApp.style.display = 'block';
+    document.body.classList.remove('locked');
+
+    // Update header user badge
+    const userIconEl = document.getElementById('userIcon');
+    const userNameEl = document.getElementById('userName');
+    if (userIconEl) userIconEl.textContent = selectedUsername === 'Davide' ? '👨' : '👨‍🦱';
+    if (userNameEl) userNameEl.textContent = currentUser;
+
+    if (errorEl) errorEl.textContent = '';
+    
+    // Load data
+    displayExpenses();
+    displaySettlement();
+    displayGuests();
+    setupFirebaseListeners();
+}        
         function verifyTOTP(token, username) {
             const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
             const TOTP_SECRET_MATTIA = 'JBSWY3DPEHPK3PXP';
@@ -3477,13 +3546,17 @@ if (document.readyState === 'loading') {
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);
             
-            // ✅ Auth screen should be visible by default
+            // Setup TOTP input
+            setupTOTPInput();
+            
+            // Auth screen shown by default
             const authScreen = document.getElementById('authScreen');
             const mainApp = document.getElementById('mainApp');
             
             authScreen.style.display = 'flex';  // Show auth
             mainApp.style.display = 'none';      // Hide main until authenticated
-        });
+            document.body.classList.add('locked');
+        }); 
     </script>
 </body>
 </html>
