@@ -1665,6 +1665,8 @@ textarea {
         let currentTheme = localStorage.getItem('theme') || 'light';
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentCalendarDate = new Date();
+        let occupiedDates = []
+        let cleaningDates = []
         let filteredExpenses = [];
         let filteredGuests = [];
         let receiptBase64 = null;
@@ -3439,13 +3441,13 @@ document.querySelectorAll('.code-box').forEach((input, index) => {
             mainApp.style.display = 'none';      // Hide main until authenticated
             document.body.classList.add('locked');
         }); 
-        // ✅ Initialize calendar on page load
+// ✅ Initialize calendar when page loads
 document.addEventListener('DOMContentLoaded', () => {
   console.log('Initializing calendar...')
   renderCalendar()
 })
 
-// ✅ Fix the month navigation
+// Also make sure these functions exist and work
 function nextMonth() {
   currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1)
   renderCalendar()
