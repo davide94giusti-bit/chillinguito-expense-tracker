@@ -43,6 +43,167 @@
   --gray-700: #374151;
   --gray-800: #1F2937;
   --gray-900: #111827;
+
+  /* ============================================
+   AUTH SCREEN - LAKE COMO DESIGN
+   ============================================ */
+
+#authScreen {
+  background: linear-gradient(135deg, rgba(26, 58, 130, 0.4), rgba(46, 139, 158, 0.4)), 
+              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&q=90');
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-container {
+  background: white;
+  border-radius: 24px;
+  padding: 48px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+.auth-container h1 {
+  color: #0066CC;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.5px;
+}
+
+.auth-container p {
+  color: #666;
+  font-size: 15px;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+.user-grid {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  justify-content: center;
+}
+
+.user-choice {
+  padding: 14px 28px;
+  border: 2px solid #ddd;
+  border-radius: 24px;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 140px;
+  color: #333;
+}
+
+.user-choice:hover {
+  border-color: #0066CC;
+  background: rgba(0, 102, 204, 0.05);
+}
+
+.user-choice.active {
+  border-color: #0066CC;
+  background: rgba(0, 102, 204, 0.1);
+  color: #0066CC;
+}
+
+.user-choice span:first-child {
+  font-size: 20px;
+}
+
+.code-input {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 24px 0 32px 0;
+  flex-wrap: wrap;
+}
+
+.code-box {
+  width: 48px;
+  height: 48px;
+  font-size: 22px !important;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #ddd !important;
+  border-radius: 10px;
+  color: #333;
+  background: white !important;
+  padding: 0 !important;
+  transition: all 0.2s ease;
+}
+
+.code-box:focus {
+  outline: none;
+  border-color: #0066CC !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.auth-step label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.unlock-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #0066CC, #2E8B9E);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 56px;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+  margin-bottom: 16px;
+}
+
+.unlock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+}
+
+.unlock-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #F44336;
+  font-size: 13px;
+  margin-bottom: 16px;
+  min-height: 18px;
+}
+
+.auth-info {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.2);
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.5;
+}
   
   /* Shadows */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
