@@ -3147,7 +3147,7 @@ if (isFirebaseReady) {
     displayExpenses();
     displaySettlement();
     displayGuests();
-    setupFirebaseListeners();
+    setTimeout(() => setupFirebaseListeners(), 100)
 }        
         function verifyTOTP(token, username) {
             const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
@@ -3373,7 +3373,7 @@ document.getElementById('unlockBtn').addEventListener('click', function() {
     displayExpenses();
     displaySettlement();
     displayGuests();
-    setupFirebaseListeners();
+    setTimeout(() => setupFirebaseListeners(), 100);
 });
 
 // Setup code input auto-advance
