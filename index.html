@@ -1233,6 +1233,104 @@
             margin: 0;
         }
 
+            @media (max-width: 480px) {
+        /* Auth Screen */
+        .auth-screen {
+            padding: 24px !important;
+            max-width: 95vw;
+            border-radius: 12px;
+        }
+        
+        .auth-screen h1 { font-size: 24px; }
+        .auth-screen .icon { font-size: 48px; }
+        
+        /* User Selection */
+        .user-selector {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        
+        .user-btn {
+            min-height: 60px;
+            font-size: 15px;
+            padding: 14px;
+        }
+        
+        /* TOTP Input */
+        .totp-input {
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .totp-digit {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+        
+        /* Buttons */
+        button {
+            min-height: 44px;
+            padding: 12px 16px;
+        }
+        
+        /* Header */
+        .header-top {
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        header h1 { font-size: 18px; }
+        header p { font-size: 12px; }
+        
+        /* Status Badges */
+        .header-status {
+            flex-direction: column;
+            width: 100%;
+            gap: 8px;
+        }
+        
+        .status-badge,
+        .sync-status-indicator,
+        .user-badge,
+        .lang-btn,
+        .theme-btn,
+        .logout-btn {
+            width: 100%;
+        }
+        
+        /* Tabs */
+        .tabs {
+            gap: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab-btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            min-height: 40px;
+        }
+        
+        /* Cards */
+        .card {
+            padding: 16px;
+            border-radius: 10px;
+        }
+        
+        .container { padding: 0 8px; }
+        
+        /* Forms */
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        input, select, textarea {
+            padding: 12px;
+            font-size: 16px;
+        }
+    }
+    
+
         @media (max-width: 600px) {
             .calendar-container { padding: 8px; }
             .calendar-day { aspect-ratio: 1.1 / 1; min-height: 44px; padding: 1px; }
@@ -3031,27 +3129,29 @@
 
         function validateTOTP() {
             const codes = document.querySelectorAll('.totp-digit');
-            const code = Array.from(codes).map(c => c.value).join('');
+            const inputCode = Array.from(codes).map(c => c.value).join('');
             const t = translations[currentLanguage];
-
-            if (code.length !== 6) {
+        
+            if (inputCode.length !== 6) {
                 document.getElementById('errorMessage').textContent = 'Please enter all 6 digits';
-                return;
+                return; // ← STOP if invalid
             }
-
+        
             const user = document.querySelector('.user-btn.selected');
             if (!user) {
                 document.getElementById('errorMessage').textContent = 'Please select a user';
-                return;
+                return; // ← STOP if no user selected
             }
-
+        
+            // ✅ Only proceed if validation passes
             currentUser = user.textContent.trim().toLowerCase().split('\n')[1] || 'davide';
             document.getElementById('userIcon').textContent = currentUser === 'davide' ? '👨' : '👨‍🦱';
             document.getElementById('userName').textContent = currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
-
+        
+            // 🔴 CRITICAL: Make mainApp visible
             document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
-
+            document.getElementById('mainApp').style.display = 'block'; // ← THIS MUST EXECUTE
+        
             updateTranslations();
             displayExpenses();
             displaySettlement();
@@ -3146,7 +3246,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             const theme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', theme);
-            document.getElementById('authScreen').style.display = 'flex';
+            
+            // ✅ Auth screen should be visible by default
+            const authScreen = document.getElementById('authScreen');
+            const mainApp = document.getElementById('mainApp');
+            
+            authScreen.style.display = 'flex';  // Show auth
+            mainApp.style.display = 'none';      // Hide main until authenticated
         });
     </script>
 </body>
