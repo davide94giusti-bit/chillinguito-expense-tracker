@@ -26,12 +26,21 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--light);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
         body.locked {
@@ -1346,9 +1355,8 @@
     </style>
 </head>
 <body id="appBody">
-    <!-- AUTH SCREEN -->
-    <div id="authScreen" class="auth-screen">
-            <div class="icon">🏠</div>
+        <!-- AUTH SCREEN -->
+        <div id="authScreen" class="auth-screen">
             <div class="icon">🏠</div>
             <h1 id="authTitle">Chillinguito</h1>
             <p id="authSubtitle">Select your account & enter 2FA code</p>
@@ -1929,63 +1937,45 @@
         // ============ TRANSLATIONS UPDATE ============
         function updateTranslations() {
             const t = translations[currentLanguage];
-            document.getElementById('authTitle').textContent = t.authTitle;
-            document.getElementById('authSubtitle').textContent = t.authSubtitle;
-            document.getElementById('authCodeLabel').textContent = t.authCodeLabel;
-            document.getElementById('unlockBtn').textContent = t.unlockBtn;
-            document.getElementById('authInfo').textContent = t.authInfo;
-            document.getElementById('appTitle').textContent = t.appTitle;
-            document.getElementById('appSubtitle').textContent = t.appSubtitle;
-            document.getElementById('langEnBtn').textContent = t.langEnBtn;
-            document.getElementById('langItBtn').textContent = t.langItBtn;
-            document.getElementById('logoutBtn').textContent = t.logoutBtn;
-            document.getElementById('tabAddExpense').textContent = t.tabAddExpense;
-            document.getElementById('tabExpensesList').textContent = t.tabExpensesList;
-            document.getElementById('tabSettlement').textContent = t.tabSettlement;
-            document.getElementById('tabGuests').textContent = t.tabGuests;
-            document.getElementById('tabCalendar').textContent = t.tabCalendar;
-            document.getElementById('tabExport').textContent = t.tabExport;
-            document.getElementById('addExpenseTitle').textContent = t.addExpenseTitle;
-            document.getElementById('descLabel').textContent = t.descLabel;
-            document.getElementById('amountLabel').textContent = t.amountLabel;
-            document.getElementById('categoryLabel').textContent = t.categoryLabel;
-            document.getElementById('paidByLabel').textContent = t.paidByLabel;
-            document.getElementById('splitLabel').textContent = t.splitLabel;
-            document.getElementById('dateLabel').textContent = t.dateLabel;
-            document.getElementById('notesLabel').textContent = t.notesLabel;
-            document.getElementById('cameraBtn').textContent = t.cameraBtn;
-            document.getElementById('addExpenseBtn').textContent = t.addExpenseBtn;
-            document.getElementById('catCleaning').textContent = t.catCleaning;
-            document.getElementById('catUtilities').textContent = t.catUtilities;
-            document.getElementById('catGroceries').textContent = t.catGroceries;
-            document.getElementById('catRepairs').textContent = t.catRepairs;
-            document.getElementById('catOther').textContent = t.catOther;
-            document.getElementById('splitBoth').textContent = t.splitBoth;
-            document.getElementById('splitDavide').textContent = t.splitDavide;
-            document.getElementById('splitMattia').textContent = t.splitMattia;
-            document.getElementById('allExpensesTitle').textContent = t.allExpensesTitle;
-            document.getElementById('clearAllBtn').textContent = t.clearAllBtn;
-            document.getElementById('settlementTitle').textContent = t.settlementTitle;
-            document.getElementById('totalLabel').textContent = t.totalLabel;
-            document.getElementById('davidePaidLabel').textContent = t.davidePaidLabel;
-            document.getElementById('mattiaPaidLabel').textContent = t.mattiaPaidLabel;
-            document.getElementById('whoOwesLabel').textContent = t.whoOwesLabel;
-            document.getElementById('recordPaymentLabel').textContent = t.recordPaymentLabel;
-            document.getElementById('recordPaymentBtn').textContent = t.recordPaymentBtn;
-            document.getElementById('davidePayOpt').textContent = t.davidePayOpt;
-            document.getElementById('mattiaPayOpt').textContent = t.mattiaPayOpt;
-            document.getElementById('guestsTitle').textContent = t.guestsTitle;
-            document.getElementById('addGuestBtn').textContent = t.addGuestBtn;
-            document.getElementById('calendarTitle').textContent = t.calendarTitle;
-            document.getElementById('prevBtn').textContent = t.prevBtn;
-            document.getElementById('nextBtn').textContent = t.nextBtn;
-            document.getElementById('exportTitle').textContent = t.exportTitle;
-            document.getElementById('expensePeriodLabel').textContent = t.expensePeriodLabel;
-            document.getElementById('cleaningPeriodLabel').textContent = t.cleaningPeriodLabel;
-            document.getElementById('downloadReportBtn').textContent = t.downloadReportBtn;
-            populateMonthYearFilters();
-            renderCalendar();
+            
+            // Auth screen elements
+            const authTitle = document.getElementById('authTitle');
+            const authSubtitle = document.getElementById('authSubtitle');
+            const authCodeLabel = document.getElementById('authCodeLabel');
+            const authInfo = document.getElementById('authInfo');
+            const unlockBtn = document.querySelector('.unlock-btn');
+            
+            if (authTitle) authTitle.textContent = t.authTitle;
+            if (authSubtitle) authSubtitle.textContent = t.authSubtitle;
+            if (authCodeLabel) authCodeLabel.textContent = t.authCodeLabel;
+            if (authInfo) authInfo.textContent = t.authInfo;
+            if (unlockBtn) unlockBtn.textContent = t.unlockBtn;
+            
+            // Main app header
+            const appTitle = document.getElementById('appTitle');
+            const appSubtitle = document.getElementById('appSubtitle');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (appTitle) appTitle.textContent = t.appTitle;
+            if (appSubtitle) appSubtitle.textContent = t.appSubtitle;
+            if (logoutBtn) logoutBtn.textContent = t.logoutBtn;
+            
+            // Tabs
+            const tabAddExpense = document.getElementById('tabAddExpense');
+            const tabExpensesList = document.getElementById('tabExpensesList');
+            const tabSettlement = document.getElementById('tabSettlement');
+            const tabGuests = document.getElementById('tabGuests');
+            const tabCalendar = document.getElementById('tabCalendar');
+            const tabExport = document.getElementById('tabExport');
+            
+            if (tabAddExpense) tabAddExpense.textContent = t.tabAddExpense;
+            if (tabExpensesList) tabExpensesList.textContent = t.tabExpensesList;
+            if (tabSettlement) tabSettlement.textContent = t.tabSettlement;
+            if (tabGuests) tabGuests.textContent = t.tabGuests;
+            if (tabCalendar) tabCalendar.textContent = t.tabCalendar;
+            if (tabExport) tabExport.textContent = t.tabExport;
         }
+        
 
         function showNotification(msg) {
             const container = document.getElementById('notificationContainer');
