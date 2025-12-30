@@ -2913,6 +2913,15 @@ setTimeout(() => {
           for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement('div')
             dayElement.className = 'calendar-day'
+            // Add color based on status
+            if (occupiedDates && occupiedDates.includes(dateString)) {
+              dayElement.classList.add('occupied')
+            } else if (cleaningDates && cleaningDates.includes(dateString)) {
+              dayElement.classList.add('cleaning')
+            } else {
+              dayElement.classList.add('available')
+            }
+            
             
             // ✅ ADD THIS LOGIC ✅
             // Check if day is occupied, cleaning, or available
@@ -3430,6 +3439,22 @@ document.querySelectorAll('.code-box').forEach((input, index) => {
             mainApp.style.display = 'none';      // Hide main until authenticated
             document.body.classList.add('locked');
         }); 
+        // ✅ Initialize calendar on page load
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Initializing calendar...')
+  renderCalendar()
+})
+
+// ✅ Fix the month navigation
+function nextMonth() {
+  currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1)
+  renderCalendar()
+}
+
+function previousMonth() {
+  currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1)
+  renderCalendar()
+}
     </script>
 </body>
 </html>
