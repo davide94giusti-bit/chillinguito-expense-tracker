@@ -54,32 +54,73 @@
         .auth-screen {
             background: white;
             border-radius: 16px;
-            padding: 40px;
+            padding: 32px 24px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 500px;
-            width: 95%;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 380px;
+            margin: auto;
         }
         
         .auth-screen h1 {
             color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 26px;
-            word-break: break-word;
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            letter-spacing: -0.5px;
+            white-space: nowrap;
         }
         
         .auth-screen p {
             color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-break: break-word;
+            margin: 0 0 24px 0;
+            font-size: 13px;
+            line-height: 1.5;
         }
         
         .auth-screen .icon {
-            font-size: 50px;
+            font-size: 48px;
             margin-bottom: 16px;
+            display: block;
+        }
+        
+        .user-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .user-btn {
+            padding: 12px 8px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .user-btn:hover {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.05);
+        }
+        
+        .user-btn.selected {
+            border-color: var(--primary);
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--primary);
+        }
+        
+        .user-icon {
+            font-size: 24px;
+            display: block;
         }
         
         .totp-input {
@@ -87,103 +128,108 @@
             gap: 6px;
             justify-content: center;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
         
         .totp-digit {
-            width: 45px;
-            height: 45px;
-            border: 2px solid var(--border);
+            width: 42px;
+            height: 42px;
+            border: 2px solid var(--border) !important;
             border-radius: 8px;
             text-align: center;
-            font-size: 20px;
+            font-size: 20px !important;
             font-weight: 600;
             color: var(--primary);
+            padding: 0 !important;
         }
         
-        .user-selector {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .totp-digit:focus {
+            outline: none;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
         
-        .user-btn {
-            padding: 14px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 15px;
-            transition: all 0.3s;
-            min-height: 70px;
-            min-width: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        
-
-        .auth-screen h1 {
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .auth-screen p {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            font-size: 15px;
-        }
-
-        .auth-screen .icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        .user-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .user-btn {
-            padding: 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            font-weight: 600;
+        .unlock-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
             font-size: 16px;
-            transition: all 0.3s;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            min-height: 44px;
         }
-
-        .user-btn:hover {
-            border-color: var(--primary);
-            background: rgba(33, 150, 243, 0.05);
+        
+        .unlock-btn:hover {
+            background: var(--primary-dark);
         }
-
-        .user-btn.selected {
-            border-color: var(--primary);
+        
+        .unlock-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            margin-top: 8px;
+            font-size: 13px;
+            min-height: 18px;
+        }
+        
+        .auth-info {
             background: rgba(33, 150, 243, 0.1);
-            color: var(--primary);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
-
-        .user-icon {
-            font-size: 24px;
+        
+        @media (max-width: 480px) {
+            .auth-screen {
+                padding: 20px 16px;
+                max-width: 90vw;
+            }
+            
+            .auth-screen h1 {
+                font-size: 24px;
+                margin-bottom: 6px;
+            }
+            
+            .auth-screen p {
+                font-size: 12px;
+                margin-bottom: 18px;
+            }
+            
+            .auth-screen .icon {
+                font-size: 40px;
+                margin-bottom: 12px;
+            }
+            
+            .user-btn {
+                min-height: 60px;
+                font-size: 13px;
+                gap: 4px;
+            }
+            
+            .user-icon {
+                font-size: 20px;
+            }
+            
+            .totp-digit {
+                width: 36px;
+                height: 36px;
+                font-size: 18px !important;
+            }
+            
+            .unlock-btn {
+                font-size: 15px;
+            }
         }
-
+        
         .totp-input {
             display: flex;
             gap: 8px;
@@ -1466,40 +1512,40 @@
     </style>
 </head>
 <body id="appBody">
-        <!-- AUTH SCREEN -->
-        <div id="authScreen" class="auth-screen">
-            <div class="icon">🏠</div>
-            <h1 id="authTitle">Chillinguito</h1>
-            <p id="authSubtitle">Select your account & enter 2FA code</p>
-
-            <div class="user-selector">
-                <button class="user-btn" onclick="selectUser('Davide', event)">
-                    <span class="user-icon">👨</span>
-                    <span>Davide</span>
-                </button>
-                <button class="user-btn" onclick="selectUser('Mattia', event)">
-                    <span class="user-icon">👨‍🦱</span>
-                    <span>Mattia</span>
-                </button>
-            </div>
-
-            <label id="authCodeLabel" style="display: block; margin-bottom: 12px; font-weight: 600;">Enter 6-digit code:</label>
-            <div class="totp-input">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-                <input type="text" class="totp-digit" maxlength="1" inputmode="numeric">
-            </div>
-
-            <button class="unlock-btn" onclick="validateTOTP()">Unlock</button>
-
-            <div class="error-message" id="errorMessage"></div>
-
-            <div class="auth-info" id="authInfo">
-                💡 Both users use the same code from Microsoft Authenticator
-            </div>
+    <!-- AUTH SCREEN -->
+    <div id="authScreen" class="auth-screen">
+        <div class="icon">🏠</div>
+        <h1 id="authTitle">Chillinguito</h1>
+        <p id="authSubtitle">Select your account & enter 2FA code</p>
+        
+        <div class="user-selector">
+            <button class="user-btn" data-user="davide">
+                <span class="user-icon">👨</span>
+                <span>Davide</span>
+            </button>
+            <button class="user-btn" data-user="mattia">
+                <span class="user-icon">👨</span>
+                <span>Mattia</span>
+            </button>
+        </div>
+        
+        <label id="authCodeLabel" style="display:block; margin-bottom:12px; font-weight:600; text-align:center;">Enter 6-digit code:</label>
+        
+        <div class="totp-input">
+            <input type="text" class="totp-digit" maxlength="1" data-index="0">
+            <input type="text" class="totp-digit" maxlength="1" data-index="1">
+            <input type="text" class="totp-digit" maxlength="1" data-index="2">
+            <input type="text" class="totp-digit" maxlength="1" data-index="3">
+            <input type="text" class="totp-digit" maxlength="1" data-index="4">
+            <input type="text" class="totp-digit" maxlength="1" data-index="5">
+        </div>
+        
+        <button id="unlockBtn" class="unlock-btn">Unlock</button>
+        
+        <div id="errorMsg" class="error-message"></div>
+        
+        <div id="authInfo" class="auth-info">
+            💡 Both users use the same code from Microsoft Authenticator
         </div>
     </div>
 
