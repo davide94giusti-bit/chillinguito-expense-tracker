@@ -1634,38 +1634,27 @@ textarea {
         let db = null;
         let isFirebaseReady = false;
         
-        // Show auth screen IMMEDIATELY  
-        document.getElementById('authScreen').style.display = 'flex'
-        document.getElementById('mainApp').style.display = 'none'
-        
-        // Init Firebase asynchronously with FAST timeout
-        setTimeout(() => {
-          try {
-            firebaseApp = firebase.initializeApp(firebaseConfig)
-            db = firebase.database()
-            isFirebaseReady = true
-            console.log('✅ Firebase ready')
-            // DON'T call setupFirebaseListeners here!
-          } catch(e) {
-            console.warn('⚠️ Firebase offline', e.message)
-          }
-        }, 50)
-        
-        // Force continue after 2 seconds max
-        setTimeout(() => {
-          isFirebaseReady = true
-          console.log('Forcing ready state')
-        }, 2000)
-        
-        
-        // Fallback: Show app after 3 seconds even if Firebase isn't ready
-        setTimeout(() => {
-          if (!currentUser && selectedUsername) {
-            console.log('Timeout: showing app anyway');
-            // User can authenticate without Firebase
-          }
-        }, 3000);
-        
+ // ✅ SHOW AUTH INSTANTLY - don't wait for Firebase
+document.getElementById('authScreen').style.display = 'flex'
+document.getElementById('mainApp').style.display = 'none'
+
+// ✅ Initialize Firebase in BACKGROUND - non-blocking
+setTimeout(() => {
+  try {
+    firebaseApp = firebase.initializeApp(firebaseConfig)
+    db = firebase.database()
+    isFirebaseReady = true
+    console.log('✅ Firebase ready')
+  } catch (e) {
+    console.warn('⚠️ Firebase offline', e.message)
+  }
+}, 0)
+
+// Force ready after 5 seconds max (for slow networks)
+setTimeout(() => {
+  isFirebaseReady = true
+  console.log('⏱️ Forcing Firebase ready after timeout')
+}, 5000)     
 
         // ============ TRANSLATIONS ============
         const translations = {
