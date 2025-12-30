@@ -1634,23 +1634,29 @@ textarea {
         let db = null;
         let isFirebaseReady = false;
         
-        // Show auth screen IMMEDIATELY
-        document.getElementById('authScreen').style.display = 'flex';
-        document.getElementById('mainApp').style.display = 'none';
+        // Show auth screen IMMEDIATELY  
+        document.getElementById('authScreen').style.display = 'flex'
+        document.getElementById('mainApp').style.display = 'none'
         
-        // Init Firebase asynchronously with timeout
+        // Init Firebase asynchronously with FAST timeout
         setTimeout(() => {
           try {
-            firebaseApp = firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            isFirebaseReady = true;
-            console.log('✅ Firebase connected');
-            setupFirebaseListeners();
+            firebaseApp = firebase.initializeApp(firebaseConfig)
+            db = firebase.database()
+            isFirebaseReady = true
+            console.log('✅ Firebase ready')
+            // DON'T call setupFirebaseListeners here!
           } catch(e) {
-            console.warn('⚠️ Firebase failed, running offline', e.message);
-            isFirebaseReady = false; // Continue anyway
+            console.warn('⚠️ Firebase offline', e.message)
           }
-        }, 100);
+        }, 50)
+        
+        // Force continue after 2 seconds max
+        setTimeout(() => {
+          isFirebaseReady = true
+          console.log('Forcing ready state')
+        }, 2000)
+        
         
         // Fallback: Show app after 3 seconds even if Firebase isn't ready
         setTimeout(() => {
