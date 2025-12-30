@@ -3131,148 +3131,116 @@
             event.target.closest('.user-btn').classList.add('selected');
         }
 
-        function validateTOTP() {
-    const codes = document.querySelectorAll('.totp-digit');
-    const inputCode = Array.from(codes).map(c => c.value).join('');
-
-    if (inputCode.length !== 6) {
-        document.getElementById('errorMessage').textContent = '❌ Please enter all 6 digits';
-        return;
-    }
-
-    const user = document.querySelector('.user-btn.selected');
-    if (!user) {
-        document.getElementById('errorMessage').textContent = '❌ Please select a user';
-        return;
-    }
-
-    const username = user.textContent.trim().toLowerCase().split('\n') || 'davide';
+        function verifyTOTP(token, username) {
+    const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
+    const TOTP_SECRET_MATTIA = 'JBSWY3DPEHPK3PXP';
     
-    // Rate limiting: max 5 attempts per 15 minutes
-    const rateLimitKey = `totp_attempts_${username}`;
-    const rateLimitData = JSON.parse(localStorage.getItem(rateLimitKey) || '{"attempts":0,"firstAttempt":0}');
-    const timePassed = Date.now() - rateLimitData.firstAttempt;
-    const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+    const secret = username === 'davide' ? TOTP_SECRET_DAVIDE : TOTP_SECRET_MATTIA;
     
-    if (timePassed < RATE_LIMIT_WINDOW && rateLimitData.attempts >= 5) {
-        const minutesLeft = Math.ceil((RATE_LIMIT_WINDOW - timePassed) / 60000);
-        document.getElementById('errorMessage').textContent = 
-            `❌ Too many failed attempts. Try again in ${minutesLeft} minutes.`;
-        return;
-    }
-    // TOTP Verification Function
-    function verifyTOTP(token, username) {
-        const TOTP_SECRET_DAVIDE = 'JBSWY3DPEHPK3PXP';
-        const TOTP_SECRET_MATTIA = 'JBSWY3DPEHPK3PXP';
+    try {
+        const secretBytes = base32Decode(secret);
+        const now = Math.floor(Date.now() / 1000);
         
-        const secret = username === 'davide' ? TOTP_SECRET_DAVIDE : TOTP_SECRET_MATTIA;
-        
-        try {
-            const now = Math.floor(Date.now() / 1000);
+        // Check current time window and ±1 window (±30 seconds tolerance)
+        for (let i = -1; i <= 1; i++) {
+            const counter = Math.floor(now / 30) + i;
+            const counterHex = ('0000000000000000' + counter.toString(16)).slice(-16);
+            const counterBytes = hexToBytes(counterHex);
             
-            // Check current time window and ±1 window (±30 seconds tolerance)
-            for (let i = -1; i <= 1; i++) {
-                const counter = Math.floor(now / 30) + i;
-                const counterHex = ('0000000000000000' + counter.toString(16)).slice(-16);
-                const counterBytes = hexToBytes(counterHex);
-                
-                const hmac = CryptoJS.HmacSHA1(
-                    CryptoJS.enc.Latin1.parse(String.fromCharCode(...counterBytes)),
-                    CryptoJS.enc.Latin1.parse(base32DecodeToString(secret))
-                );
-                
-                const hmacBytes = hexToBytes(hmac.toString());
-                const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
-                const value = (
-                    ((hmacBytes[offset] & 0x7f) << 24) |
-                    ((hmacBytes[offset + 1] & 0xff) << 16) |
-                    ((hmacBytes[offset + 2] & 0xff) << 8) |
-                    (hmacBytes[offset + 3] & 0xff)
-                );
-                
-                const code = (value % 1000000).toString().padStart(6, '0');
-                
-                if (code === token) {
-                    console.log('✅ TOTP code verified');
-                    return true;
+            // Use CryptoJS correctly
+            const hmacObj = CryptoJS.HmacSHA1(
+                CryptoJS.enc.Hex.parse(counterHex),
+                CryptoJS.enc.Hex.parse(bytesToHex(secretBytes))
+            );
+            
+            const hmacBytes = hexToBytes(hmacObj.toString());
+            const offset = hmacBytes[hmacBytes.length - 1] & 0x0f;
+            const value = (
+                ((hmacBytes[offset] & 0x7f) << 24) |
+                ((hmacBytes[offset + 1] & 0xff) << 16) |
+                ((hmacBytes[offset + 2] & 0xff) << 8) |
+                (hmacBytes[offset + 3] & 0xff)
+            );
+            
+            const code = (value % 1000000).toString().padStart(6, '0');
+            
+            if (code === token) {
+                console.log('✅ TOTP code verified');
+                return true;
+            }
+        }
+        
+        console.log('❌ TOTP code did not match any time window');
+        return false;
+    } catch (e) {
+        console.error('❌ TOTP verification error:', e.message);
+        return false;
+    }
+}
+
+function bytesToHex(bytes) {
+    let hex = '';
+    for (let i = 0; i < bytes.length; i++) {
+        hex += ('0' + bytes[i].toString(16)).slice(-2);
+    }
+    return hex;
+}
+
+function bytesToHex(bytes) {
+    let hex = '';
+    for (let i = 0; i < bytes.length; i++) {
+        hex += ('0' + bytes[i].toString(16)).slice(-2);
+    }
+    return hex;
+}
+
+// Setup TOTP input with auto-advance and auto-submit
+function setupTOTPInput() {
+    const inputs = document.querySelectorAll('.totp-digit');
+    
+    inputs.forEach((input, index) => {
+        input.addEventListener('keydown', (e) => {
+            // Only allow numbers
+            if (!/[0-9]/.test(e.key) && !['Backspace', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                e.preventDefault();
+                return;
+            }
+        });
+
+        input.addEventListener('input', (e) => {
+            // Only keep one digit
+            input.value = input.value.slice(0, 1);
+
+            // Auto-advance to next field
+            if (input.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+                inputs[index + 1].select();
+            }
+
+            // Auto-submit when all 6 digits entered
+            if (index === inputs.length - 1 && input.value) {
+                const allFilled = Array.from(inputs).every(inp => inp.value);
+                if (allFilled) {
+                    setTimeout(() => validateTOTP(), 100);
                 }
             }
-            
-            return false;
-        } catch (e) {
-            console.error('❌ TOTP verification error:', e.message);
-            return false;
-        }
-    }
-    
-    function base32Decode(str) {
-        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-        let bits = 0;
-        let value = 0;
-        const result = [];
-        
-        for (let i = 0; i < str.length; i++) {
-            const index = alphabet.indexOf(str[i].toUpperCase());
-            if (index === -1) throw new Error('Invalid base32 character');
-            
-            value = (value << 5) | index;
-            bits += 5;
-            
-            if (bits >= 8) {
-                bits -= 8;
-                result.push((value >> bits) & 0xff);
+        });
+
+        input.addEventListener('keydown', (e) => {
+            // Backspace - go to previous field
+            if (e.key === 'Backspace' && !input.value && index > 0) {
+                inputs[index - 1].focus();
+                inputs[index - 1].select();
             }
-        }
-        
-        return result;
-    }
-    
-    function base32DecodeToString(str) {
-        return String.fromCharCode(...base32Decode(str));
-    }
-    
-    function hexToBytes(hex) {
-        const bytes = [];
-        for (let i = 0; i < hex.length; i += 2) {
-            bytes.push(parseInt(hex.substr(i, 2), 16));
-        }
-        return bytes;
-    }
-    // Verify TOTP code
-    if (!verifyTOTP(inputCode, username)) {
-        // Increment failed attempts
-        if (timePassed >= RATE_LIMIT_WINDOW) {
-            rateLimitData.attempts = 1;
-            rateLimitData.firstAttempt = Date.now();
-        } else {
-            rateLimitData.attempts += 1;
-        }
-        localStorage.setItem(rateLimitKey, JSON.stringify(rateLimitData));
-        
-        document.getElementById('errorMessage').textContent = '❌ Invalid code. Try again.';
-        console.log('❌ TOTP verification failed for', username);
-        return;
-    }
+        });
+    });
+}
 
-    // ✅ Code verified - clear rate limit and login
-    localStorage.removeItem(rateLimitKey);
-
-    currentUser = username;
-    document.getElementById('userIcon').textContent = currentUser === 'davide' ? '👨' : '👨‍🦱';
-    document.getElementById('userName').textContent = 
-        currentUser.charAt(0).toUpperCase() + currentUser.slice(1);
-
-    document.getElementById('authScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-
-    updateTranslations();
-    displayExpenses();
-    displaySettlement();
-    displayGuests();
-    renderCalendar();
-    setupFirebaseListeners();
-
-    console.log('✅ TOTP verification successful for', username);
+// Initialize on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTOTPInput);
+} else {
+    setupTOTPInput();
 }
 
 // TOTP Verification Function
