@@ -1347,8 +1347,8 @@
 </head>
 <body id="appBody">
     <!-- AUTH SCREEN -->
-    <div id="authScreen" class="auth-screen" style="display: none;">
-        <div class="auth-screen">
+    <div id="authScreen" class="auth-screen">
+            <div class="icon">🏠</div>
             <div class="icon">🏠</div>
             <h1 id="authTitle">Chillinguito</h1>
             <p id="authSubtitle">Select your account & enter 2FA code</p>
@@ -1385,7 +1385,7 @@
     </div>
 
     <!-- MAIN APP -->
-    <div id="mainApp" style="display: none;">
+    <div id="mainApp">
         <header>
             <div class="container">
                 <div class="header-top">
@@ -1395,17 +1395,17 @@
                     </div>
                     
                     <div class="header-status">
-                        <div id="syncStatusIndicator" class="sync-status-indicator" style="display: none;">
+                        <div id="syncStatusIndicator" class="sync-status-indicator">
                             <div class="sync-dot" id="syncDot"></div>
                             <span id="syncStatus">Syncing...</span>
                         </div>
 
-                        <div id="dbStatusIndicator" class="status-badge" style="display: none;">
+                        <div id="dbStatusIndicator" class="status-badge">
                             <span class="status-dot" id="dbStatusDot"></span>
                             <span id="dbStatus">DB Connected</span>
                         </div>
 
-                        <div id="otherUserStatusIndicator" class="status-badge" style="display: none;">
+                        <div id="otherUserStatusIndicator" class="status-badge">
                             <span class="status-dot" id="otherUserDot"></span>
                             <span id="otherUserStatus">Mattia online</span>
                         </div>
@@ -1497,7 +1497,7 @@
 
                         <div class="form-group">
                             <button type="button" class="camera-btn" onclick="openCamera()" id="cameraBtn">📷 Take Receipt Photo</button>
-                            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleCameraCapture()">
+                            <input type="file" id="cameraInput" accept="image/" capture="environment" onchange="handleCameraCapture()">
                             <div id="receiptPreview" style="margin-top: 10px;"></div>
                         </div>
 
@@ -1547,7 +1547,7 @@
             <!-- SETTLEMENT TAB -->
             <div id="settlement" class="tab-content">
                 <div class="settlement-summary">
-                    <div class="settlement-banner" id="settlementBanner" style="display: none;"></div>
+                    <div class="settlement-banner" id="settlementBanner"></div>
                     
                     <div class="summary-title" id="settlementTitle">Current Settlement Status</div>
                     
@@ -1577,7 +1577,7 @@
                     <div class="settlement-payments">
                         <h4 id="recordPaymentLabel" style="margin-bottom: 15px; color: var(--primary);">💰 Record Partial Payment</h4>
                         
-                        <div id="progressContainer" style="display: none;">
+                        <div id="progressContainer">
                             <div style="margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
                                 <span id="progressLabel">Payment Progress</span>
                                 <span id="progressPercent">0%</span>
@@ -3232,81 +3232,6 @@ function bytesToHex(bytes) {
     }
     return hex;
 }
-
-// Setup TOTP input with auto-advance and auto-submit
-function setupTOTPInput() {
-    const inputs = document.querySelectorAll('.totp-digit');
-    
-    inputs.forEach((input, index) => {
-        input.addEventListener('keydown', (e) => {
-            // Only allow numbers
-            if (!/[0-9]/.test(e.key) && !['Backspace', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-                e.preventDefault();
-                return;
-            }
-        });
-
-        input.addEventListener('input', (e) => {
-            // Only keep one digit
-            input.value = input.value.slice(0, 1);
-
-            // Auto-advance to next field
-            if (input.value && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-                inputs[index + 1].select();
-            }
-
-            // Auto-submit when all 6 digits entered
-            if (index === inputs.length - 1 && input.value) {
-                const allFilled = Array.from(inputs).every(inp => inp.value);
-                if (allFilled) {
-                    setTimeout(() => validateTOTP(), 100);
-                }
-            }
-        });
-
-        input.addEventListener('keydown', (e) => {
-            // Backspace - go to previous field
-            if (e.key === 'Backspace' && !input.value && index > 0) {
-                inputs[index - 1].focus();
-                inputs[index - 1].select();
-            }
-        });
-    });
-}
-
-// Initialize on page load
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupTOTPInput);
-} else {
-    setupTOTPInput();
-}
-
-// TOTP Verification Function
-        function base32Decode(str) {
-            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-            let bits = 0, value = 0;
-            const result = [];
-            for (let i = 0; i < str.length; i++) {
-                const index = alphabet.indexOf(str[i].toUpperCase());
-                if (index === -1) throw new Error('Invalid base32 character: ' + str[i]);
-                value = (value << 5) | index;
-                bits += 5;
-                if (bits >= 8) {
-                    bits -= 8;
-                    result.push((value >> bits) & 0xff);
-                }
-            }
-            return result;
-        }
-        
-        function hexToBytes(hex) {
-            const bytes = [];
-            for (let i = 0; i < hex.length; i += 2) {
-                bytes.push(parseInt(hex.substr(i, 2), 16));
-            }
-            return bytes;
-        }
 
         // ============ TOTP SETUP ============
 function setupTOTPInput() {
