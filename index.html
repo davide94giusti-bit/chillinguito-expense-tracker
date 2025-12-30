@@ -1633,15 +1633,33 @@ textarea {
         let firebaseApp = null;
         let db = null;
         let isFirebaseReady = false;
-
-        try {
+        
+        // Show auth screen IMMEDIATELY
+        document.getElementById('authScreen').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+        
+        // Init Firebase asynchronously with timeout
+        setTimeout(() => {
+          try {
             firebaseApp = firebase.initializeApp(firebaseConfig);
             db = firebase.database();
             isFirebaseReady = true;
-            console.log('✅ Firebase ready');
-        } catch (e) {
-            console.warn('Firebase init warning:', e.message);
-        }
+            console.log('✅ Firebase connected');
+            setupFirebaseListeners();
+          } catch(e) {
+            console.warn('⚠️ Firebase failed, running offline', e.message);
+            isFirebaseReady = false; // Continue anyway
+          }
+        }, 100);
+        
+        // Fallback: Show app after 3 seconds even if Firebase isn't ready
+        setTimeout(() => {
+          if (!currentUser && selectedUsername) {
+            console.log('Timeout: showing app anyway');
+            // User can authenticate without Firebase
+          }
+        }, 3000);
+        
 
         // ============ TRANSLATIONS ============
         const translations = {
