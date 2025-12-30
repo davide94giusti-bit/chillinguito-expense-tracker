@@ -229,70 +229,6 @@
                 font-size: 15px;
             }
         }
-        
-        .totp-input {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .totp-digit {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .totp-digit:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-
-        .unlock-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            min-height: 44px;
-        }
-
-        .unlock-btn:hover {
-            background: var(--primary-dark);
-        }
-
-        .unlock-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .error-message {
-            color: var(--danger);
-            margin-top: 10px;
-            font-size: 14px;
-            min-height: 20px;
-        }
-
-        .auth-info {
-            background: rgba(33, 150, 243, 0.1);
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
 
         .container {
             max-width: 900px;
@@ -1514,32 +1450,45 @@
 <body id="appBody">
     <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-screen">
-        <div class="icon">🏠</div>
-        <h1 id="authTitle">Chillinguito</h1>
-        <p id="authSubtitle">Select your account & enter 2FA code</p>
-        
-        <div class="user-selector">
-            <button class="user-btn" data-user="davide">
-                <span class="user-icon">👨</span>
-                <span>Davide</span>
-            </button>
-            <button class="user-btn" data-user="mattia">
-                <span class="user-icon">👨</span>
-                <span>Mattia</span>
-            </button>
+        <div class="auth-container">
+            <div class="auth-icon">🏠</div>
+            <h1 id="authTitle">Chillinguito</h1>
+            <p id="authSubtitle">Select your account & enter 2FA code</p>
+            
+            <div class="auth-step">
+                <div class="user-grid">
+                    <button class="user-choice" data-user="davide">
+                        <span>👨</span>
+                        <span>Davide</span>
+                    </button>
+                    <button class="user-choice" data-user="mattia">
+                        <span>👨</span>
+                        <span>Mattia</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="auth-step">
+                <label id="authCodeLabel">Enter 6-digit code:</label>
+                <div class="code-input">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                    <input type="text" class="code-box" maxlength="1" inputmode="numeric">
+                </div>
+            </div>
+            
+            <button id="unlockBtn" class="unlock-btn">Unlock</button>
+            <div id="errorMsg" class="error-message"></div>
+            
+            <div id="authInfo" class="auth-info">
+                💡 Both users use the same code from Microsoft Authenticator
+            </div>
         </div>
-        
-        <label id="authCodeLabel" style="display:block; margin-bottom:12px; font-weight:600; text-align:center;">Enter 6-digit code:</label>
-        
-        <div class="totp-input">
-            <input type="text" class="totp-digit" maxlength="1" data-index="0">
-            <input type="text" class="totp-digit" maxlength="1" data-index="1">
-            <input type="text" class="totp-digit" maxlength="1" data-index="2">
-            <input type="text" class="totp-digit" maxlength="1" data-index="3">
-            <input type="text" class="totp-digit" maxlength="1" data-index="4">
-            <input type="text" class="totp-digit" maxlength="1" data-index="5">
-        </div>
-        
+    </div>
+       
         <button id="unlockBtn" class="unlock-btn">Unlock</button>
         
         <div id="errorMsg" class="error-message"></div>
