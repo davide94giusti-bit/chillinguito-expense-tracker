@@ -42,7 +42,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         /* AUTH SCREEN - LAKE COMO DESIGN */
         #authScreen {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(100, 181, 246, 0.4)),
@@ -2332,7 +2332,78 @@ function validateTOTP() {
             
             // Setup TOTP input
             setupTOTPInput();
-            
+            // Setup button event listeners
+document.querySelectorAll('.user-choice').forEach(button => {
+    button.addEventListener('click', function() {
+        selectedUsername = this.dataset.user;
+        
+        // Update active state
+        document.querySelectorAll('.user-choice').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Auto-focus first code input
+        document.querySelector('.code-box').focus();
+    });
+});
+
+// Setup unlock button
+document.getElementById('unlockBtn').addEventListener('click', function() {
+    const inputs = document.querySelectorAll('.code-box');
+    const code = Array.from(inputs).map(i => i.value).join('');
+    
+    if (!selectedUsername) {
+        document.getElementById('errorMsg').textContent = 'Select a user first';
+        return;
+    }
+    
+    if (code.length !== 6) {
+        document.getElementById('errorMsg').textContent = 'Enter all 6 digits';
+        return;
+    }
+    
+    const username = selectedUsername === 'davide' ? 'Davide' : 'Mattia';
+    const ok = verifyTOTP(code, username);
+    
+    if (!ok) {
+        document.getElementById('errorMsg').textContent = 'Invalid code, try again';
+        return;
+    }
+    
+    // SUCCESS - unlock app
+    currentUser = username;
+    const authScreen = document.getElementById('authScreen');
+    const mainApp = document.getElementById('mainApp');
+    
+    if (authScreen) authScreen.style.display = 'none';
+    if (mainApp) mainApp.style.display = 'block';
+    document.body.classList.remove('locked');
+    
+    // Update header user badge
+    const userIconEl = document.getElementById('userIcon');
+    const userNameEl = document.getElementById('userName');
+    if (userIconEl) userIconEl.textContent = selectedUsername === 'davide' ? '👨' : '👨';
+    if (userNameEl) userNameEl.textContent = currentUser;
+    
+    displayExpenses();
+    displaySettlement();
+    displayGuests();
+    setupFirebaseListeners();
+});
+
+// Setup code input auto-advance
+document.querySelectorAll('.code-box').forEach((input, index) => {
+    input.addEventListener('input', function() {
+        if (this.value.length === 1 && index < 5) {
+            document.querySelectorAll('.code-box')[index + 1].focus();
+        }
+    });
+    
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+            document.querySelectorAll('.code-box')[index - 1].focus();
+        }
+    });
+});
             // Auth screen shown by default
             const authScreen = document.getElementById('authScreen');
             const mainApp = document.getElementById('mainApp');
