@@ -2899,50 +2899,110 @@ setTimeout(() => {
         }
 
         // ============ CALENDAR FUNCTIONS ============
-        function renderCalendar() {
-          // ... code ...
-          const calendarDays = document.getElementById('calendarDays')
-          calendarDays.innerHTML = ''
-          
-          // Loop through days
-          for (let i = 0; i < firstDay; i++) {
-            const emptyDay = document.createElement('div')
-            emptyDay.className = 'calendar-day other-month'
-            emptyDay.textContent = ''
-            calendarDays.appendChild(emptyDay)
-          }
-          
-          for (let day = 1; day <= daysInMonth; day++) {
-            const dayElement = document.createElement('div')
-            dayElement.className = 'calendar-day'
-            // Add color based on status
-            if (occupiedDates && occupiedDates.includes(dateString)) {
-              dayElement.classList.add('occupied')
-            } else if (cleaningDates && cleaningDates.includes(dateString)) {
-              dayElement.classList.add('cleaning')
-            } else {
-              dayElement.classList.add('available')
-            }
-            
-            
-            // ✅ ADD THIS LOGIC ✅
-            // Check if day is occupied, cleaning, or available
-            const dateString = `${currentCalendarDate.getFullYear()}-${String(currentCalendarDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-            
-            if (occupiedDates && occupiedDates.includes(dateString)) {
-              dayElement.classList.add('occupied')
-            } else if (cleaningDates && cleaningDates.includes(dateString)) {
-              dayElement.classList.add('cleaning')
-            } else {
-              dayElement.classList.add('available')
-            }
-            // ✅ END NEW CODE ✅
-            
-            dayElement.textContent = day
-            calendarDays.appendChild(dayElement)
-          }
+// ============ COMPLETE WORKING CALENDAR FUNCTION ============
+function renderCalendar() {
+    try {
+        // 1. Get calendar data and parse dates
+        const calendarData = getCalendarData();
+        occupiedDates = [];
+        cleaningDates = [];
+        
+        // 2. Parse occupied/cleaning from calendarData
+        Object.entries(calendarData).forEach(([dateStr, status]) => {
+            if (status === 'occupied') occupiedDates.push(dateStr);
+            else if (status === 'cleaning') cleaningDates.push(dateStr);
+        });
+        
+        // 3. Get current month/year
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        
+        // 4. Calculate calendar grid
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // 5. Update month display
+        const monthName = new Date(year, month, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        const currentMonthEl = document.getElementById('currentMonth');
+        if (currentMonthEl) currentMonthEl.textContent = monthName;
+        
+        // 6. Clear calendar grid
+        const calendarDays = document.getElementById('calendarDays');
+        if (!calendarDays) {
+            console.warn('⚠️ Calendar container not found');
+            return;
+        }
+        calendarDays.innerHTML = '';
+        
+        // 7. Add empty cells for days before month starts
+        for (let i = 0; i < firstDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day other-month';
+            emptyDay.textContent = '';
+            calendarDays.appendChild(emptyDay);
         }
         
+        // 8. Add day cells with proper coloring
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            
+            // Format date as YYYY-MM-DD
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            
+            // Determine status and add class
+            if (occupiedDates.includes(dateStr)) {
+                dayElement.classList.add('occupied');
+            } else if (cleaningDates.includes(dateStr)) {
+                dayElement.classList.add('cleaning');
+            } else {
+                dayElement.classList.add('available');
+            }
+            
+            dayElement.textContent = day;
+            dayElement.style.cursor = 'pointer';
+            dayElement.onclick = () => toggleDateStatus(dateStr, dayElement);
+            
+            calendarDays.appendChild(dayElement);
+        }
+        
+        // 9. Add empty cells for days after month ends
+        const totalCells = firstDay + daysInMonth;
+        const remainingCells = 42 - totalCells;
+        for (let i = 0; i < remainingCells; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day other-month';
+            emptyDay.textContent = '';
+            calendarDays.appendChild(emptyDay);
+        }
+        
+        console.log('✅ Calendar rendered successfully');
+    } catch (error) {
+        console.error('❌ Calendar render error:', error);
+    }
+}
+
+// Optional: Allow clicking to toggle dates
+function toggleDateStatus(dateStr, element) {
+    const calendar = getCalendarData();
+    
+    if (!calendar[dateStr]) {
+        calendar[dateStr] = 'occupied';
+        element.classList.remove('available', 'cleaning');
+        element.classList.add('occupied');
+    } else if (calendar[dateStr] === 'occupied') {
+        calendar[dateStr] = 'cleaning';
+        element.classList.remove('available', 'occupied');
+        element.classList.add('cleaning');
+    } else {
+        delete calendar[dateStr];
+        element.classList.remove('occupied', 'cleaning');
+        element.classList.add('available');
+    }
+    
+    saveCalendarData(calendar);
+}
+       
 
         function openCalendarStatusModal(dateStr) {
             const calendar = getCalendarData();
