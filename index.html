@@ -1309,24 +1309,10 @@ textarea {
    FIX: Enable Scrolling for Tab Content
    ============================================ */
 
-.container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-}
+/* ============================================
+   FIX: Page-Level Scrolling (NOT Tab-Level)
+   ============================================ */
 
-.tabs {
-  flex-shrink: 0;
-}
-
-.tab-content {
-  flex: 1;
-  overflow-y: auto !important;
-  overflow-x: hidden;
-}
-
-/* Ensure body/html don't block scrolling */
 #mainApp {
   display: flex;
   flex-direction: column;
@@ -1334,9 +1320,45 @@ textarea {
   overflow: hidden;
 }
 
-#appBody {
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden; /* Keep overflow hidden for flex container */
+}
+
+.tabs {
+  flex-shrink: 0;
   overflow: hidden;
 }
+
+/* CRITICAL: Scrollbar at page level, NOT inside divs */
+.tab-content {
+  display: none;
+  padding: var(--spacing-6);
+  animation: fadeIn var(--transition-base);
+}
+
+.tab-content.active {
+  display: block;
+  overflow-y: auto; /* Scrolling inside content only when visible */
+}
+
+/* Allow scroll to propagate to window/body */
+html.app-open {
+  overflow-y: auto;
+  height: auto;
+}
+
+body.app-open {
+  overflow-y: auto;
+  height: auto;
+}
+
+#appBody {
+  overflow: auto; /* Allow browser default scrollbar */
+}
+
 </style>
 
 </head>
@@ -3134,7 +3156,10 @@ function toggleDateStatus(dateStr, element) {
             if (userNameEl) userNameEl.textContent = currentUser;
         
             if (errorEl) errorEl.textContent = '';
+            document.documentElement.classList.add('app-open');
+            document.body.classList.add('app-open');
         }
+
 
         function selectUser(username, ev) {
             const e = ev || window.event;
