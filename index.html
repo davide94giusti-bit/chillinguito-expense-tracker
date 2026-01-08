@@ -1347,12 +1347,10 @@ textarea {
 /* Allow scroll to propagate to window/body */
 html.app-open {
   overflow-y: auto;
-  height: auto;
 }
 
 body.app-open {
   overflow-y: auto;
-  height: auto;
 }
 
 #appBody {
@@ -3121,7 +3119,7 @@ function toggleDateStatus(dateStr, element) {
         function validateTOTP() {
     const inputs = document.querySelectorAll('.code-box');
             const code = Array.from(inputs).map(i => i.value).join('');
-            const errorEl = document.getElementById('errorMessage');
+            const errorEl = document.getElementById('errorMsg');
         
             if (!selectedUsername) {
                 if (errorEl) errorEl.textContent = '❌ Select a user first';
@@ -3169,7 +3167,7 @@ function toggleDateStatus(dateStr, element) {
         e.currentTarget.classList.add('active');  // ✅ CORRECT
     }
             selectedUsername = username;
-            const errorEl = document.getElementById('errorMessage');
+            const errorEl = document.getElementById('errorMsg');
             if (errorEl) errorEl.textContent = '';
         }
         
@@ -3251,7 +3249,7 @@ function setupTOTPInput() {
 function validateTOTP() {
     const inputs = document.querySelectorAll('.code-box');
     const code = Array.from(inputs).map(i => i.value).join('');
-    const errorEl = document.getElementById('errorMessage');
+    const errorEl = document.getElementById('errorMsg');
 
     if (!selectedUsername) {
         if (errorEl) errorEl.textContent = '❌ Select a user first';
@@ -3398,7 +3396,7 @@ if (isFirebaseReady) {
             document.getElementById('authScreen').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
             document.querySelectorAll('.totp-digit').forEach(input => input.value = '');
-            document.getElementById('errorMessage').textContent = '';
+            document.getElementById('errorMsg').textContent = '';
         }
 
         function switchTab(tabName) {
