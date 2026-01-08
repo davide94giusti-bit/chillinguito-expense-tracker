@@ -291,6 +291,7 @@ body {
   flex-direction: column;
   height: 100vh;
   background-color: var(--off-white);
+  overflow: hidden;
 }
 
 header {
@@ -1303,6 +1304,38 @@ textarea {
     max-height: 100vh;
     border-radius: var(--radius-lg);
   }
+}
+/* ============================================
+   FIX: Enable Scrolling for Tab Content
+   ============================================ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.tabs {
+  flex-shrink: 0;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+/* Ensure body/html don't block scrolling */
+#mainApp {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#appBody {
+  overflow: hidden;
 }
 </style>
 
