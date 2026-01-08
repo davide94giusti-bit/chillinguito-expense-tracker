@@ -508,6 +508,9 @@ header {
   flex: 1;
   overflow-y: auto;
 }
+div[style*="overflow-y: auto"] {
+  scrollbar-gutter: stable;
+}
 
 .tab-content.active {
   display: block;
@@ -1338,6 +1341,10 @@ textarea {
   padding: var(--spacing-6);
   animation: fadeIn var(--transition-base);
 }
+div[style*="overflow-y: auto"] {
+  scrollbar-gutter: stable;
+}
+
 
 .tab-content.active {
   display: block;
