@@ -509,6 +509,10 @@ header {
   overflow-y: auto;
 }
 div[style*="overflow-y: auto"] {
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable;
+}
+div[style*="overflow-y: auto"] {
   scrollbar-gutter: stable;
 }
 
@@ -1340,6 +1344,10 @@ textarea {
   display: none;
   padding: var(--spacing-6);
   animation: fadeIn var(--transition-base);
+}
+div[style*="overflow-y: auto"] {
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable;
 }
 div[style*="overflow-y: auto"] {
   scrollbar-gutter: stable;
