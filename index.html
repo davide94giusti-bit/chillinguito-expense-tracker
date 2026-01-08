@@ -1420,10 +1420,10 @@ textarea {
             </div>
         </header>
 
-        <div class="container">
+        <div class="container" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
             <div id="notificationContainer"></div>
-
-            <div class="tabs">
+            <div class="tabs" style="flex-shrink: 0;"></div>
+            <div style="flex: 1; overflow-y: auto;">
                 <button class="tab-btn active" onclick="switchTab('add-expense')" id="tabAddExpense">Add Expense</button>
                 <button class="tab-btn" onclick="switchTab('expenses-list')" id="tabExpensesList">All Expenses</button>
                 <button class="tab-btn" onclick="switchTab('settlement')" id="tabSettlement">Settlement</button>
