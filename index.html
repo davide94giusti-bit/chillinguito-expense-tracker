@@ -1422,8 +1422,11 @@ textarea {
 
         <div class="container" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
             <div id="notificationContainer"></div>
-            <div class="tabs" style="flex-shrink: 0;"></div>
-            <div style="flex: 1; overflow-y: auto;">
+                    <div class="container" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+            <div id="notificationContainer"></div>
+            
+            <!-- TABS (NOT SCROLLABLE) -->
+            <div class="tabs" style="flex-shrink: 0;">
                 <button class="tab-btn active" onclick="switchTab('add-expense')" id="tabAddExpense">Add Expense</button>
                 <button class="tab-btn" onclick="switchTab('expenses-list')" id="tabExpensesList">All Expenses</button>
                 <button class="tab-btn" onclick="switchTab('settlement')" id="tabSettlement">Settlement</button>
@@ -1432,34 +1435,35 @@ textarea {
                 <button class="tab-btn" onclick="switchTab('export')" id="tabExport">Export</button>
             </div>
 
-            <!-- ADD EXPENSE TAB -->
-            <div id="add-expense" class="tab-content active">
-                <div class="card">
-                    <h2 id="addExpenseTitle" style="margin-bottom: 20px;">Add New Expense</h2>
-                    <form onsubmit="addExpense(event)">
-                        <div class="form-group">
-                            <label for="description" id="descLabel">Description</label>
-                            <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required>
-                        </div>
-
-                        <div class="form-row">
+            <!-- SCROLLABLE CONTENT AREA -->
+            <div style="flex: 1; overflow-y: auto;">
+                <!-- ADD EXPENSE TAB -->
+                <div id="add-expense" class="tab-content active">
+                    <div class="card">
+                        <h2 id="addExpenseTitle" style="margin-bottom: 20px;">Add New Expense</h2>
+                        <form onsubmit="addExpense(event)">
                             <div class="form-group">
-                                <label for="amount" id="amountLabel">Amount (EUR)</label>
-                                <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
+                                <label for="description" id="descLabel">Description</label>
+                                <input type="text" id="description" placeholder="e.g., Cleaning supplies, Groceries" required>
                             </div>
-                            <div class="form-group">
-                                <label for="category" id="categoryLabel">Category</label>
-                                <select id="category" required>
-                                    <option value=""></option>
-                                    <option value="Cleaning" id="catCleaning">Cleaning & Maintenance</option>
-                                    <option value="Utilities" id="catUtilities">Utilities (Water, Gas, Electric)</option>
-                                    <option value="Groceries" id="catGroceries">Groceries & Food</option>
-                                    <option value="Repairs" id="catRepairs">Repairs & Equipment</option>
-                                    <option value="Other" id="catOther">Other</option>
-                                </select>
-                            </div>
-                        </div>
 
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="amount" id="amountLabel">Amount (EUR)</label>
+                                    <input type="number" id="amount" placeholder="0.00" step="0.01" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category" id="categoryLabel">Category</label>
+                                    <select id="category" required>
+                                        <option value=""></option>
+                                        <option value="Cleaning" id="catCleaning">Cleaning & Maintenance</option>
+                                        <option value="Utilities" id="catUtilities">Utilities (Water, Gas, Electric)</option>
+                                        <option value="Groceries" id="catGroceries">Groceries & Food</option>
+                                        <option value="Repairs" id="catRepairs">Repairs & Equipment</option>
+                                        <option value="Other" id="catOther">Other</option>
+                                    </select>
+                                </div>
+                            </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="paidBy" id="paidByLabel">Paid By</label>
