@@ -1395,7 +1395,8 @@ body.app-open {
             </div>
         </div>
 
-        <button id="unlockBtn" class="unlock-btn">Unlock</button>
+        <button id="unlockBtn" class="unlock-btn" onclick="validateTOTP()">Unlock</button>
+
         <div id="errorMsg" class="error-message"></div>
         <div id="authInfo" class="auth-info">💡 Both users use the same code from Microsoft Authenticator</div>
     </div>
@@ -3118,7 +3119,7 @@ function toggleDateStatus(dateStr, element) {
         // ============ AUTH & UI FUNCTIONS ============
 
         function validateTOTP() {
-            const inputs = document.querySelectorAll('.totp-digit');
+    const inputs = document.querySelectorAll('.code-box');
             const code = Array.from(inputs).map(i => i.value).join('');
             const errorEl = document.getElementById('errorMessage');
         
@@ -3162,11 +3163,11 @@ function toggleDateStatus(dateStr, element) {
 
 
         function selectUser(username, ev) {
-            const e = ev || window.event;
-            document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('selected'));
-            if (e && e.currentTarget) {
-                e.currentTarget.classList.add('selected');
-            }
+    const e = ev || window.event;
+    document.querySelectorAll('.user-choice').forEach(btn => btn.classList.remove('active'));  // ✅ CORRECT
+    if (e && e.currentTarget) {
+        e.currentTarget.classList.add('active');  // ✅ CORRECT
+    }
             selectedUsername = username;
             const errorEl = document.getElementById('errorMessage');
             if (errorEl) errorEl.textContent = '';
@@ -3229,7 +3230,7 @@ function bytesToHex(bytes) {
 
         // ============ TOTP SETUP ============
 function setupTOTPInput() {
-    const inputs = document.querySelectorAll('.totp-digit');
+    const inputs = document.querySelectorAll('.code-box');
     inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
             if (e.target.value && index < inputs.length - 1) {
@@ -3248,7 +3249,7 @@ function setupTOTPInput() {
 }
 
 function validateTOTP() {
-    const inputs = document.querySelectorAll('.totp-digit');
+    const inputs = document.querySelectorAll('.code-box');
     const code = Array.from(inputs).map(i => i.value).join('');
     const errorEl = document.getElementById('errorMessage');
 
@@ -3577,6 +3578,11 @@ function previousMonth() {
   currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1)
   renderCalendar()
 }
+  // Initialize TOTP input handling when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    setupTOTPInput();
+    console.log('✅ TOTP input setup complete');
+});
     </script>
 </body>
 </html>
