@@ -2595,7 +2595,6 @@ setTimeout(() => {
             guestPhotos = [];
             const t = translations[currentLanguage];
             const guest = {};
-            
             const modal = document.createElement('div');
             modal.className = 'modal show';
             modal.id = 'addGuestModal';
@@ -3112,8 +3111,76 @@ setTimeout(() => {
         function closeModal() {
             document.getElementById('modalContainer').innerHTML = '';
         }
+// 1️⃣ FIRST - Define the calendar modal function
+function openCalendarStatusModal(dateStr) {
+    const calendar = getCalendarData();
+    const currentData = calendar[dateStr] || {};
+    const currentStatus = typeof currentData === 'string' ? currentData : currentData.status || 'available';
+    const currentNotes = typeof currentData === 'object' ? currentData.notes || '' : '';
+    
+    const modal = document.createElement('div');
+    modal.className = 'modal show';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Set Status for ${dateStr}</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <form onsubmit="saveDayChanges('${dateStr}', event)">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="dayStatus">
+                        <option value="available">🟢 Free</option>
+                        <option value="occupied">🔴 Occupied</option>
+                        <option value="cleaning">🟠 Cleaning</option>
+                        <option value="maintenance">🟣 Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <textarea id="dayNotes" placeholder="Add notes for this day..." rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    `;
+    
+    document.getElementById('modalContainer').innerHTML = '';
+    document.getElementById('modalContainer').appendChild(modal);
+    
+    // Set current values
+    document.getElementById('dayStatus').value = currentStatus;
+    document.getElementById('dayNotes').value = currentNotes;
+    
+    // Close on background click
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+}
 
-        // ============ CALENDAR FUNCTIONS ============
+// 2️⃣ SECOND - Define the save function
+function saveDayChanges(dateStr, event) {
+    event.preventDefault();
+    const status = document.getElementById('dayStatus').value;
+    const notes = document.getElementById('dayNotes').value;
+    
+    const calendar = getCalendarData();
+    
+    if (status === 'available' && !notes) {
+        delete calendar[dateStr];
+    } else {
+        calendar[dateStr] = {
+            status: status,
+            notes: notes,
+            lastModified: new Date().toISOString()
+        };
+    }
+    
+    saveCalendarData(calendar);
+    closeModal();
+    showNotification('✅ Day updated');
+}
+
 // ============ COMPLETE WORKING CALENDAR FUNCTION ============
 function renderCalendar() {
     try {
@@ -3191,7 +3258,6 @@ function renderCalendar() {
             
             dayElement.style.cursor = 'pointer';
             dayElement.onclick = () => openCalendarStatusModal(dateStr);
-            
             calendarDays.appendChild(dayElement);
         }
         
