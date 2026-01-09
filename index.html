@@ -287,14 +287,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#mainApp {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background-color: var(--off-white);
-  overflow: hidden;
-}
-
 header {
   background: linear-gradient(135deg, var(--lake-dark) 0%, var(--lake-water) 100%);
   color: var(--white);
@@ -1380,57 +1372,124 @@ textarea {
 
 /* CRITICAL MOBILE CALENDAR FIX */
 @media (max-width: 480px) {
-  .calendar-container {
-    padding: 8px;
-    border-radius: 10px;
-  }
-  
-  .calendar-days {
-    gap: 5px !important;
-  }
-  
-  .calendar-day {
-    min-height: 48px;
-    padding: 3px;
-    border-radius: 6px;
-    font-size: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .day-number {
-    font-size: 12px;
-    font-weight: 700;
-    margin-bottom: 1px;
-  }
-  
-  .day-status {
-    font-size: 7px;
-    margin-top: 1px;
-  }
-  
-  .day-notes {
-    display: none;
-  }
-  
-  .calendar-header h2 {
-    font-size: 20px;
-  }
-  
-  .calendar-nav button {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-  
-  .calendar-nav span {
-    font-size: 14px;
-    padding: 0 12px;
-    min-width: 120px;
-  }
+.calendar-container {
+padding: 8px !important; 
+margin: 0
+border-radius: 8px !important;
+width: 100% !important;
+box-sizing: border-box;
 }
 
+.calendar-header {
+margin-bottom: 12px !important;
+padding-bottom: 8px !important;
+}
+
+.calendar-header h2 {
+font-size: 18px !important;
+}
+
+.calendar-nav {
+display: flex;
+gap: 4px;
+flex-wrap: wrap;
+}
+
+.calendar-nav button {
+padding: 6px 12px !important;
+font-size: 11px !important;
+white-space: nowrap;
+}
+
+.calendar-nav span {
+font-size: 12px !important;
+padding: 0 8px !important;
+min-width: auto !important;
+width: auto;
+}
+
+.calendar-weekdays {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 3px !important; /* Reduced from 8px */
+margin-bottom: 6px !important;
+text-align: center;
+}
+
+.weekday {
+font-size: 9px !important;
+padding: 3px !important;
+font-weight: 700;
+}
+
+/* THIS IS THE KEY FIX /
+.calendar-days {
+display: grid !important;
+grid-template-columns: repeat(7, 1fr) !important;
+gap: 3px !important; / Reduced from 8px */
+width: 100% !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+
+.calendar-day {
+aspect-ratio: 1 !important;
+min-height: auto !important;
+height: auto !important;
+padding: 2px !important;
+font-size: 8px !important;
+border-radius: 6px !important;
+display: flex !important;
+flex-direction: column !important;
+align-items: center !important;
+justify-content: center !important;
+border: 1px solid transparent !important;
+line-height: 1 !important;
+transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.day-number {
+font-size: 10px !important;
+font-weight: 700 !important;
+line-height: 1 !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+
+.day-status {
+font-size: 6px !important;
+font-weight: 600 !important;
+text-transform: uppercase !important;
+opacity: 0.85 !important;
+margin: 1px 0 0 0 !important;
+padding: 0 !important;
+line-height: 1 !important;
+}
+
+.day-notes {
+display: none !important;
+}
+}
+
+/* EXTRA-SMALL PHONES: 360px */
+@media (max-width: 359px) {
+.calendar-container {
+padding: 4px !important;
+}
+
+.calendar-days {
+gap: 2px !important;
+}
+
+.calendar-day {
+padding: 1px !important;
+font-size: 7px !important;
+}
+
+.day-number {
+font-size: 9px !important;
+}
+}
   
   /* THEN THE REST OF YOUR 480px STYLES: */
 
@@ -1465,7 +1524,7 @@ textarea {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .scrollable-content {
@@ -1505,6 +1564,12 @@ textarea {
 }
 
 /* Allow scroll to propagate to window/body */
+
+.tab-content-wrapper { 
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch; 
+}
+
 html.app-open {
   overflow-y: auto;
 }
@@ -1809,6 +1874,7 @@ body.app-open {
 
             <!-- CALENDAR TAB -->
             <div id="calendar" class="tab-content">
+                <div class="tab-content-wrapper">
                 <div class="calendar-container">
                     <div class="calendar-header">
                         <h2 id="calendarTitle">Airbnb Calendar</h2>
