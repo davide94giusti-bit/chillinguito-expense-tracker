@@ -912,10 +912,11 @@ textarea {
   box-shadow: var(--shadow-xl);
   max-width: 600px;
   width: 100%;
-  max-height: none;  /* Remove height limit */
-  overflow-y: visible;  /* Remove internal scrolling */
+  max-height: 90vh;
+  overflow-y: auto;
   animation: slideUp var(--transition-base);
 }
+
 
 @keyframes slideUp {
   from {
