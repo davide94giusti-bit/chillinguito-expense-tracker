@@ -1353,6 +1353,23 @@ div[style*="overflow-y: auto"] {
   scrollbar-gutter: stable;
 }
 
+/* Scrollbar styling */
+.scrollable-content::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: #0066CC;
+  border-radius: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: #2E8B9E;
+}
 
 .tab-content.active {
   display: block;
