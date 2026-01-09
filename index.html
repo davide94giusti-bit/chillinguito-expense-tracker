@@ -1369,7 +1369,7 @@ textarea {
   scrollbar-gutter: stable;
 }
 
-/* Scrollbar styling */
+/* Make scrollbar visible */
 .scrollable-content::-webkit-scrollbar {
   width: 12px;
 }
@@ -1386,6 +1386,7 @@ textarea {
 .scrollable-content::-webkit-scrollbar-thumb:hover {
   background: #2E8B9E;
 }
+
 
 .tab-content {
   display: none;
@@ -1508,7 +1509,7 @@ body.app-open {
             </div>
 
             <!-- SCROLLABLE CONTENT AREA -->
-            <div style="flex: 1; overflow-y: scroll; scrollbar-gutter: stable;">
+            <div class="scrollable-content">
                 <!-- ADD EXPENSE TAB -->
                 <div id="add-expense" class="tab-content active">
                     <div class="card">
