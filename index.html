@@ -1147,8 +1147,17 @@ textarea {
 
 @media (max-width: 768px) {
   .calendar-day {
-    min-height: 50px;
+    min-height: 55px;
+    padding: 5px;
     font-size: 12px;
+  }
+  
+  .day-number {
+    font-size: 14px;
+  }
+  
+  .day-status {
+    font-size: 8px;
   }
   
   .calendar-header h2 {
@@ -1326,6 +1335,101 @@ textarea {
     padding: var(--spacing-4) 0;
   }
   }
+  /* ============================================
+   NEW: Mobile Calendar Fix + Status/Notes Display
+   ============================================ */
+
+.day-number {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.day-status {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.85;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.day-notes {
+  font-size: 8px;
+  opacity: 0.6;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+/* Maintenance Days - Purple (NEW) */
+.calendar-day.maintenance {
+  background: #9C27B0;
+  border-color: #7b1fa2;
+  color: white;
+}
+
+.calendar-day.maintenance:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(156, 39, 176, 0.4);
+}
+
+/* CRITICAL MOBILE CALENDAR FIX */
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  
+  .calendar-days {
+    gap: 5px !important;
+  }
+  
+  .calendar-day {
+    min-height: 48px;
+    padding: 3px;
+    border-radius: 6px;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .day-number {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 1px;
+  }
+  
+  .day-status {
+    font-size: 7px;
+    margin-top: 1px;
+  }
+  
+  .day-notes {
+    display: none;
+  }
+  
+  .calendar-header h2 {
+    font-size: 20px;
+  }
+  
+  .calendar-nav button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  
+  .calendar-nav span {
+    font-size: 14px;
+    padding: 0 12px;
+    min-width: 120px;
+  }
+}
+
   
   /* THEN THE REST OF YOUR 480px STYLES: */
 
@@ -3013,31 +3117,32 @@ setTimeout(() => {
 // ============ COMPLETE WORKING CALENDAR FUNCTION ============
 function renderCalendar() {
     try {
-        // 1. Get calendar data and parse dates
+        // Get calendar data
         const calendarData = getCalendarData();
         occupiedDates = [];
         cleaningDates = [];
         
-        // 2. Parse occupied/cleaning from calendarData
-        Object.entries(calendarData).forEach(([dateStr, status]) => {
+        // Parse occupied/cleaning from calendarData
+        Object.entries(calendarData).forEach(([dateStr, data]) => {
+            const status = typeof data === 'string' ? data : data.status;
             if (status === 'occupied') occupiedDates.push(dateStr);
             else if (status === 'cleaning') cleaningDates.push(dateStr);
         });
         
-        // 3. Get current month/year
+        // Get current month/year
         const year = currentCalendarDate.getFullYear();
         const month = currentCalendarDate.getMonth();
         
-        // 4. Calculate calendar grid
+        // Calculate calendar grid
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        // 5. Update month display
+        // Update month display
         const monthName = new Date(year, month, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
         const currentMonthEl = document.getElementById('currentMonth');
         if (currentMonthEl) currentMonthEl.textContent = monthName;
         
-        // 6. Clear calendar grid
+        // Clear calendar grid
         const calendarDays = document.getElementById('calendarDays');
         if (!calendarDays) {
             console.warn('⚠️ Calendar container not found');
@@ -3045,7 +3150,7 @@ function renderCalendar() {
         }
         calendarDays.innerHTML = '';
         
-        // 7. Add empty cells for days before month starts
+        // Add empty cells for days before month starts
         for (let i = 0; i < firstDay; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.className = 'calendar-day other-month';
@@ -3053,7 +3158,7 @@ function renderCalendar() {
             calendarDays.appendChild(emptyDay);
         }
         
-        // 8. Add day cells with proper coloring
+        // Add day cells with proper coloring and status/notes
         for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
@@ -3061,23 +3166,36 @@ function renderCalendar() {
             // Format date as YYYY-MM-DD
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             
+            // Get day data
+            const dayData = calendarData[dateStr];
+            const status = typeof dayData === 'string' ? dayData : dayData?.status || 'available';
+            const notes = typeof dayData === 'object' ? dayData.notes || '' : '';
+            
             // Determine status and add class
-            if (occupiedDates.includes(dateStr)) {
+            if (status === 'occupied') {
                 dayElement.classList.add('occupied');
-            } else if (cleaningDates.includes(dateStr)) {
+            } else if (status === 'cleaning') {
                 dayElement.classList.add('cleaning');
+            } else if (status === 'maintenance') {
+                dayElement.classList.add('maintenance');
             } else {
                 dayElement.classList.add('available');
             }
             
-            dayElement.textContent = day;
+            // Create inner HTML with day number, status, and notes preview
+            dayElement.innerHTML = `
+                <div class="day-number">${day}</div>
+                <div class="day-status">${status.charAt(0).toUpperCase() + status.slice(1)}</div>
+                ${notes ? `<div class="day-notes" title="${notes}">📝</div>` : ''}
+            `;
+            
             dayElement.style.cursor = 'pointer';
-            dayElement.onclick = () => toggleDateStatus(dateStr, dayElement);
+            dayElement.onclick = () => openCalendarStatusModal(dateStr);
             
             calendarDays.appendChild(dayElement);
         }
         
-        // 9. Add empty cells for days after month ends
+        // Add empty cells for days after month ends
         const totalCells = firstDay + daysInMonth;
         const remainingCells = 42 - totalCells;
         for (let i = 0; i < remainingCells; i++) {
@@ -3093,60 +3211,24 @@ function renderCalendar() {
     }
 }
 
-// Optional: Allow clicking to toggle dates
-function toggleDateStatus(dateStr, element) {
-    const calendar = getCalendarData();
-    
-    if (!calendar[dateStr]) {
-        calendar[dateStr] = 'occupied';
-        element.classList.remove('available', 'cleaning');
-        element.classList.add('occupied');
-    } else if (calendar[dateStr] === 'occupied') {
-        calendar[dateStr] = 'cleaning';
-        element.classList.remove('available', 'occupied');
-        element.classList.add('cleaning');
-    } else {
-        delete calendar[dateStr];
-        element.classList.remove('occupied', 'cleaning');
-        element.classList.add('available');
-    }
-    
-    saveCalendarData(calendar);
-}
-       
-
         function openCalendarStatusModal(dateStr) {
-            const calendar = getCalendarData();
-            const currentStatus = calendar[dateStr] || 'available';
-            const t = translations[currentLanguage];
-
-            const modal = document.createElement('div');
-            modal.className = 'modal show';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>Set Status for ${dateStr}</h3>
-                        <button class="modal-close" onclick="closeModal()">×</button>
-                    </div>
-                    <div class="day-status-selector">
-                        <div class="status-option ${currentStatus === 'available' ? 'selected' : ''}" onclick="updateCalendarStatus('${dateStr}', 'available')">
-                            🟢 ${t.available}
-                        </div>
-                        <div class="status-option ${currentStatus === 'occupied' ? 'selected' : ''}" onclick="updateCalendarStatus('${dateStr}', 'occupied')">
-                            🔴 ${t.occupied}
-                        </div>
-                        <div class="status-option ${currentStatus === 'cleaning' ? 'selected' : ''}" onclick="updateCalendarStatus('${dateStr}', 'cleaning')">
-                            🟠 ${t.cleaning}
-                        </div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modalContainer').innerHTML = '';
-            document.getElementById('modalContainer').appendChild(modal);
-            modal.onclick = (e) => {
-                if (e.target === modal) closeModal();
-            };
-        }
+    const calendar = getCalendarData();
+    const currentData = calendar[dateStr] || {};
+    const currentStatus = typeof currentData === 'string' ? currentData : currentData.status || 'available';
+    const currentNotes = typeof currentData === 'object' ? currentData.notes || '' : '';
+    const t = translations[currentLanguage];
+    
+    document.getElementById('modalContainer').innerHTML = '';
+    document.getElementById('modalContainer').appendChild(modal);
+    
+    // Set current values
+    document.getElementById('dayStatus').value = currentStatus;
+    document.getElementById('dayNotes').value = currentNotes;
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+}
 
         function updateCalendarStatus(dateStr, status) {
             const calendar = getCalendarData();
@@ -3168,6 +3250,29 @@ function toggleDateStatus(dateStr, element) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
             renderCalendar();
         }
+        function saveDayChanges(dateStr, event) {
+    event.preventDefault();
+    const status = document.getElementById('dayStatus').value;
+    const notes = document.getElementById('dayNotes').value;
+    
+    const calendar = getCalendarData();
+    
+    // If no status and no notes, delete the entry
+    if (status === 'available' && !notes) {
+        delete calendar[dateStr];
+    } else {
+        // Store both status and notes
+        calendar[dateStr] = {
+            status: status,
+            notes: notes,
+            lastModified: new Date().toISOString()
+        };
+    }
+    
+    saveCalendarData(calendar);
+    closeModal();
+    showNotification('✅ Day updated');
+}
 
         // ============ AUTH & UI FUNCTIONS ============
 
