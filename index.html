@@ -896,15 +896,20 @@ textarea {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: var(--spacing-4);
   backdrop-filter: blur(2px);
+  overflow-y: auto;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
 }
+
 
 .modal.show {
   display: flex;
 }
+
 
 .modal-content {
   background: var(--white);
@@ -915,6 +920,31 @@ textarea {
   max-height: 90vh;
   overflow-y: auto;
   animation: slideUp var(--transition-base);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #0066CC transparent;
+}
+
+
+.modal-content::-webkit-scrollbar {
+  width: 12px;
+}
+
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #0066CC;
+  border-radius: 6px;
+  border: 2px solid var(--white);
+}
+
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #2E8B9E;
 }
 
 
@@ -929,6 +959,7 @@ textarea {
   }
 }
 
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -941,12 +972,14 @@ textarea {
   z-index: 10;
 }
 
+
 .modal-header h3 {
   font-size: var(--font-size-xl);
   font-weight: 700;
   margin: 0;
   color: var(--gray-900);
 }
+
 
 .modal-close {
   background: none;
@@ -963,10 +996,12 @@ textarea {
   transition: all var(--transition-base);
 }
 
+
 .modal-close:hover {
   color: var(--gray-600);
   transform: rotate(90deg);
 }
+
 
 .modal-content > form,
 .modal-content > div:not(.modal-header) {
