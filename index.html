@@ -3211,36 +3211,6 @@ function renderCalendar() {
     }
 }
 
-        function openCalendarStatusModal(dateStr) {
-    const calendar = getCalendarData();
-    const currentData = calendar[dateStr] || {};
-    const currentStatus = typeof currentData === 'string' ? currentData : currentData.status || 'available';
-    const currentNotes = typeof currentData === 'object' ? currentData.notes || '' : '';
-    const t = translations[currentLanguage];
-    
-    document.getElementById('modalContainer').innerHTML = '';
-    document.getElementById('modalContainer').appendChild(modal);
-    
-    // Set current values
-    document.getElementById('dayStatus').value = currentStatus;
-    document.getElementById('dayNotes').value = currentNotes;
-    
-    modal.onclick = (e) => {
-        if (e.target === modal) closeModal();
-    };
-}
-
-        function updateCalendarStatus(dateStr, status) {
-            const calendar = getCalendarData();
-            if (status === 'available') {
-                delete calendar[dateStr];
-            } else {
-                calendar[dateStr] = status;
-            }
-            saveCalendarData(calendar);
-            closeModal();
-        }
-
         function previousMonth() {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
             renderCalendar();
