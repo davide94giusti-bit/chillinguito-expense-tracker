@@ -1327,29 +1327,10 @@ textarea {
   overflow: hidden;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
+.scrollable-content {
   flex: 1;
-  overflow: hidden; /* Keep overflow hidden for flex container */
-}
-
-.tabs {
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-/* CRITICAL: Scrollbar at page level, NOT inside divs */
-.tab-content {
-  display: none;
-  padding: var(--spacing-6);
-  animation: fadeIn var(--transition-base);
-}
-div[style*="overflow-y: auto"] {
-  overflow-y: scroll !important;
-  scrollbar-gutter: stable;
-}
-div[style*="overflow-y: auto"] {
+  overflow-y: scroll;
+  overflow-x: hidden;
   scrollbar-gutter: stable;
 }
 
@@ -1371,9 +1352,14 @@ div[style*="overflow-y: auto"] {
   background: #2E8B9E;
 }
 
+.tab-content {
+  display: none;
+  padding: 24px;
+  animation: fadeIn 200ms;
+}
+
 .tab-content.active {
   display: block;
-  overflow-y: auto; /* Scrolling inside content only when visible */
 }
 
 /* Allow scroll to propagate to window/body */
