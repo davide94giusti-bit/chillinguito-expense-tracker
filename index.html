@@ -3288,7 +3288,7 @@ const authScreen = document.getElementById('authScreen');
 const mainApp = document.getElementById('mainApp');
 if (authScreen) authScreen.style.display = 'none';
 if (mainApp) {
-  mainApp.style.display = 'block';
+  mainApp.style.display = 'flex';
   mainApp.style.zIndex = '10';
 }
 document.body.classList.remove('locked');
@@ -3543,7 +3543,7 @@ document.getElementById('unlockBtn').addEventListener('click', function() {
     const mainApp = document.getElementById('mainApp');
     
     if (authScreen) authScreen.style.display = 'none';
-    if (mainApp) mainApp.style.display = 'block';
+    if (mainApp) mainApp.style.display = 'flex';
     document.body.classList.remove('locked');
     
     // Update header user badge
