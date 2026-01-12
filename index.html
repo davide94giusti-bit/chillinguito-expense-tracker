@@ -3152,7 +3152,11 @@ function renderCalendar() {
             const authScreen = document.getElementById('authScreen');
             const mainApp = document.getElementById('mainApp');
             if (authScreen) authScreen.style.display = 'none';
-            if (mainApp) mainApp.style.display = 'block';
+            if (mainApp) {
+              mainApp.style.display = 'flex';
+              mainApp.classList.add('active');
+            }
+            
             document.body.classList.remove('locked');
         
             // header user badge
