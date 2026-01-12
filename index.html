@@ -3121,56 +3121,6 @@ function renderCalendar() {
     showNotification('✅ Day updated');
 }
 
-        // ============ AUTH & UI FUNCTIONS ============
-
-        function validateTOTP() {
-    const inputs = document.querySelectorAll('.code-box');
-            const code = Array.from(inputs).map(i => i.value).join('');
-            const errorEl = document.getElementById('errorMsg');
-        
-            if (!selectedUsername) {
-                if (errorEl) errorEl.textContent = '❌ Select a user first';
-                return;
-            }
-        
-            if (code.length !== 6) {
-                if (errorEl) errorEl.textContent = '❌ Enter all 6 digits';
-                return;
-            }
-        
-            const username = selectedUsername; // 'davide' or 'mattia'
-            const ok = verifyTOTP(code, username);
-        
-            if (!ok) {
-                if (errorEl) errorEl.textContent = '❌ Invalid code – try again';
-                return;
-            }
-        
-            // SUCCESS: unlock app
-            currentUser = username === 'davide' ? 'Davide' : 'Mattia';
-        
-            const authScreen = document.getElementById('authScreen');
-            const mainApp = document.getElementById('mainApp');
-            if (authScreen) authScreen.style.display = 'none';
-            if (mainApp) {
-              mainApp.style.display = 'flex';
-              mainApp.classList.add('active');
-            }
-            
-            document.body.classList.remove('locked');
-        
-            // header user badge
-            const userIconEl = document.getElementById('userIcon');
-            const userNameEl = document.getElementById('userName');
-            if (userIconEl) userIconEl.textContent = username === 'davide' ? '👨' : '👨‍🦱';
-            if (userNameEl) userNameEl.textContent = currentUser;
-        
-            if (errorEl) errorEl.textContent = '';
-            document.documentElement.classList.add('app-open');
-            document.body.classList.add('app-open');
-        }
-
-
         function selectUser(username, ev) {
     const e = ev || window.event;
     document.querySelectorAll('.user-choice').forEach(btn => btn.classList.remove('active'));  // ✅ CORRECT
@@ -3258,6 +3208,10 @@ function setupTOTPInput() {
 }
 
 function validateTOTP() {
+    // MOVED TO TOP
+    const authScreen = document.getElementById('authScreen');
+    const mainApp = document.getElementById('mainApp');
+    
     const inputs = document.querySelectorAll('.code-box');
     const code = Array.from(inputs).map(i => i.value).join('');
     const errorEl = document.getElementById('errorMsg');
@@ -3275,11 +3229,15 @@ function validateTOTP() {
     const ok = verifyTOTP(code, selectedUsername);
 
     if (ok) {
-    authScreen.style.display = 'none';
-    mainApp.style.display = 'flex';      // ← CHANGE FROM 'block' TO 'flex'
-    mainApp.classList.add('active');     // ← ADD THIS LINE
-    }
-
+        currentUser = selectedUsername === 'davide' ? 'Davide' : 'Mattia';
+    
+        // FIXED HERE
+        if (authScreen) authScreen.style.display = 'none';
+        if (mainApp) {
+            mainApp.style.display = 'flex';
+            mainApp.classList.add('active');
+        }
+        }
 
 // SUCCESS: unlock app - SHOW APP INSTANTLY
 currentUser = selectedUsername === 'Davide' ? 'Davide' : 'Mattia';
@@ -3290,6 +3248,7 @@ if (authScreen) authScreen.style.display = 'none';
 if (mainApp) {
   mainApp.style.display = 'flex';
   mainApp.style.zIndex = '10';
+  mainApp.classList.add('active')
 }
 document.body.classList.remove('locked');
 
