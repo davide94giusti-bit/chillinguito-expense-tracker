@@ -15,8 +15,7 @@
    ============================================ */
 
 :root {
-    
-  /* Color Palette - Lake Como Inspired */
+  /* Light Mode - Default */
   --primary: #0066CC;
   --primary-light: #E3F2FD;
   --primary-lighter: #F3F9FF;
@@ -32,6 +31,15 @@
   --lake-light: #64D4FF;
   --sky-blue: #87CEEB;
   
+  /* Light Mode Backgrounds & Text */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FBFE;
+  --bg-tertiary: #F3F4F6;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --border-color: #D1D5DB;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
   /* Neutrals */
   --white: #FFFFFF;
   --off-white: #F8FBFE;
@@ -45,6 +53,49 @@
   --gray-700: #374151;
   --gray-800: #1F2937;
   --gray-900: #111827;
+  
+  /* ... rest of spacing/typography variables unchanged ... */
+}
+
+/* DARK MODE */
+[data-theme="dark"] {
+  --primary: #64D4FF;
+  --primary-light: #1e3a5f;
+  --primary-lighter: #0D47A1;
+  --secondary: #4DD0E1;
+  --success: #66BB6A;
+  --warning: #FFA726;
+  --danger: #EF5350;
+  
+  /* Lake Como Dark */
+  --lake-dark: #080d15;
+  --lake-water: #1B3A52;
+  --lake-light: #4DD0E1;
+  --sky-blue: #4DD0E1;
+  
+  /* Dark Mode Backgrounds & Text */
+  --bg-primary: #0F1419;
+  --bg-secondary: #1a1f2e;
+  --bg-tertiary: #252d3d;
+  --text-primary: #E8EAED;
+  --text-secondary: #9AA0A6;
+  --border-color: #3C4043;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  
+  /* Neutrals for dark mode */
+  --white: #0F1419;
+  --off-white: #1a1f2e;
+  --gray-50: #252d3d;
+  --gray-100: #2f3a4d;
+  --gray-200: #3C4043;
+  --gray-300: #5F6368;
+  --gray-400: #9AA0A6;
+  --gray-500: #BDC1C6;
+  --gray-600: #D0D0D0;
+  --gray-700: #E8EAED;
+  --gray-800: #F1F3F4;
+  --gray-900: #FFFFFF;
+}
 
   /* ============================================
    AUTH SCREEN - LAKE COMO DESIGN
@@ -280,9 +331,10 @@ html, body {
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--off-white);
-  color: var(--gray-800);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -525,12 +577,9 @@ div[style*="overflow-y: auto"] {
 }
 
 .card {
-  background: var(--white);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-6);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-200);
-  transition: all var(--transition-base);
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .card:hover {
@@ -577,10 +626,10 @@ textarea {
   width: 100%;
   padding: var(--spacing-3) var(--spacing-4);
   font-size: var(--font-size-base);
-  border: 1.5px solid var(--gray-300);
+  border-color: var(--border-color);
   border-radius: var(--radius-lg);
-  background-color: var(--white);
-  color: var(--gray-900);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-family: inherit;
   transition: all var(--transition-base);
   outline: none;
@@ -1374,7 +1423,7 @@ textarea {
 @media (max-width: 480px) {
 .calendar-container {
 padding: 8px !important; 
-margin: 0
+margin: 0 !important;
 border-radius: 8px !important;
 width: 100% !important;
 box-sizing: border-box;
@@ -1422,15 +1471,6 @@ padding: 3px !important;
 font-weight: 700;
 }
 
-/* THIS IS THE KEY FIX /
-.calendar-days {
-display: grid !important;
-grid-template-columns: repeat(7, 1fr) !important;
-gap: 3px !important; / Reduced from 8px */
-width: 100% !important;
-margin: 0 !important;
-padding: 0 !important;
-}
 
 .calendar-day {
 aspect-ratio: 1 !important;
@@ -1945,6 +1985,16 @@ body.app-open {
         let selectedUsername = null;
         let listenersSetup = false;
         let currentTheme = localStorage.getItem('theme') || 'light';
+              // Initialize theme from localStorage
+        document.documentElement.setAttribute('data-theme', currentTheme);
+      
+        // Set initial button emoji
+        window.addEventListener('load', () => {
+          const themeBtn = document.querySelector('.theme-btn');
+          if (themeBtn) {
+              themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+          }
+        });
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentCalendarDate = new Date();
         let occupiedDates = []
@@ -3685,7 +3735,17 @@ if (isFirebaseReady) {
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', currentTheme);
             localStorage.setItem('theme', currentTheme);
+            
+            // Update button emoji and text
+            const themeBtn = document.querySelector('.theme-btn');
+            if (themeBtn) {
+                themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+                themeBtn.title = currentTheme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+            }
+            
+            console.log('✅ Theme switched to:', currentTheme);
         }
+        
 
         function setupFirebaseListeners() {
             if (!isFirebaseReady || listenersSetup) return;
