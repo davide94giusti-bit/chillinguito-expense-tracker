@@ -3274,13 +3274,12 @@ function validateTOTP() {
 
     const ok = verifyTOTP(code, selectedUsername);
 
-    if (!ok) {
-        if (errorEl) errorEl.textContent = '❌ Invalid code – try again';
-        // Clear inputs
-        inputs.forEach(i => i.value = '');
-        inputs[0].focus();
-        return;
+    if (ok) {
+    authScreen.style.display = 'none';
+    mainApp.style.display = 'flex';      // ← CHANGE FROM 'block' TO 'flex'
+    mainApp.classList.add('active');     // ← ADD THIS LINE
     }
+
 
 // SUCCESS: unlock app - SHOW APP INSTANTLY
 currentUser = selectedUsername === 'Davide' ? 'Davide' : 'Mattia';
